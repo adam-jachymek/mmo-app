@@ -18,25 +18,48 @@ model User {
   email String @unique
   hash  String
 
-  firstName String?
-  lastName  String?
+  username String? @unique
 
-  bookmarks Bookmark[]
+  hp Int? @default(100)
+  level Int? @default(1)
+  exp Int? @default(0)
+
+  stamina Int? @default(10)
+  strength Int? @default(10)
+  defence Int? @default(10)
+  speed Int? @default(10)
+  intelligence Int? @default(10)
+
+  items ItemsOnUsers[]
 
   @@map("users")
 }
 
-model Bookmark {
+
+model Items {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String
+  name  String
+  icon  String?
   description String?
-  link        String
+  type String?
+  attack Int?
+  defence Int?
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  users ItemsOnUsers[]
 
-  @@map("bookmarks")
+  @@map("items")
+}
+
+model ItemsOnUsers {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int // relation scalar field (used in the `@relation` attribute above)
+  item   Items @relation(fields: [itemId], references: [id])
+  itemId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([userId, itemId])
 }

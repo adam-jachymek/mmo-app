@@ -28,18 +28,17 @@ export const getUser = async () => {
   return response.data;
 };
 
-export const createBookmark = async (values: {
-  title: string;
+export const createItem = async (values: {
+  name: string;
   description?: string;
-  link: string;
 }) => {
-  const response = await api.post("/bookmarks/", values);
+  const response = await api.post("/items/", values);
 
   return response.data;
 };
 
-export const getBookmarks = async () => {
-  const response = await api.get("/bookmarks/");
+export const getItems = async () => {
+  const response = await api.get("/items");
 
   return response.data;
 };

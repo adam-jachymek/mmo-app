@@ -4,16 +4,12 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateBookmarkDto {
+export class EditItemDto {
   @IsString()
-  @IsNotEmpty()
-  title: string;
+  @IsOptional()
+  name?: string;
 
   @IsString()
   @IsOptional()
   description?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  link: string;
 }
