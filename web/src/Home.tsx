@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { getUser } from "./api/endpoints";
 import { createItem, getItems, deleteItem } from "./api/endpoints";
 import { GiDrippingSword } from "react-icons/gi";
+import avatar from "./knight.png";
 
 import "./home.sass";
 
@@ -50,37 +51,22 @@ const Home = () => {
     <div className="player">
       <div>
         <p>{user?.username}</p>
-        <button onClick={LogOut}>Log Out</button>
+        <button className="player__logout" onClick={LogOut}>
+          Log Out
+        </button>
       </div>
-      <div>
-        <p>Level: {user?.level}</p>
-        <p>Stamina: {user?.stamina}</p>
-        <p>Strength: {user?.strength}</p>
-        <p>Defence: {user?.defence}</p>
-        <p>Attack Speed: {user?.speed}</p>
-        <p>Intelligence: {user?.intelligence}</p>
-        <div>
-          <h3>Items</h3>
-          <ul className="player__items-list">
-            {itemsData?.map((item: any) => (
-              <li className="player__item">
-                <div>
-                  <GiDrippingSword className="player__item-icon" />
-                </div>
-                {item.name}
-                {item.attack && <p>Attack: {item.attack}</p>}
-                <button
-                  onClick={() => deleteThis(item.id)}
-                  className="player__delete-item"
-                >
-                  X
-                </button>
-              </li>
-            ))}
-          </ul>
+      <div className="player__avatar">
+        <img className="avatar" src={avatar} alt="" />
+        <div className="player__stats">
+          <p className="marginonly">Level: {user?.level}</p>
+          <p>Stamina: {user?.stamina}</p>
+          <p>Strength: {user?.strength}</p>
+          <p>Defence: {user?.defence}</p>
+          <p>Attack Speed: {user?.speed}</p>
+          <p>Intelligence: {user?.intelligence}</p>
         </div>
       </div>
-      <div style={{ marginTop: "300px" }}>
+      <div>
         <form onSubmit={itemsForm.handleSubmit}>
           <label className="main__label">Name</label>
           <input
@@ -99,6 +85,28 @@ const Home = () => {
           /> */}
           <button type="submit">Add Item</button>
         </form>
+      </div>
+      <div>
+        <h3 className="invtext">Inventory</h3>
+        <ul className="player__items-list">
+          {itemsData?.map((item: any) => (
+            <li className="player__item">
+              <div>
+                <GiDrippingSword className="player__item-icon" />
+              </div>
+              {item.name}
+              {item.attack && <p>Attack: {item.attack}</p>}
+              <div>
+                <button
+                  className="player__delete-item"
+                  onClick={() => deleteThis(item.id)}
+                >
+                  X
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
