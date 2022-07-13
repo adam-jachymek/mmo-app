@@ -18,8 +18,6 @@ const Home = () => {
     getItems
   );
 
-  console.log(user);
-
   const LogOut = () => {
     localStorage.removeItem("userToken");
     refetchUser();
