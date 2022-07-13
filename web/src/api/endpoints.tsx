@@ -42,3 +42,9 @@ export const getItems = async () => {
 
   return response.data;
 };
+
+export const deleteItem = async (itemId: string) => {
+  const response = await api.delete(`/items/${itemId}`);
+
+  return response.data;
+};

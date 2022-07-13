@@ -30,6 +30,7 @@ model User {
   speed Int? @default(10)
   intelligence Int? @default(10)
 
+  item Items[]
   items ItemsOnUsers[]
 
   @@map("users")
@@ -48,6 +49,9 @@ model Items {
   attack Int?
   defence Int?
 
+  userId Int?
+
+  user User[]
   users ItemsOnUsers[]
 
   @@map("items")

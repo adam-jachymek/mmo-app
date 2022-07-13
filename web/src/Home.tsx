@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
 import { getUser } from "./api/endpoints";
-import { createItem, getItems } from "./api/endpoints";
+import { createItem, getItems, deleteItem } from "./api/endpoints";
 import { GiDrippingSword } from "react-icons/gi";
 
 import "./home.sass";
@@ -13,7 +13,7 @@ const Home = () => {
     refetch: refetchUser,
   } = useQuery("currentUser", getUser);
 
-  const { data: itemsData, refetch: refetchBookmarks } = useQuery(
+  const { data: itemsData, refetch: refetchItems } = useQuery(
     "getITems",
     getItems
   );
@@ -27,18 +27,24 @@ const Home = () => {
 
   const { mutate: addItem } = useMutation(createItem, {
     onSuccess: (response) => {
-      refetchBookmarks();
+      refetchItems();
     },
   });
 
-  const bookmarkForm = useFormik({
+  const { mutate: deleteThis } = useMutation(deleteItem, {
+    onSuccess: (response) => {
+      refetchItems();
+    },
+  });
+
+  const itemsForm = useFormik({
     initialValues: {
       name: "",
       description: "",
-      link: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       addItem(values);
+      resetForm();
     },
   });
 
@@ -61,34 +67,38 @@ const Home = () => {
             {itemsData?.map((item: any) => (
               <li className="player__item">
                 <div>
-                  <GiDrippingSword
-                    style={{ width: "80px", height: "80px", color: "red" }}
-                  />
+                  <GiDrippingSword className="player__item-icon" />
                 </div>
                 {item.name}
                 {item.attack && <p>Attack: {item.attack}</p>}
+                <button
+                  onClick={() => deleteThis(item.id)}
+                  className="player__delete-item"
+                >
+                  X
+                </button>
               </li>
             ))}
           </ul>
         </div>
       </div>
-      <div style={{ marginTop: "500px" }}>
-        <form onSubmit={bookmarkForm.handleSubmit}>
+      <div style={{ marginTop: "300px" }}>
+        <form onSubmit={itemsForm.handleSubmit}>
           <label className="main__label">Name</label>
           <input
             className="main__input"
             name="name"
-            onChange={bookmarkForm.handleChange}
-            value={bookmarkForm.values.name}
+            onChange={itemsForm.handleChange}
+            value={itemsForm.values.name}
           />
-          <label className="main__label">Description</label>
+          {/* <label className="main__label">Description</label>
           <input
             className="main__input"
             type="text"
             name="description"
-            onChange={bookmarkForm.handleChange}
-            value={bookmarkForm.values.description}
-          />
+            onChange={itemsForm.handleChange}
+            value={itemsForm.values.description}
+          /> */}
           <button type="submit">Add Item</button>
         </form>
       </div>
