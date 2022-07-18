@@ -9,19 +9,23 @@ import {
 } from './dto';
 
 @Injectable()
-export class ItemsService {
+export class ItemPrototypeService {
   constructor(private prisma: PrismaService) {}
 
   getItems(userId: number) {
-    return this.prisma.items.findMany({
-      where: {
-        userId,
-      },
+    return this.prisma.itemPrototype.findMany({
+      // where: {
+      //   userId,
+      // },
     });
   }
 
+  getItemsAdmin() {
+    return this.prisma.itemPrototype.findMany({});
+  }
+
   getItemById(itemsId: number) {
-    return this.prisma.items.findFirst({
+    return this.prisma.itemPrototype.findFirst({
       where: {
         id: itemsId,
       },
@@ -32,12 +36,12 @@ export class ItemsService {
     userId: number,
     dto: CreateItemDto,
   ) {
-    const items = await this.prisma.items.create({
-      data: {
-        userId,
-        ...dto,
-      },
-    });
+    const items =
+      await this.prisma.itemPrototype.create({
+        data: {
+          ...dto,
+        },
+      });
 
     return items;
   }
@@ -47,21 +51,21 @@ export class ItemsService {
     itemsId: number,
     dto: EditItemDto,
   ) {
-    // get the items by id
-    const items =
-      await this.prisma.items.findUnique({
+    // get the item by id
+    const item =
+      await this.prisma.itemPrototype.findUnique({
         where: {
           id: itemsId,
         },
       });
 
     // check if user owns the items
-    if (!items || items.id !== userId)
+    if (!item || item.id !== userId)
       throw new ForbiddenException(
         'Access to resources denied',
       );
 
-    return this.prisma.items.update({
+    return this.prisma.itemPrototype.update({
       where: {
         id: itemsId,
       },
@@ -76,19 +80,19 @@ export class ItemsService {
     itemsId: number,
   ) {
     const items =
-      await this.prisma.items.findUnique({
+      await this.prisma.itemPrototype.findUnique({
         where: {
           id: itemsId,
         },
       });
 
     // check if user owns the items
-    // if (!items || items.id !== userId)
+    // if (!items || item.id !== userId)
     //   throw new ForbiddenException(
     //     'Access to resources denied',
     //   );
 
-    await this.prisma.items.delete({
+    await this.prisma.itemPrototype.delete({
       where: {
         id: itemsId,
       },

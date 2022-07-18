@@ -37,15 +37,14 @@
     padding: 5px
 
   &__delete-item
-    
     margin-top: 5px
 
-  &__logout  
+  &__logout
     display: flex
     justify-content: flex-end
 
   &__logout-button
-    margin-bottom: 50px 
+    margin-bottom: 50px
     padding: 5px
 
   &__info
@@ -53,7 +52,7 @@
     display: grid
     grid-template-columns: 1fr 1fr 1fr
     grid-gap: 50px
-    height: 260px
+    height: 300px
     border-radius: 5px
     padding: 10px
     margin-top: 5px
@@ -70,9 +69,12 @@
     font-size: 17px
     text-align: left
 
+  &__eq
+    position: relative
+
   &__eq-armor
     position: absolute
-    top: 255px
+    top: 26%
     right: 50%
     background: #171717
     border: 2px solid #880808
@@ -82,9 +84,9 @@
     height: 60px
     box-sizing: border-box
 
-  &__eq-head 
+  &__eq-head
     position: absolute
-    top: 190px
+    top: 0
     right: 50%
     background: #171717
     border: 2px solid #880808
@@ -96,8 +98,8 @@
 
   &__eq-leftarm
     position: absolute
-    top: 270px
-    right: 54%
+    top: 30%
+    right: 75%
     background: #171717
     border: 2px solid #880808
     box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
@@ -108,8 +110,8 @@
 
   &__eq-rightarm
     position: absolute
-    top: 270px
-    right: 46%
+    top: 30%
+    right: 25%
     background: #171717
     border: 2px solid #880808
     box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
@@ -117,10 +119,10 @@
     width: 60px
     height: 60px
     box-sizing: border-box
-  
+
   &__eq-legs
     position: absolute
-    top: 320px
+    top: 52%
     right: 50%
     background: #171717
     border: 2px solid #880808
@@ -132,7 +134,7 @@
 
   &__eq-boots
     position: absolute
-    top: 385px
+    top: 78%
     right: 50%
     background: #171717
     border: 2px solid #880808
@@ -145,7 +147,7 @@
   &__eq-icon
     font-size: 50px
     padding: 3px
-    color: mediumspringgreen    
+    color: mediumspringgreen
 
   &__avatar-img
     width: 250px
@@ -160,52 +162,3 @@
     font-size: 40px
     line-height: 48px
     margin-bottom: 10px
-
-  &__navbar
-    background: #252525
-    background-color: #252525
-    position: fixed
-    top: 0
-    border-right: 1px solid #FFFFFF
-    left: 0
-    width: 320px
-    height: 100%
-    padding: 20px 0
-    
-
-  &__top-nav
-    position: fixed
-    top: 0
-    left: 0
-    width: 100%
-    border-bottom: 1px solid
-    
-
-  &__top-nav-info
-    background-color:#252525
-    height: 50px
-    display: flex
-    align-items: center
-    padding: 0 30px
-    justify-content: center
-
-  &__navbar-ul
-    list-style: none
-    padding: 0
-    margin-top: 200px
-
-  &__navbar-li
-    text-align: center
-    display: block
-    height: 100%
-    width: 100%
-    line-height: 50px
-    font-size: 20px
-    color: white
-    box-sizing: border-box
-    border-top: 1px solid rgba(255,255,255,0.1)
-    border-bottom: 1px solid black
-
-  &__nick
-        color: mediumspringgreen
-    

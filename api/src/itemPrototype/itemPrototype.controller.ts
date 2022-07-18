@@ -15,22 +15,29 @@ import {
 import { GetUser } from '../auth/decorator';
 import { Header } from 'src/auth/decorator/request-header';
 import { JwtGuard } from '../auth/guard';
-import { ItemsService } from './items.service';
+import { ItemPrototypeService } from './itemPrototype.service';
 import {
   CreateItemDto,
   EditItemDto,
 } from './dto';
 
 @UseGuards(JwtGuard)
-@Controller('items')
-export class ItemsController {
+@Controller('item_prototype')
+export class ItemPrototypeController {
   constructor(
-    private itemsService: ItemsService,
+    private ItemPrototypeService: ItemPrototypeService,
   ) {}
 
   @Get()
   getItems(@GetUser('id') userId: number) {
-    return this.itemsService.getItems(userId);
+    return this.ItemPrototypeService.getItems(
+      userId,
+    );
+  }
+
+  @Get('admin')
+  getItemsAdmin() {
+    return this.ItemPrototypeService.getItemsAdmin();
   }
 
   @Get(':id')
@@ -38,7 +45,9 @@ export class ItemsController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) itemId: number,
   ) {
-    return this.itemsService.getItemById(itemId);
+    return this.ItemPrototypeService.getItemById(
+      itemId,
+    );
   }
 
   @Post()
@@ -46,7 +55,7 @@ export class ItemsController {
     @GetUser('id') userId: number,
     @Body() dto: CreateItemDto,
   ) {
-    return this.itemsService.createItem(
+    return this.ItemPrototypeService.createItem(
       userId,
       dto,
     );
@@ -58,7 +67,7 @@ export class ItemsController {
     @Param('id', ParseIntPipe) itemId: number,
     @Body() dto: EditItemDto,
   ) {
-    return this.itemsService.editItemById(
+    return this.ItemPrototypeService.editItemById(
       userId,
       itemId,
       dto,
@@ -71,7 +80,7 @@ export class ItemsController {
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) itemId: number,
   ) {
-    return this.itemsService.deleteItemById(
+    return this.ItemPrototypeService.deleteItemById(
       userId,
       itemId,
     );

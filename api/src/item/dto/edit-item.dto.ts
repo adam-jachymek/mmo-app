@@ -6,10 +6,14 @@ import {
 
 export class EditItemDto {
   @IsString()
-  @IsOptional()
-  name?: string;
+  @IsNotEmpty()
+  stat: number;
 
   @IsString()
   @IsOptional()
-  description?: string;
+  level?: number;
+
+  @IsString()
+  @IsOptional()
+  score?: number;
 }

@@ -32,19 +32,37 @@ export const createItem = async (values: {
   name: string;
   description?: string;
 }) => {
-  const response = await api.post("/items/", values);
+  const response = await api.post("/item_prototype/", values);
 
   return response.data;
 };
 
 export const getItems = async () => {
-  const response = await api.get("/items");
+  const response = await api.get("/item/admin");
 
   return response.data;
 };
 
-export const deleteItem = async (itemId: string) => {
-  const response = await api.delete(`/items/${itemId}`);
+export const getItemsAdmin = async () => {
+  const response = await api.get("/item_prototype");
+
+  return response.data;
+};
+
+export const deletePrototypeItem = async (itemId: number) => {
+  const response = await api.delete(`/item_prototype/${itemId}`);
+
+  return response.data;
+};
+
+export const deleteItem = async (itemId: number) => {
+  const response = await api.delete(`/item/${itemId}`);
+
+  return response.data;
+};
+
+export const generateItem = async (values: { itemPrototypeId: number }) => {
+  const response = await api.post("/item", values);
 
   return response.data;
 };

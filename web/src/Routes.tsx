@@ -3,6 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import { getUser } from "./api/endpoints";
 import Login from "./Login";
 import Home from "./Home";
+import Admin from "components/Admin";
+import SideNavBar from "components/SideNavBar";
+import TopNavBar from "components/TopNavBar";
 
 const AppRouter = () => {
   const {
@@ -21,9 +24,14 @@ const AppRouter = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
+    <>
+      <TopNavBar currentUser={currentUser} />
+      <SideNavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </>
   );
 };
 
