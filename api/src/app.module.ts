@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ItemPrototypeModule } from './itemPrototype/itemPrototype.module';
 import { ItemModule } from './item/item.module';
+import { MobModule } from './mobs/mob.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { PrismaModule } from './prisma/prisma.module';
     UserModule,
     ItemPrototypeModule,
     ItemModule,
+    MobModule,
     PrismaModule,
   ],
 })

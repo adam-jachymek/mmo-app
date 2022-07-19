@@ -6,6 +6,7 @@ import {
   generateItem,
   deleteItem,
   deletePrototypeItem,
+  getMobs,
 } from "api/endpoints";
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
@@ -22,6 +23,8 @@ const Admin = () => {
     "getItems",
     getItems
   );
+
+  const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
 
   const { mutate: addItem } = useMutation(createItem, {
     onSuccess: (response) => {
@@ -146,6 +149,33 @@ const Admin = () => {
               <button
                 onClick={() => {
                   deleteUserItem(item.id);
+                }}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </table>
+      <h2>Mobs</h2>
+      <table className="admin__item-list">
+        <tr>
+          <th>Name</th>
+          <th>Min Level</th>
+          <th>Max Level</th>
+          <th>Map</th>
+          <th>Action</th>
+        </tr>
+        {mobsData?.map((mob: any) => (
+          <tr key={mob.id} className="admin__item">
+            <td>{mob.name}</td>
+            <td>{mob.minLevel}</td>
+            <td>{mob.maxLevel}</td>
+            <td>{mob.map.name}</td>
+            <td>
+              <button
+                onClick={() => {
+                  deleteUserItem(mob.id);
                 }}
               >
                 Delete

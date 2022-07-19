@@ -6,6 +6,7 @@ import Home from "./Home";
 import Admin from "components/Admin";
 import SideNavBar from "components/SideNavBar";
 import TopNavBar from "components/TopNavBar";
+import Battle from "components/Battle";
 
 const AppRouter = () => {
   const {
@@ -30,6 +31,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/battle" element={<Battle />} />
       </Routes>
     </>
   );

@@ -70,3 +70,37 @@ model Item {
 
   @@map("items")
 }
+
+model Mob {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  minLevel Int?
+  maxLevel Int?
+  sprite String?
+  hp Int?
+  attack Int?
+  defence Int?
+
+  map Map? @relation(fields: [mapId], references: [id])
+  mapId Int
+
+  @@map("mobs")
+}
+
+model Map {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  minLevel Int?
+  maxLevel Int?
+  sprite String?
+
+  mobs Mob[]
+
+  @@map("maps")
+}

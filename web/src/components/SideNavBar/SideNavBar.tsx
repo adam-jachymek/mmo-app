@@ -24,7 +24,7 @@ const SideNavBar = () => {
           </a>
         </li>
         <li className="navbar__li">
-          <a href="#">
+          <a href="/battle">
             <GiCrossedSwords /> Battle
           </a>
         </li>

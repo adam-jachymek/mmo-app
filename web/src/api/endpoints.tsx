@@ -66,3 +66,9 @@ export const generateItem = async (values: { itemPrototypeId: number }) => {
 
   return response.data;
 };
+
+export const getMobs = async () => {
+  const response = await api.get("/mobs");
+
+  return response.data;
+};
