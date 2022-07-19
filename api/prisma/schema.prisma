@@ -87,7 +87,25 @@ model Mob {
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int
 
+  mobSpawn MobSpawn[]
+
   @@map("mobs")
+}
+
+model MobSpawn {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  level Int?
+  hp Int?
+  attack Int?
+  defence Int?
+
+  mob Mob @relation(fields: [mobId], references: [id])
+  mobId Int
+
+  @@map("mobSpawn")
 }
 
 model Map {

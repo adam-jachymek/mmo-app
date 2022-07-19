@@ -123,12 +123,6 @@ export class ItemService {
         },
       });
 
-    // check if user owns the items
-    // if (!items || item.id !== userId)
-    //   throw new ForbiddenException(
-    //     'Access to resources denied',
-    //   );
-
     await this.prisma.item.delete({
       where: {
         id: itemsId,

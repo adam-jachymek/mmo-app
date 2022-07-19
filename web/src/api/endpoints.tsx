@@ -91,3 +91,15 @@ export const createMob = async (values: {
 
   return response.data;
 };
+
+export const spawnMob = async (values: { mobId: number }) => {
+  const response = await api.post("/mob_spawn/", values);
+
+  return response.data;
+};
+
+export const getSpawnMobById = async (spawnMobId?: string) => {
+  const response = await api.get(`/mob_spawn/${spawnMobId}`);
+
+  return response.data;
+};

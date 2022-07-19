@@ -1,8 +1,18 @@
-import { useQuery } from "react-query";
-import { getMobs } from "api/endpoints";
+import { useMutation, useQuery } from "react-query";
+import { getMobs, spawnMob } from "api/endpoints";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Battle = () => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
+
+  let navigate = useNavigate();
+
+  const { mutate: generateMob } = useMutation(spawnMob, {
+    onSuccess: (response, variables) => {
+      navigate(`/battle/${response.id}`, { replace: true });
+    },
+  });
 
   return (
     <div>
@@ -22,7 +32,13 @@ const Battle = () => {
             <td>{mob.maxLevel}</td>
             <td>{mob.map.name}</td>
             <td>
-              <button onClick={() => {}}>Fight</button>
+              <button
+                onClick={() => {
+                  generateMob({ mobId: mob.id });
+                }}
+              >
+                Fight
+              </button>
             </td>
           </tr>
         ))}

@@ -72,7 +72,7 @@ const Admin = () => {
       maxStat: "",
     },
     onSubmit: (values, { resetForm }) => {
-      addMob(values);
+      addItem(values);
       resetForm();
     },
   });
