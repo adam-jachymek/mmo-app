@@ -70,10 +70,11 @@ export class MobSpawnService {
   }
 
   async editMobSpawnById(
+    user: User,
     mobSpawnId: number,
     dto: EditMobSpawnDto,
   ) {
-    const item =
+    const spawnedMob =
       await this.prisma.mobSpawn.findUnique({
         where: {
           id: mobSpawnId,
@@ -85,9 +86,23 @@ export class MobSpawnService {
         id: mobSpawnId,
       },
       data: {
-        ...dto,
+        hp:
+          spawnedMob.hp -
+          this.generateAttack(user),
       },
     });
+  }
+
+  generateAttack(user: User) {
+    const difference = user.strength - 1;
+
+    let rand = Math.random();
+
+    rand = Math.floor(rand * difference);
+
+    rand = rand + 1;
+
+    return rand;
   }
 
   async deleteMobSpawnById(mobSpawnId: number) {

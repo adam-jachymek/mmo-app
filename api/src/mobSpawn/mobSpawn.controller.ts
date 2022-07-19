@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -19,6 +18,7 @@ import {
   CreateMobSpawnDto,
   EditMobSpawnDto,
 } from './dto';
+import { User } from '@prisma/client';
 
 @UseGuards(JwtGuard)
 @Controller('mob_spawn')
@@ -50,10 +50,12 @@ export class MobSpawnController {
 
   @Patch(':id')
   editMobSpawnById(
+    @GetUser() user: User,
     @Param('id', ParseIntPipe) MobSpawnId: number,
     @Body() dto: EditMobSpawnDto,
   ) {
     return this.MobSpawnService.editMobSpawnById(
+      user,
       MobSpawnId,
       dto,
     );

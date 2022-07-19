@@ -103,3 +103,9 @@ export const getSpawnMobById = async (spawnMobId?: string) => {
 
   return response.data;
 };
+
+export const attackMob = async (spawnMobId?: string) => {
+  const response = await api.patch(`/mob_spawn/${spawnMobId}`);
+
+  return response.data;
+};
