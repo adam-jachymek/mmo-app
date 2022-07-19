@@ -72,3 +72,22 @@ export const getMobs = async () => {
 
   return response.data;
 };
+
+export const deleteMob = async (mobId: number) => {
+  const response = await api.delete(`/item/${mobId}`);
+
+  return response.data;
+};
+
+export const createMob = async (values: {
+  name: string;
+  minLevel?: number;
+  maxLevel?: number;
+  hp?: number;
+  attack?: number;
+  defence?: number;
+}) => {
+  const response = await api.post("/mobs/", values);
+
+  return response.data;
+};

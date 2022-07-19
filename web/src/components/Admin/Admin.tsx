@@ -7,6 +7,8 @@ import {
   deleteItem,
   deletePrototypeItem,
   getMobs,
+  deleteMob,
+  createMob,
 } from "api/endpoints";
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
@@ -32,6 +34,12 @@ const Admin = () => {
     },
   });
 
+  const { mutate: addMob } = useMutation(createMob, {
+    onSuccess: (response) => {
+      refetchMobs();
+    },
+  });
+
   const { mutate: deletePrototype } = useMutation(deletePrototypeItem, {
     onSuccess: (response) => {
       refetchItemsPrototype();
@@ -50,6 +58,12 @@ const Admin = () => {
     },
   });
 
+  const { mutate: deleteThisMob } = useMutation(deleteMob, {
+    onSuccess: (response) => {
+      refetchItems();
+    },
+  });
+
   const itemsForm = useFormik({
     initialValues: {
       name: "",
@@ -58,7 +72,22 @@ const Admin = () => {
       maxStat: "",
     },
     onSubmit: (values, { resetForm }) => {
-      addItem(values);
+      addMob(values);
+      resetForm();
+    },
+  });
+
+  const mobsForm = useFormik({
+    initialValues: {
+      name: "",
+      minLevel: 1,
+      maxLevel: 10,
+      hp: 100,
+      attack: 5,
+      defence: 5,
+    },
+    onSubmit: (values, { resetForm }) => {
+      addMob(values);
       resetForm();
     },
   });
@@ -158,6 +187,56 @@ const Admin = () => {
         ))}
       </table>
       <h2>Mobs</h2>
+      <form onSubmit={mobsForm.handleSubmit}>
+        <label className="main__label">Name</label>
+        <input
+          className="main__input"
+          name="name"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.name}
+        />
+        <label className="main__label">Min Level</label>
+        <input
+          className="main__input"
+          name="minLevel"
+          type="number"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.minLevel}
+        />
+        <label className="main__label">Max Level</label>
+        <input
+          className="main__input"
+          name="maxLevel"
+          type="number"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.maxLevel}
+        />
+        <label className="main__label">HP</label>
+        <input
+          className="main__input"
+          name="hp"
+          type="number"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.hp}
+        />
+        <label className="main__label">Attack</label>
+        <input
+          className="main__input"
+          name="attack"
+          type="number"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.attack}
+        />
+        <label className="main__label">Defence</label>
+        <input
+          className="main__input"
+          name="defence"
+          type="number"
+          onChange={mobsForm.handleChange}
+          value={mobsForm.values.defence}
+        />
+        <button type="submit">Add Mob</button>
+      </form>
       <table className="admin__item-list">
         <tr>
           <th>Name</th>
@@ -175,7 +254,7 @@ const Admin = () => {
             <td>
               <button
                 onClick={() => {
-                  deleteUserItem(mob.id);
+                  deleteThisMob(mob.id);
                 }}
               >
                 Delete

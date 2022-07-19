@@ -10,7 +10,7 @@ export class CreateMobDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   hp?: number;
 
@@ -21,4 +21,12 @@ export class CreateMobDto {
   @IsNumber()
   @IsOptional()
   maxLevel?: number;
+
+  @IsNumber()
+  @IsOptional()
+  attack?: number;
+
+  @IsNumber()
+  @IsOptional()
+  defence?: number;
 }
