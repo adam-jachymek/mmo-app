@@ -81,6 +81,14 @@ export class MobSpawnService {
         },
       });
 
+    if (spawnedMob.hp < 1) {
+      await this.prisma.mobSpawn.delete({
+        where: {
+          id: mobSpawnId,
+        },
+      });
+    }
+
     return this.prisma.mobSpawn.update({
       where: {
         id: mobSpawnId,

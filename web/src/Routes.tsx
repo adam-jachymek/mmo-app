@@ -33,7 +33,10 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/battle" element={<Battle />} />
-        <Route path="/battle/:id" element={<BattleScreen />} />
+        <Route
+          path="/battle/:id"
+          element={<BattleScreen currentUser={currentUser} />}
+        />
       </Routes>
     </>
   );
