@@ -66,3 +66,46 @@ export const generateItem = async (values: { itemPrototypeId: number }) => {
 
   return response.data;
 };
+
+export const getMobs = async () => {
+  const response = await api.get("/mobs");
+
+  return response.data;
+};
+
+export const deleteMob = async (mobId: number) => {
+  const response = await api.delete(`/item/${mobId}`);
+
+  return response.data;
+};
+
+export const createMob = async (values: {
+  name: string;
+  minLevel?: number;
+  maxLevel?: number;
+  hp?: number;
+  attack?: number;
+  defence?: number;
+}) => {
+  const response = await api.post("/mobs/", values);
+
+  return response.data;
+};
+
+export const spawnMob = async (values: { mobId: number }) => {
+  const response = await api.post("/mob_spawn/", values);
+
+  return response.data;
+};
+
+export const getSpawnMobById = async (spawnMobId?: string) => {
+  const response = await api.get(`/mob_spawn/${spawnMobId}`);
+
+  return response.data;
+};
+
+export const attackMob = async (spawnMobId?: string) => {
+  const response = await api.patch(`/mob_spawn/${spawnMobId}`);
+
+  return response.data;
+};
