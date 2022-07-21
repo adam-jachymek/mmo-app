@@ -30,9 +30,7 @@ const BattleScreen = ({ currentUser }: Props) => {
     if (mob?.hp < 1) {
       navigate(`/battle/`, { replace: true });
     }
-  }, [mob?.hp]);
-
-  console.log("spawned", mob);
+  }, [mob?.hp, navigate]);
 
   return (
     <div className="fight">
