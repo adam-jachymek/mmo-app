@@ -7,7 +7,9 @@ import { ItemPrototypeModule } from './itemPrototype/itemPrototype.module';
 import { ItemModule } from './item/item.module';
 import { MobModule } from './mobs/mob.module';
 import { MobSpawnModule } from './mobSpawn/mobSpawn.module';
+import { MapModule } from './map/map.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { BattleModule } from './battle/battle.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { PrismaModule } from './prisma/prisma.module';
     MobModule,
     MobSpawnModule,
     PrismaModule,
+    MapModule,
+    BattleModule,
   ],
 })
 export class AppModule {}

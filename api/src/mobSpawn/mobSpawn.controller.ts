@@ -52,12 +52,10 @@ export class MobSpawnController {
   editMobSpawnById(
     @GetUser() user: User,
     @Param('id', ParseIntPipe) MobSpawnId: number,
-    @Body() dto: EditMobSpawnDto,
   ) {
-    return this.MobSpawnService.editMobSpawnById(
+    return this.MobSpawnService.turn(
       user,
       MobSpawnId,
-      dto,
     );
   }
 

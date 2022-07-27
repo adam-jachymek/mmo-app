@@ -1,7 +1,10 @@
 export type User = {
   username: string;
   hp: number;
+  maxHp: number;
   level: number;
+  exp: number;
+  maxExp: number;
 };
 
 export type ItemPrototype = {

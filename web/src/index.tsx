@@ -7,11 +7,24 @@ import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./Routes";
 
 import "./styles/main.sass";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+    },
+  },
+});
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#b2102f",
+    },
+    secondary: {
+      main: "#62BCF6",
     },
   },
 });
@@ -23,9 +36,11 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <main className="main">
-          <AppRouter />
-        </main>
+        <ThemeProvider theme={darkTheme}>
+          <main className="main">
+            <AppRouter />
+          </main>
+        </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>

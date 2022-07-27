@@ -8,6 +8,9 @@ import SideNavBar from "components/SideNavBar";
 import TopNavBar from "components/TopNavBar";
 import Battle from "components/Battle";
 import BattleScreen from "components/BattleScreen";
+import Items from "./components/Admin/sub/Items";
+import Maps from "./components/Admin/sub/Maps";
+import Mobs from "./components/Admin/sub/Mobs";
 
 const AppRouter = () => {
   const {
@@ -27,15 +30,20 @@ const AppRouter = () => {
 
   return (
     <>
-      <TopNavBar currentUser={currentUser} />
+      <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
       <SideNavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/battle" element={<Battle />} />
+        <Route path="/admin/items" element={<Items />} />
+        <Route path="/admin/maps" element={<Maps />} />
+        <Route path="/admin/mobs" element={<Mobs />} />
+        <Route path="/battle" element={<Battle currentUser={currentUser} />} />
         <Route
           path="/battle/:id"
-          element={<BattleScreen currentUser={currentUser} />}
+          element={
+            <BattleScreen currentUser={currentUser} refetchUser={refetchUser} />
+          }
         />
       </Routes>
     </>

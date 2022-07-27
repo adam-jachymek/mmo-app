@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ItemType {
+  WEAPON
+  HELMET
+  ARMOR
+  LEGS
+  POTION
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -21,8 +29,10 @@ model User {
   username String? @unique
 
   hp Int? @default(100)
+  maxHp Int? @default(100)
   level Int? @default(1)
   exp Int? @default(0)
+  maxExp Int? @default(100)
 
   stamina Int? @default(10)
   strength Int? @default(10)
@@ -30,7 +40,14 @@ model User {
   speed Int? @default(10)
   intelligence Int? @default(10)
 
+  eqStamina Int? @default(0)
+  eqStrength Int? @default(0)
+  eqDefence Int? @default(0)
+  eqSpeed Int? @default(0)
+  eqIntelligence Int? @default(0)
+
   items Item[]
+  battle Battle[]
 
   @@map("users")
 }
@@ -43,7 +60,7 @@ model ItemPrototype {
   name  String
   icon  String?
   description String?
-  type String? //todo add enum
+  type String?
   minStat Int?
   maxStat Int?
 
@@ -83,6 +100,7 @@ model Mob {
   hp Int?
   attack Int?
   defence Int?
+  giveExp Int?
 
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int
@@ -99,11 +117,15 @@ model MobSpawn {
 
   level Int?
   hp Int?
+  maxHp Int?
   attack Int?
   defence Int?
+  giveExp Int?
 
   mob Mob @relation(fields: [mobId], references: [id])
   mobId Int
+
+  battle Battle[]
 
   @@map("mobSpawn")
 }
@@ -121,4 +143,18 @@ model Map {
   mobs Mob[]
 
   @@map("maps")
+}
+
+model Battle {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mobSpawn MobSpawn @relation(fields: [mobSpawnId], references: [id])
+  mobSpawnId Int
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("battle")
 }
