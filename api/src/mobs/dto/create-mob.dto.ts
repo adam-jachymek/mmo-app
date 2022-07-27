@@ -29,4 +29,16 @@ export class CreateMobDto {
   @IsNumber()
   @IsOptional()
   defence?: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  mapId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  giveExp: number;
+
+  @IsString()
+  @IsOptional()
+  sprite: string;
 }

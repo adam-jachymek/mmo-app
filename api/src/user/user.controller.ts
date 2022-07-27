@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -15,11 +16,17 @@ import { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
+
   @Get('me')
   getMe(@GetUser() user: User) {
     delete user.updatedAt;
     delete user.createdAt;
     return user;
+  }
+
+  @Post('heal')
+  healUser(@GetUser('id') userId: number) {
+    return this.userService.healUser(userId);
   }
 
   @Patch()

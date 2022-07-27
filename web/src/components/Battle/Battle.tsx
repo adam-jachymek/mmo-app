@@ -2,8 +2,13 @@ import { useMutation, useQuery } from "react-query";
 import { getMobs, spawnMob } from "api/endpoints";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { User } from "/types";
 
-const Battle = () => {
+type Props = {
+  currentUser: User;
+};
+
+const Battle = ({ currentUser }: Props) => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
 
   let navigate = useNavigate();
@@ -33,6 +38,7 @@ const Battle = () => {
             <td>{mob.map.name}</td>
             <td>
               <button
+                disabled={currentUser.hp < 1}
                 onClick={() => {
                   generateMob({ mobId: mob.id });
                 }}

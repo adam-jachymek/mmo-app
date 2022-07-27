@@ -20,22 +20,45 @@ import { Item } from "./types";
 import "./home.sass";
 
 const Home = () => {
-  const {
-    isFetching,
-    data: user,
-    refetch: refetchUser,
-  } = useQuery("currentUser", getUser);
+  const { data: user, refetch: refetchUser } = useQuery("currentUser", getUser);
 
-  const { data: itemsData, refetch: refetchItems } = useQuery(
-    "getITems",
-    getItems
-  );
+  const {
+    data: itemsData,
+    refetch: refetchItems,
+    isFetching,
+  } = useQuery("getITems", getItems);
 
   const { mutate: deleteThis } = useMutation(deleteItem, {
     onSuccess: (response) => {
       refetchItems();
     },
   });
+
+  const numberOfSlots = 10;
+
+  const renderSlots = () => {
+    for (let i = 0; i < numberOfSlots; i++) {
+      <li className="player__item">
+        <div>
+          <GiDrippingSword className="player__item-icon" />
+        </div>
+        {itemsData[i]?.item?.name}
+        {itemsData[i]?.stat && <p>Attack: {itemsData[i]?.stat}</p>}
+        <div>
+          <button
+            className="player__delete-item"
+            onClick={() => deleteThis(itemsData[i]?.id)}
+          >
+            X
+          </button>
+        </div>
+      </li>;
+    }
+  };
+
+  if (isFetching) {
+    return <h1>"Loading..."</h1>;
+  }
 
   return (
     <div>
@@ -77,6 +100,7 @@ const Home = () => {
         <span className="player__inentory-text">Inventory</span>
         <div className="player__items">
           <ul className="player__items-list">
+            {renderSlots()}
             {itemsData?.map((item: Item) => (
               <li className="player__item">
                 <div>

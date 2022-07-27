@@ -74,7 +74,13 @@ export const getMobs = async () => {
 };
 
 export const deleteMob = async (mobId: number) => {
-  const response = await api.delete(`/item/${mobId}`);
+  const response = await api.delete(`/mobs/${mobId}`);
+
+  return response.data;
+};
+
+export const deleteMap = async (mapId: number) => {
+  const response = await api.delete(`/map/${mapId}`);
 
   return response.data;
 };
@@ -86,6 +92,8 @@ export const createMob = async (values: {
   hp?: number;
   attack?: number;
   defence?: number;
+  giveExp?: number;
+  mapId: string;
 }) => {
   const response = await api.post("/mobs/", values);
 
@@ -106,6 +114,34 @@ export const getSpawnMobById = async (spawnMobId?: string) => {
 
 export const attackMob = async (spawnMobId?: string) => {
   const response = await api.patch(`/mob_spawn/${spawnMobId}`);
+
+  return response.data;
+};
+
+export const getMap = async () => {
+  const response = await api.get("/map");
+
+  return response.data;
+};
+
+export const createMap = async (values: {
+  name: string;
+  minLevel?: number;
+  maxLevel?: number;
+}) => {
+  const response = await api.post("/map/", values);
+
+  return response.data;
+};
+
+export const createBattle = async (values: { mobId: number }) => {
+  const response = await api.post("/battle/", values);
+
+  return response.data;
+};
+
+export const healUser = async () => {
+  const response = await api.post("/users/heal");
 
   return response.data;
 };

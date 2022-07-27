@@ -34,11 +34,10 @@ export class MobService {
   }
 
   async createMob(dto: CreateMobDto) {
-    const mapId = 1;
     const mob = await this.prisma.mob.create({
       data: {
-        mapId,
         ...dto,
+        sprite: dto.name.toLowerCase(),
       },
     });
 

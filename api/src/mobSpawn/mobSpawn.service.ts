@@ -4,6 +4,7 @@ import {
 } from '@nestjs/common';
 import { Mob } from '@prisma/client';
 import { User } from '@prisma/client';
+import { UserService } from 'src/user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateMobSpawnDto,
@@ -12,7 +13,10 @@ import {
 
 @Injectable()
 export class MobSpawnService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   getMobSpawns() {
     return this.prisma.mobSpawn.findMany({
@@ -40,13 +44,18 @@ export class MobSpawnService {
       },
     });
 
+    const mobLevel = this.generateMobLevel(mob);
+
     const mobSpawned =
       await this.prisma.mobSpawn.create({
         data: {
-          level: this.generateMobLevel(mob),
-          hp: mob.hp,
+          level: mobLevel,
+          hp: mob.hp * mobLevel,
+          maxHp: mob.hp * mobLevel,
           mobId: dto.mobId,
-          ...dto,
+          attack: mob.attack * mobLevel,
+          defence: mob.defence * mobLevel,
+          giveExp: mob.giveExp * mobLevel,
         },
         include: {
           mob: true,
@@ -69,11 +78,7 @@ export class MobSpawnService {
     return rand;
   }
 
-  async editMobSpawnById(
-    user: User,
-    mobSpawnId: number,
-    dto: EditMobSpawnDto,
-  ) {
+  async turn(user: User, mobSpawnId: number) {
     const spawnedMob =
       await this.prisma.mobSpawn.findUnique({
         where: {
@@ -82,14 +87,31 @@ export class MobSpawnService {
       });
 
     if (spawnedMob.hp < 1) {
-      await this.prisma.mobSpawn.delete({
+      await this.userService.giveExp(
+        user.id,
+        spawnedMob.giveExp,
+      );
+    }
+
+    this.attackMob(user, mobSpawnId);
+    this.userService.attackUser(
+      user.id,
+      spawnedMob,
+    );
+  }
+
+  async attackMob(
+    user: User,
+    mobSpawnId: number,
+  ) {
+    const spawnedMob =
+      await this.prisma.mobSpawn.findUnique({
         where: {
           id: mobSpawnId,
         },
       });
-    }
 
-    return this.prisma.mobSpawn.update({
+    await this.prisma.mobSpawn.update({
       where: {
         id: mobSpawnId,
       },
@@ -99,6 +121,26 @@ export class MobSpawnService {
           this.generateAttack(user),
       },
     });
+
+    const mobAfterAttack =
+      await this.prisma.mobSpawn.findUnique({
+        where: {
+          id: mobSpawnId,
+        },
+      });
+
+    if (mobAfterAttack.hp < 1) {
+      await this.userService.giveExp(
+        user.id,
+        spawnedMob.giveExp,
+      );
+
+      await this.prisma.mobSpawn.delete({
+        where: {
+          id: mobSpawnId,
+        },
+      });
+    }
   }
 
   generateAttack(user: User) {
