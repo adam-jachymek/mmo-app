@@ -145,3 +145,9 @@ export const healUser = async () => {
 
   return response.data;
 };
+
+export const getExplore = async (mapId?: string) => {
+  const response = await api.get(`/explore/${mapId}`);
+
+  return response.data;
+};
