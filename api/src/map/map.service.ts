@@ -10,7 +10,9 @@ export class MapService {
   constructor(private prisma: PrismaService) {}
 
   getMap() {
-    return this.prisma.map.findMany();
+    return this.prisma.map.findMany({
+      include: { mobs: true },
+    });
   }
 
   getMapAdmin() {
@@ -21,6 +23,9 @@ export class MapService {
     return this.prisma.map.findFirst({
       where: {
         id: mapId,
+      },
+      include: {
+        mobs: true,
       },
     });
   }

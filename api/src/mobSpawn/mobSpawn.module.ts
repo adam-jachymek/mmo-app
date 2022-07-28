@@ -8,5 +8,6 @@ import { UserModule } from 'src/user/user.module';
   controllers: [MobSpawnController],
   providers: [MobSpawnService],
   imports: [UserModule],
+  exports: [MobSpawnService],
 })
 export class MobSpawnModule {}

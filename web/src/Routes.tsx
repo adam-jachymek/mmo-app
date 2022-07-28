@@ -11,6 +11,8 @@ import BattleScreen from "components/BattleScreen";
 import Items from "./components/Admin/sub/Items";
 import Maps from "./components/Admin/sub/Maps";
 import Mobs from "./components/Admin/sub/Mobs";
+import Explore from "./components/Explore";
+import ExploreScreen from "./components/ExploreScreen";
 
 const AppRouter = () => {
   const {
@@ -38,6 +40,10 @@ const AppRouter = () => {
         <Route path="/admin/items" element={<Items />} />
         <Route path="/admin/maps" element={<Maps />} />
         <Route path="/admin/mobs" element={<Mobs />} />
+        <Route
+          path="/explore"
+          element={<Explore currentUser={currentUser} />}
+        />
         <Route path="/battle" element={<Battle currentUser={currentUser} />} />
         <Route
           path="/battle/:id"
@@ -45,6 +51,7 @@ const AppRouter = () => {
             <BattleScreen currentUser={currentUser} refetchUser={refetchUser} />
           }
         />
+        <Route path="/explore/:id" element={<ExploreScreen />} />
       </Routes>
     </>
   );

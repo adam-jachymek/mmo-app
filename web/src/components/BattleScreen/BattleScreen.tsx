@@ -79,12 +79,12 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
 
   const closeModal = () => {
     setOpenModal(false);
-    navigate(`/battle/`, { replace: true });
+    navigate(-1);
   };
 
   const closeLostModal = () => {
     setLostModal(false);
-    navigate(`/battle/`, { replace: true });
+    navigate(-1);
   };
 
   return (
@@ -92,7 +92,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
       <div className="fight">
         <div className="fight__mob">
           <div className="fight__mob-info">
-            <h2>{mob?.mob.name}</h2>
+            <h2>{mob?.mob?.name}</h2>
             <h3>Level: {mob?.level}</h3>
             <LinearProgress
               variant="determinate"
@@ -145,7 +145,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
             <button
               className="fight__button fight__attack"
               onClick={() => {
-                navigate(`/battle/`, { replace: true });
+                navigate(-1);
               }}
             >
               RUN

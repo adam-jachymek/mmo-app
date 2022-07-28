@@ -33,6 +33,7 @@ model User {
   level Int? @default(1)
   exp Int? @default(0)
   maxExp Int? @default(100)
+  gold Int? @default(0)
 
   stamina Int? @default(10)
   strength Int? @default(10)
@@ -69,7 +70,6 @@ model ItemPrototype {
   @@map("itemPrototypes")
 }
 
-
 model Item {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -78,6 +78,7 @@ model Item {
   stat Int?
   level Int?
   score Int?
+  amount Int?
 
   user User @relation(fields: [userId], references: [id])
   userId Int
@@ -157,4 +158,19 @@ model Battle {
   userId Int
 
   @@map("battle")
+}
+
+model Explore {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  msg String?
+  isItem Boolean
+  minLevel Int?
+  maxLevel Int?
+  sprite String?
+
+  @@map("explore")
 }

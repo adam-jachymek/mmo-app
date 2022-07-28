@@ -24,6 +24,11 @@ const SideNavBar = () => {
           </a>
         </li>
         <li className="navbar__li">
+          <a href="/explore">
+            <AiOutlineQuestion /> Explore
+          </a>
+        </li>
+        <li className="navbar__li">
           <a href="/battle">
             <GiCrossedSwords /> Battle
           </a>
