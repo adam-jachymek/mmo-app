@@ -14,8 +14,8 @@ const SideNavBar = () => {
           </a>
         </li>
         <li className="navbar__li">
-          <a href="#">
-            <GiCharacter /> Character Profile
+          <a href="/character">
+            <GiCharacter /> Character
           </a>
         </li>
         <li className="navbar__li">

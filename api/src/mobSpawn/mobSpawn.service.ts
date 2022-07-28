@@ -135,11 +135,22 @@ export class MobSpawnService {
         spawnedMob.giveExp,
       );
 
-      await this.prisma.mobSpawn.delete({
+      await this.prisma.mobSpawn.update({
         where: {
           id: mobSpawnId,
         },
+        data: {
+          hp: 0,
+        },
       });
+
+      return mobAfterAttack;
+
+      // await this.prisma.mobSpawn.delete({
+      //   where: {
+      //     id: mobSpawnId,
+      //   },
+      // });
     }
   }
 

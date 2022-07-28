@@ -7,8 +7,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { User } from "/types";
 import Modal from "@mui/material/Modal";
 
-import "./styles.sass";
 import { Box, Typography } from "@mui/material";
+
+import "./styles.sass";
 
 type Props = {
   currentUser: User;
@@ -78,12 +79,10 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   };
 
   const closeModal = () => {
-    setOpenModal(false);
     navigate(-1);
   };
 
   const closeLostModal = () => {
-    setLostModal(false);
     navigate(-1);
   };
 
