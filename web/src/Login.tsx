@@ -25,6 +25,7 @@ function Login() {
     initialValues: {
       email: "",
       password: "",
+      username: "",
     },
     onSubmit: (values) => {
       registerValues(values);
@@ -72,6 +73,14 @@ function Login() {
             name="password"
             onChange={register.handleChange}
             value={register.values.password}
+          />
+          <label className="main__label">Your Name</label>
+          <input
+            className="main__input"
+            type="text"
+            name="username"
+            onChange={register.handleChange}
+            value={register.values.username}
           />
           <button type="submit">Create Account</button>
         </form>

@@ -3,6 +3,7 @@ import api from "./axios";
 export const createUser = async (values: {
   email: string;
   password: string;
+  username: string;
 }) => {
   const response = await api.post("/auth/signup", values);
 
