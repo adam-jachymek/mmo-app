@@ -33,6 +33,7 @@ model User {
   level Int? @default(1)
   exp Int? @default(0)
   maxExp Int? @default(100)
+  points Int? @default(5)
   gold Int? @default(0)
 
   stamina Int? @default(10)

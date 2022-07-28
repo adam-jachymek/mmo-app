@@ -36,4 +36,15 @@ export class UserController {
   ) {
     return this.userService.editUser(userId, dto);
   }
+
+  @Patch('points')
+  addPoints(
+    @GetUser('id') userId: number,
+    @Body() dto: EditUserDto,
+  ) {
+    return this.userService.addPoints(
+      userId,
+      dto,
+    );
+  }
 }

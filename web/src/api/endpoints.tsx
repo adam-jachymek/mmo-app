@@ -152,3 +152,15 @@ export const getExplore = async (mapId?: string) => {
 
   return response.data;
 };
+
+export const addLevelPoint = async (values: {
+  stamina?: number;
+  strength?: number;
+  defence?: number;
+  speed?: number;
+  intelligence?: number;
+}) => {
+  const response = await api.patch("/users/points", values);
+
+  return response.data;
+};
