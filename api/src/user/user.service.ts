@@ -25,6 +25,32 @@ export class UserService {
     return user;
   }
 
+  async addPoints(
+    userId: number,
+    dto: EditUserDto,
+  ) {
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...dto,
+        points: user.points - 1,
+      },
+    });
+
+    delete user.hash;
+
+    return user;
+  }
+
   async healUser(userId: number) {
     const user =
       await this.prisma.user.findUnique({
@@ -77,6 +103,7 @@ export class UserService {
         },
         data: {
           level: user.level + 1,
+          points: user.points + 5,
           exp:
             userAfterExp.exp -
             userAfterExp.maxExp,
