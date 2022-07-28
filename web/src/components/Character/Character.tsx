@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
 import { getUser } from "api/endpoints";
@@ -18,8 +19,11 @@ import avatar from "knight.png";
 import { Item } from "types";
 
 import "./styles.sass";
+import { Box, Modal, Typography } from "@mui/material";
 
 const Character = () => {
+  const [openItem, setOpenItem] = useState(false);
+  const [item, setItem] = useState({ id: 0, name: "", stat: "" });
   const { data: user, refetch: refetchUser } = useQuery("currentUser", getUser);
 
   const {
@@ -46,27 +50,72 @@ const Character = () => {
     let items = [];
     for (let i = 0; i < numberOfSlots; i++) {
       items.push(
-        <li className="player__item">
+        <li
+          onClick={() => {
+            setOpenItem(true);
+            setItem({
+              id: itemsData[i]?.id,
+              name: itemsData[i]?.item.name,
+              stat: itemsData[i]?.stat,
+            });
+          }}
+          className="player__item"
+        >
           <div>
             {itemsData[i] && <GiDrippingSword className="player__item-icon" />}
           </div>
           {itemsData[i]?.item?.name}
           {itemsData[i]?.stat && <p>Attack: {itemsData[i]?.stat}</p>}
-          {/* {itemsData[i] && (
-            <div>
-              <button
-                className="player__delete-item"
-                onClick={() => deleteThis(itemsData[i]?.id)}
-              >
-                X
-              </button>
-            </div>
-          )} */}
         </li>
       );
     }
 
     return items;
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const handleCloseModal = () => {
+    setOpenItem(false);
+  };
+
+  const itemModal = () => {
+    return (
+      <Modal
+        open={openItem}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {item.name}
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Attack +{item.stat}
+          </Typography>
+          <div>
+            <button
+              className="player__delete-item"
+              onClick={() => deleteThis(item.id)}
+            >
+              DELETE ITEM
+            </button>
+          </div>
+          <button onClick={handleCloseModal}>CLOSE</button>
+        </Box>
+      </Modal>
+    );
   };
 
   if (isFetching) {
@@ -185,6 +234,7 @@ const Character = () => {
           <ul className="player__items-list">{renderSlots()}</ul>
         </div>
       </div>
+      {itemModal()}
     </div>
   );
 };
