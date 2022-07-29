@@ -8,6 +8,7 @@ import AppRouter from "./Routes";
 
 import "./styles/main.sass";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { MantineProvider } from "@mantine/core";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,11 +37,15 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ThemeProvider theme={darkTheme}>
+        <MantineProvider
+          theme={{
+            colorScheme: "dark",
+          }}
+        >
           <main className="main">
             <AppRouter />
           </main>
-        </ThemeProvider>
+        </MantineProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>

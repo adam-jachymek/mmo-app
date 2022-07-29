@@ -1,8 +1,10 @@
 import { useMutation } from "react-query";
-import "./styles.sass";
 import { healUser } from "api/endpoints";
 import { User } from "/types";
 import { HPlusMobiledata } from "@mui/icons-material";
+import { RingProgress, Text } from "@mantine/core";
+
+import "./styles.sass";
 
 type Props = {
   currentUser: User;
@@ -20,15 +22,32 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
     },
   });
 
+  const playerExpProgress = () => {
+    return (currentUser?.exp / currentUser?.maxExp) * 100;
+  };
+
   return (
     <div className="header">
       <div className="header__info">
         <span>
-          Player Name:{" "}
-          <span className="header__username">{currentUser?.username}</span>
+          <div className="header__user">
+            <span className="header__username">{currentUser?.username}</span>
+            <RingProgress
+              sections={[{ value: playerExpProgress(), color: "blue" }]}
+              size={50}
+              thickness={4}
+              label={
+                <Text color="blue" weight={700} align="center" size="xl">
+                  {currentUser?.level}
+                </Text>
+              }
+            />
+          </div>
         </span>
         <p style={{ marginLeft: "10px" }}>
-          {currentUser?.hp < 1 ? "0" : currentUser?.hp}HP
+          {currentUser?.hp < 1
+            ? "0"
+            : currentUser?.hp + " / " + currentUser.maxHp + " HP"}
         </p>
         <button
           className="header__logout"

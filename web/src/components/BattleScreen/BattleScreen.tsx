@@ -3,11 +3,10 @@ import { useParams } from "react-router-dom";
 import { getSpawnMobById, attackMob, createBattle } from "api/endpoints";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import LinearProgress from "@mui/material/LinearProgress";
 import { User } from "/types";
-import Modal from "@mui/material/Modal";
+import { Modal, Button } from "@mantine/core";
 
-import { Box, Typography } from "@mui/material";
+import { Progress } from "@mantine/core";
 
 import "./styles.sass";
 
@@ -94,12 +93,16 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
             <div className="fight__mob-info-text-display">
               <h2 className="fight__mob-info-text">{mob?.mob?.name}</h2>
               <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
-              <p className="fight__mob-info-text">HP: {mob?.hp}</p>
-              <LinearProgress
-                variant="determinate"
+              <p className="fight__mob-info-text-hp">
+                HP: {mob?.hp < 1 ? 0 : mob?.hp} / {mob?.maxHp}
+              </p>
+              <Progress
+                classNames={{
+                  root: "fight__mob-hp",
+                }}
+                color="red"
+                size="lg"
                 value={mobHpProgress()}
-                color="primary"
-                className="fight__mob-hp"
               />
             </div>
           </div>
@@ -122,21 +125,21 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
               <h3 className="fight__player-info-text">
                 Level: {currentUser?.level}
               </h3>
-              <p className="fight__player-info-text">HP: {currentUser?.hp}</p>
-
-              <LinearProgress
-                variant="determinate"
+              <p className="fight__player-info-text">
+                HP: {currentUser.hp < 1 ? 0 : currentUser?.hp} /{" "}
+                {currentUser.maxHp}
+              </p>
+              <Progress
+                classNames={{ root: "fight__player-hp" }}
+                color="red"
                 value={playerHpProgress()}
-                color="primary"
-                className="fight__player-hp"
+              />
+              <Progress
+                classNames={{ root: "fight__player-hp" }}
+                color="indigo"
+                value={playerExpProgress()}
               />
 
-              <LinearProgress
-                variant="determinate"
-                value={playerExpProgress()}
-                color="secondary"
-                className="fight__player-hp"
-              />
               <p className="fight__player-exp">
                 EXP: {currentUser.exp} / {currentUser.maxExp}
               </p>
@@ -178,36 +181,37 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         </div>
       </div>
       <Modal
-        open={openModal}
+        centered
+        opened={openModal}
+        withCloseButton={false}
         onClose={closeModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            You Win!
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            You got: {mob?.giveExp} EXP
-          </Typography>
-          <button onClick={closeModal}>CLOSE</button>
-        </Box>
+        <div className="fight__modal">
+          <h3 className="fight__modal-title">You Win!</h3>
+          <p>You got: {mob?.giveExp} EXP</p>
+          <Button onClick={closeModal} variant="outline" color="gray" size="md">
+            CLOSE
+          </Button>
+        </div>
       </Modal>
       <Modal
-        open={lostModal}
+        centered
+        opened={lostModal}
+        withCloseButton={false}
         onClose={closeLostModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            You Lost!
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            You are dead
-          </Typography>
-          <button onClick={closeModal}>CLOSE</button>
-        </Box>
+        <div className="fight__modal">
+          <h3 className="fight__modal-title">You Lost!</h3>
+          <p>You are dead</p>
+          <Button
+            onClick={closeLostModal}
+            variant="outline"
+            color="gray"
+            size="md"
+          >
+            CLOSE
+          </Button>
+        </div>
       </Modal>
     </>
   );
