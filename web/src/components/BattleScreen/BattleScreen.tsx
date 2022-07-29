@@ -91,15 +91,17 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
       <div className="fight">
         <div className="fight__mob">
           <div className="fight__mob-info">
-            <h2>{mob?.mob?.name}</h2>
-            <h3>Level: {mob?.level}</h3>
-            <LinearProgress
-              variant="determinate"
-              value={mobHpProgress()}
-              color="primary"
-              className="fight__mob-hp"
-            />
-            <p>HP: {mob?.hp}</p>
+            <div className="fight__mob-info-text-display">
+              <h2 className="fight__mob-info-text">{mob?.mob?.name}</h2>
+              <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
+              <p className="fight__mob-info-text">HP: {mob?.hp}</p>
+              <LinearProgress
+                variant="determinate"
+                value={mobHpProgress()}
+                color="primary"
+                className="fight__mob-hp"
+              />
+            </div>
           </div>
           <div className="fight__mob-sprite">
             <img
@@ -113,57 +115,67 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
             <img className="fight__player-img" src="/media/player/player.png" />
           </div>
           <div className="fight__player-info">
-            <h2>{currentUser?.username}</h2>
-            <h3>Level: {currentUser?.level}</h3>
-            <LinearProgress
-              variant="determinate"
-              value={playerHpProgress()}
-              color="primary"
-              className="fight__player-hp"
-            />
-            <p>HP: {currentUser?.hp}</p>
-            <LinearProgress
-              variant="determinate"
-              value={playerExpProgress()}
-              color="secondary"
-              className="fight__player-hp"
-            />
-            <p>
-              {currentUser.exp} / {currentUser.maxExp}
-            </p>
+            <div className="fight__player-info-display">
+              <h2 className="fight__player-info-text">
+                {currentUser?.username}
+              </h2>
+              <h3 className="fight__player-info-text">
+                Level: {currentUser?.level}
+              </h3>
+              <p className="fight__player-info-text">HP: {currentUser?.hp}</p>
+
+              <LinearProgress
+                variant="determinate"
+                value={playerHpProgress()}
+                color="primary"
+                className="fight__player-hp"
+              />
+
+              <LinearProgress
+                variant="determinate"
+                value={playerExpProgress()}
+                color="secondary"
+                className="fight__player-hp"
+              />
+              <p className="fight__player-exp">
+                EXP: {currentUser.exp} / {currentUser.maxExp}
+              </p>
+            </div>
           </div>
         </div>
-        {!battle && (
-          <div className="fight__menu">
-            <button
-              className="fight__button fight__attack"
-              onClick={fightHandle}
-            >
-              FIGHT
-            </button>
-            <button
-              className="fight__button fight__attack"
-              onClick={() => {
-                navigate(-1);
-              }}
-            >
-              RUN
-            </button>
-          </div>
-        )}
-        {battle && (
-          <div className="fight__menu">
-            <button
-              className="fight__button fight__attack"
-              onClick={() => {
-                attack(id);
-                refetchUser();
-              }}
-            >
-              ATTACK
-            </button>
-          </div>
-        )}
+        <div className="fight__menu-display">
+          {!battle && (
+            <div className="fight__menu">
+              <button
+                className="fight__button fight__attack"
+                onClick={fightHandle}
+              >
+                FIGHT
+              </button>
+              <button
+                className="fight__button fight__attack"
+                onClick={() => {
+                  navigate(-1);
+                }}
+              >
+                RUN
+              </button>
+            </div>
+          )}
+          {battle && (
+            <div className="fight__menu">
+              <button
+                className="fight__button fight__attack"
+                onClick={() => {
+                  attack(id);
+                  refetchUser();
+                }}
+              >
+                ATTACK
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <Modal
         open={openModal}

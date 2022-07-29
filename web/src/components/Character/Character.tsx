@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
 import { getUser } from "api/endpoints";
-import { createItem, getItems, deleteItem, addLevelPoint } from "api/endpoints";
+import { getItems, deleteItem, addLevelPoint } from "api/endpoints";
 import {
   GiDrippingSword,
   GiAbdominalArmor,
-  GiCrossedSwords,
-  GiCharacter,
   GiShardSword,
   GiVikingHead,
   GiBorderedShield,
@@ -15,8 +12,6 @@ import {
   GiArmoredPants,
 } from "react-icons/gi";
 import avatar from "knight.png";
-
-import { Item } from "types";
 
 import "./styles.sass";
 import { Box, Modal, Typography } from "@mui/material";
@@ -79,7 +74,7 @@ const Character = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: "background.paper",
+    bgcolor: "#171717",
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
@@ -98,7 +93,7 @@ const Character = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography id="modal-modal-title" variant="h4" component="h2">
             {item.name}
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
