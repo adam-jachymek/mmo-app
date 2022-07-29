@@ -11,21 +11,29 @@ import {
   GiBoots,
   GiArmoredPants,
 } from "react-icons/gi";
-import avatar from "knight.png";
+import { Modal } from "@mantine/core";
 
 import "./styles.sass";
-import { Box, Modal, Typography } from "@mui/material";
 
 const Character = () => {
   const [openItem, setOpenItem] = useState(false);
-  const [item, setItem] = useState({ id: 0, name: "", stat: "" });
+  const [equiped, setEqupied] = useState([]);
+  const [item, setItem] = useState({
+    id: 0,
+    name: "",
+    stat: "",
+    isEq: false,
+    type: "",
+    equip: false,
+    icon: "",
+  });
   const { data: user, refetch: refetchUser } = useQuery("currentUser", getUser);
 
   const {
     data: itemsData,
     refetch: refetchItems,
     isFetching,
-  } = useQuery("getITems", getItems);
+  } = useQuery("getItems", getItems);
 
   const { mutate: deleteThis } = useMutation(deleteItem, {
     onSuccess: (response) => {
@@ -41,74 +49,81 @@ const Character = () => {
 
   const numberOfSlots = 41;
 
+  const openItemModal = (item: any) => {
+    item && setOpenItem(true);
+    setItem({
+      id: item.id,
+      name: item.item.name,
+      stat: item.stat,
+      isEq: item.item.isEq,
+      type: item.item.type,
+      equip: item.equip,
+      icon: item.item.icon,
+    });
+  };
+
   const renderSlots = () => {
     let items = [];
     for (let i = 0; i < numberOfSlots; i++) {
-      items.push(
-        <li
-          onClick={() => {
-            setOpenItem(true);
-            setItem({
-              id: itemsData[i]?.id,
-              name: itemsData[i]?.item.name,
-              stat: itemsData[i]?.stat,
-            });
-          }}
-          className="player__item"
-        >
-          <div>
-            {itemsData[i] && <GiDrippingSword className="player__item-icon" />}
-          </div>
-          {itemsData[i]?.item?.name}
-          {itemsData[i]?.stat && <p>Attack: {itemsData[i]?.stat}</p>}
-        </li>
-      );
+      if (!itemsData[i]?.item.equip) {
+        items.push(
+          <li
+            onClick={() => {
+              openItemModal(itemsData[i]);
+            }}
+            className="player__item"
+          >
+            {itemsData[i] && (
+              <img
+                src={`/media/items/${itemsData[i].item.icon}.png`}
+                className="player__item-icon"
+              />
+            )}
+          </li>
+        );
+      }
     }
 
     return items;
-  };
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "#171717",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
   };
 
   const handleCloseModal = () => {
     setOpenItem(false);
   };
 
+  const equipItem = (item: any) => {};
+
   const itemModal = () => {
     return (
       <Modal
-        open={openItem}
+        centered
+        withCloseButton={false}
+        opened={openItem}
         onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h4" component="h2">
-            {item.name}
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Attack +{item.stat}
-          </Typography>
-          <div>
+        <img
+          src={`/media/items/${item.icon}.png`}
+          className="player__modal-icon"
+        />
+        <h3>{item.name}</h3>
+        Attack + {item.stat}
+        <div>
+          {item.isEq && (
             <button
               className="player__delete-item"
-              onClick={() => deleteThis(item.id)}
+              onClick={() => equipItem(item)}
             >
-              DELETE ITEM
+              {item.equip ? "UNEQUIP" : "EQUIP"}
             </button>
-          </div>
-          <button onClick={handleCloseModal}>CLOSE</button>
-        </Box>
+          )}
+          <button
+            className="player__delete-item"
+            onClick={() => deleteThis(item.id)}
+          >
+            DELETE ITEM
+          </button>
+        </div>
+        <button onClick={handleCloseModal}>CLOSE</button>
       </Modal>
     );
   };
@@ -121,13 +136,29 @@ const Character = () => {
     <div>
       <div className="player">
         <div className="player__info">
-          <img className="player__avatar-img" src={avatar} alt="" />
+          <img
+            className="player__avatar-img"
+            src="/media/player/player.png"
+            alt=""
+          />
           <div className="player__eq">
             <span className="player__eq-armor">
               <GiAbdominalArmor className="player__eq-icon" />
             </span>
             <span className="player__eq-head">
-              <GiVikingHead className="player__eq-icon" />
+              {itemsData.map(
+                (item: any) =>
+                  item.equip &&
+                  item.item.type === "head" && (
+                    <div
+                      onClick={() => {
+                        openItemModal(item);
+                      }}
+                    >
+                      {item.item.name}
+                    </div>
+                  )
+              )}
             </span>
             <span className="player__eq-leftarm">
               <GiBorderedShield className="player__eq-icon" />
