@@ -164,3 +164,9 @@ export const addLevelPoint = async (values: {
 
   return response.data;
 };
+
+export const equipItem = async (itemId?: number) => {
+  const response = await api.post(`/item/equip/${itemId}`);
+
+  return response.data;
+};

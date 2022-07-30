@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getUser } from "api/endpoints";
-import { getItems, deleteItem, addLevelPoint } from "api/endpoints";
+import { getItems, deleteItem, addLevelPoint, equipItem } from "api/endpoints";
 import {
   GiDrippingSword,
   GiAbdominalArmor,
@@ -11,7 +11,7 @@ import {
   GiBoots,
   GiArmoredPants,
 } from "react-icons/gi";
-import { Modal } from "@mantine/core";
+import { Modal, Button } from "@mantine/core";
 
 import "./styles.sass";
 
@@ -47,10 +47,14 @@ const Character = () => {
     },
   });
 
-  const numberOfSlots = 41;
+  const { mutate: equipThisItem } = useMutation(equipItem, {
+    onSuccess: (response) => {
+      refetchItems();
+    },
+  });
 
   const openItemModal = (item: any) => {
-    item && setOpenItem(true);
+    setOpenItem(true);
     setItem({
       id: item.id,
       name: item.item.name,
@@ -62,14 +66,18 @@ const Character = () => {
     });
   };
 
+  console.log("items", itemsData);
+
+  const numberOfSlots = 40;
+
   const renderSlots = () => {
     let items = [];
     for (let i = 0; i < numberOfSlots; i++) {
-      if (!itemsData[i]?.item.equip) {
+      if (!itemsData[i]?.equip) {
         items.push(
           <li
             onClick={() => {
-              openItemModal(itemsData[i]);
+              itemsData[i] && openItemModal(itemsData[i]);
             }}
             className="player__item"
           >
@@ -91,11 +99,10 @@ const Character = () => {
     setOpenItem(false);
   };
 
-  const equipItem = (item: any) => {};
-
   const itemModal = () => {
     return (
       <Modal
+        classNames={{ root: "player__modal" }}
         centered
         withCloseButton={false}
         opened={openItem}
@@ -106,24 +113,48 @@ const Character = () => {
           className="player__modal-icon"
         />
         <h3>{item.name}</h3>
-        Attack + {item.stat}
-        <div>
+        Stat: {item.stat}
+        <div className="player__modal-buttons">
           {item.isEq && (
-            <button
-              className="player__delete-item"
-              onClick={() => equipItem(item)}
+            <Button
+              variant="outline"
+              color="lime"
+              onClick={() => {
+                equipThisItem(item.id);
+                handleCloseModal();
+              }}
             >
               {item.equip ? "UNEQUIP" : "EQUIP"}
-            </button>
+            </Button>
           )}
-          <button
-            className="player__delete-item"
+          {item.type === "potion" && (
+            <Button
+              variant="outline"
+              color="lime"
+              onClick={() => {
+                handleCloseModal();
+              }}
+            >
+              USE
+            </Button>
+          )}
+          <Button
             onClick={() => deleteThis(item.id)}
+            variant="outline"
+            color="red"
+            uppercase
           >
-            DELETE ITEM
-          </button>
+            Remove
+          </Button>
+          <Button
+            onClick={handleCloseModal}
+            variant="outline"
+            color="gray"
+            uppercase
+          >
+            Close
+          </Button>
         </div>
-        <button onClick={handleCloseModal}>CLOSE</button>
       </Modal>
     );
   };
@@ -155,7 +186,10 @@ const Character = () => {
                         openItemModal(item);
                       }}
                     >
-                      {item.item.name}
+                      <img
+                        src={`/media/items/${item.item.icon}.png`}
+                        className="player__item-icon"
+                      />
                     </div>
                   )
               )}
@@ -164,7 +198,22 @@ const Character = () => {
               <GiBorderedShield className="player__eq-icon" />
             </span>
             <span className="player__eq-rightarm">
-              <GiShardSword className="player__eq-icon" />
+              {itemsData.map(
+                (item: any) =>
+                  item.equip &&
+                  item.item.type === "weapon" && (
+                    <div
+                      onClick={() => {
+                        openItemModal(item);
+                      }}
+                    >
+                      <img
+                        src={`/media/items/${item.item.icon}.png`}
+                        className="player__item-icon"
+                      />
+                    </div>
+                  )
+              )}
             </span>
             <span className="player__eq-legs">
               <GiArmoredPants className="player__eq-icon" />
@@ -196,7 +245,7 @@ const Character = () => {
             <p className="player__stats-text">
               <span>Strength:</span>
               <span className="player__stats_count">
-                {user?.strength}
+                {user?.strength} ({user?.eqStrength})
                 {user?.points > 0 && (
                   <button
                     onClick={() => {
@@ -255,7 +304,7 @@ const Character = () => {
             </p>
           </div>
         </div>
-        <span className="player__inentory-text">Inventory</span>
+        <h3 className="player__inventory-text">Inventory</h3>
         <div className="player__items">
           <ul className="player__items-list">{renderSlots()}</ul>
         </div>

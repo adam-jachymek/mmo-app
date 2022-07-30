@@ -57,6 +57,17 @@ export class ItemController {
     );
   }
 
+  @Post('/equip/:id')
+  equipItemById(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) itemId: number,
+  ) {
+    return this.ItemService.equipItem(
+      userId,
+      itemId,
+    );
+  }
+
   @Patch(':id')
   editItemById(
     @GetUser('id') userId: number,
