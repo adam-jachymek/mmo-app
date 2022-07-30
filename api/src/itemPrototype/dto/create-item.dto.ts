@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -21,4 +22,16 @@ export class CreateItemDto {
   @IsNumber()
   @IsOptional()
   maxStat?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isEq?: boolean;
+
+  @IsString()
+  @IsOptional()
+  type?: string;
+
+  @IsString()
+  @IsOptional()
+  icon?: string;
 }

@@ -15,6 +15,7 @@ export type ItemPrototype = {
   icon: string;
   minStat: number;
   maxStat: number;
+  isEq: string;
 };
 
 export type Item = {

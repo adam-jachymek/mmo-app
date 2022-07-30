@@ -32,6 +32,11 @@ export const getUser = async () => {
 export const createItem = async (values: {
   name: string;
   description?: string;
+  minStat?: number;
+  maxStat?: number;
+  type?: string;
+  isEq?: boolean;
+  icon?: string;
 }) => {
   const response = await api.post("/item_prototype/", values);
 
