@@ -9,6 +9,7 @@ import {
 } from "api/endpoints";
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
+import { Switch, Select } from "@mantine/core";
 
 const Items = () => {
   const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
@@ -49,9 +50,11 @@ const Items = () => {
     initialValues: {
       name: "",
       description: "",
-      minStat: "",
-      maxStat: "",
+      minStat: 5,
+      maxStat: 10,
       type: "",
+      isEq: true,
+      icon: "",
     },
     onSubmit: (values, { resetForm }) => {
       addItem(values);
@@ -93,6 +96,38 @@ const Items = () => {
           onChange={itemsForm.handleChange}
           value={itemsForm.values.maxStat}
         />
+        <label className="main__label">Icon</label>
+        <input
+          className="main__input"
+          name="icon"
+          type="string"
+          onChange={itemsForm.handleChange}
+          value={itemsForm.values.icon}
+        />
+        <Switch
+          label="isEq"
+          className="admin__switch"
+          onChange={(event: any) => {
+            itemsForm.setFieldValue("isEq", event?.currentTarget.checked);
+          }}
+          checked={itemsForm.values.isEq}
+        />
+        <Select
+          classNames={{ root: "admin__input-select" }}
+          label="Type"
+          placeholder="Pick one"
+          name="type"
+          data={[
+            { value: "weapon", label: "weapon" },
+            { value: "leftArm", label: "leftArm" },
+            { value: "head", label: "head" },
+            { value: "chest", label: "chest" },
+            { value: "legs", label: "legs" },
+            { value: "boots", label: "boots" },
+          ]}
+          onChange={(value) => itemsForm.setFieldValue("type", value)}
+          value={itemsForm.values.type}
+        />
         <button type="submit">Add Item</button>
       </form>
       <table className="admin__item-list">
@@ -100,6 +135,9 @@ const Items = () => {
           <th>Name</th>
           <th>Min Stat</th>
           <th>Max Stat</th>
+          <th>Is Eq</th>
+          <th>Type</th>
+          <th>Icon</th>
           <th>Action</th>
         </tr>
         {itemsPrototypeData?.map((prototype: ItemPrototype) => (
@@ -107,6 +145,10 @@ const Items = () => {
             <td>{prototype.name}</td>
             <td>{prototype.minStat}</td>
             <td>{prototype.maxStat}</td>
+            <td>{prototype.isEq?.toString()}</td>
+            <td>{prototype.type}</td>
+            <td>{prototype.icon}</td>
+
             <td>
               <button
                 onClick={() => {
