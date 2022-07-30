@@ -81,7 +81,7 @@ model Item {
   level Int?
   score Int?
   amount Int?
-  equip Boolean?
+  equip Boolean? @default(false)
 
   user User @relation(fields: [userId], references: [id])
   userId Int

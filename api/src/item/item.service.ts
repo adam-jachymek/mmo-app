@@ -83,6 +83,61 @@ export class ItemService {
     return rand;
   }
 
+  async equipItem(
+    userId: number,
+    itemId: number,
+  ) {
+    const item =
+      await this.prisma.item.findUnique({
+        where: {
+          id: itemId,
+        },
+        include: {
+          item: true,
+        },
+      });
+
+    if (item.userId !== userId)
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
+
+    const equipedItem =
+      await this.prisma.item.findFirst({
+        where: {
+          equip: true,
+          item: {
+            type: item.item.type,
+          },
+        },
+        include: {
+          item: true,
+        },
+      });
+
+    if (equipedItem !== null) {
+      await this.prisma.item.update({
+        where: {
+          id: equipedItem.id,
+        },
+        data: {
+          equip: false,
+        },
+      });
+    }
+
+    if (item.item.isEq) {
+      return this.prisma.item.update({
+        where: {
+          id: itemId,
+        },
+        data: {
+          equip: !item.equip,
+        },
+      });
+    }
+  }
+
   async editItemById(
     userId: number,
     itemsId: number,
