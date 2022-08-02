@@ -43,6 +43,3 @@ const Explore = ({ currentUser }: Props) => {
 };
 
 export default Explore;
-function user(user: any) {
-  throw new Error("Function not implemented.");
-}

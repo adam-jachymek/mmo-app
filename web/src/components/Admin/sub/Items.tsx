@@ -153,7 +153,15 @@ const Items = () => {
             <td>{prototype.maxStat}</td>
             <td>{prototype.isEq?.toString()}</td>
             <td>{prototype.type}</td>
-            <td>{prototype.icon}</td>
+            <td>
+              {prototype.icon}
+              {prototype.icon && (
+                <img
+                  className="admin__item-img"
+                  src={`/media/items/${prototype.icon}.png`}
+                />
+              )}
+            </td>
             <td className="admin__item-list-button">
               <Button
                 color="green"
@@ -177,7 +185,9 @@ const Items = () => {
           </tr>
         ))}
       </table>
-      <h2 className="admin__title-items">Generated Items</h2>
+      <h2 className="admin__title-items admin__title-generated">
+        Generated Items
+      </h2>
       <table className="admin__item-list">
         <tr className="admin__item-list-tr">
           <th>Name</th>
