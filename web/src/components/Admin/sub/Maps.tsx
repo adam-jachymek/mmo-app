@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { getMap, createMap, deleteMap } from "api/endpoints";
 import { useFormik } from "formik";
+import { Button } from "@mantine/core";
 
 const Maps = () => {
   const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
@@ -31,35 +32,37 @@ const Maps = () => {
 
   return (
     <div className="admin__section">
-      <h2>Maps</h2>
-      <form onSubmit={mapForm.handleSubmit}>
-        <label className="main__label">Name</label>
+      <h2 className="admin__title-items">Maps</h2>
+      <form className="admin__form-items" onSubmit={mapForm.handleSubmit}>
+        <label className="admin__main-label">Name</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="name"
           onChange={mapForm.handleChange}
           value={mapForm.values.name}
         />
-        <label className="main__label">Min Level</label>
+        <label className="admin__main-label">Min Level</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="minLevel"
           type="number"
           onChange={mapForm.handleChange}
           value={mapForm.values.minLevel}
         />
-        <label className="main__label">Max Level</label>
+        <label className="admin__main-label">Max Level</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="maxLevel"
           type="number"
           onChange={mapForm.handleChange}
           value={mapForm.values.maxLevel}
         />
-        <button type="submit">Add Map</button>
+        <Button m="30px" type="submit" color="green" size="md">
+          Add Map
+        </Button>
       </form>
       <table className="admin__item-list">
-        <tr>
+        <tr className="admin__item-list-tr">
           <th>Name</th>
           <th>Min Level</th>
           <th>Max Level</th>
@@ -71,13 +74,16 @@ const Maps = () => {
             <td>{map.minLevel}</td>
             <td>{map.maxLevel}</td>
             <td>
-              <button
+              <Button
+                m="5px"
+                color="red"
+                size="xs"
                 onClick={() => {
                   deleteThisMap(map.id);
                 }}
               >
                 Delete
-              </button>
+              </Button>
             </td>
           </tr>
         ))}

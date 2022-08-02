@@ -10,6 +10,7 @@ import {
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
 import { Switch, Select } from "@mantine/core";
+import { Button } from "@mantine/core";
 
 const Items = () => {
   const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
@@ -64,48 +65,49 @@ const Items = () => {
 
   return (
     <div className="admin__section">
-      <h2>Items Prototype</h2>
-      <form onSubmit={itemsForm.handleSubmit}>
-        <label className="main__label">Name</label>
+      <h2 className="admin__title-items">Items Prototype</h2>
+      <form className="admin__form-items" onSubmit={itemsForm.handleSubmit}>
+        <label className="admin__main-label">Name</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="name"
           onChange={itemsForm.handleChange}
           value={itemsForm.values.name}
         />
-        <label className="main__label">Description</label>
+        <label className="admin__main-label">Description</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="description"
           onChange={itemsForm.handleChange}
           value={itemsForm.values.description}
         />
-        <label className="main__label">Min Stat</label>
+        <label className="admin__main-label">Min Stat</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="minStat"
           type="number"
           onChange={itemsForm.handleChange}
           value={itemsForm.values.minStat}
         />
-        <label className="main__label">Max Stat</label>
+        <label className="admin__main-label">Max Stat</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="maxStat"
           type="number"
           onChange={itemsForm.handleChange}
           value={itemsForm.values.maxStat}
         />
-        <label className="main__label">Icon</label>
+        <label className="admin__main-label">Icon</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="icon"
           type="string"
           onChange={itemsForm.handleChange}
           value={itemsForm.values.icon}
         />
         <Switch
-          label="isEq"
+          label="isEq?"
+          size="md"
           className="admin__switch"
           onChange={(event: any) => {
             itemsForm.setFieldValue("isEq", event?.currentTarget.checked);
@@ -115,6 +117,8 @@ const Items = () => {
         <Select
           classNames={{ root: "admin__input-select" }}
           label="Type"
+          size="sm"
+          required
           placeholder="Pick one"
           name="type"
           data={[
@@ -128,10 +132,12 @@ const Items = () => {
           onChange={(value) => itemsForm.setFieldValue("type", value)}
           value={itemsForm.values.type}
         />
-        <button type="submit">Add Item</button>
+        <Button type="submit" color="green" size="md">
+          Add Item
+        </Button>
       </form>
       <table className="admin__item-list">
-        <tr>
+        <tr className="admin__item-list-tr">
           <th>Name</th>
           <th>Min Stat</th>
           <th>Max Stat</th>
@@ -147,30 +153,43 @@ const Items = () => {
             <td>{prototype.maxStat}</td>
             <td>{prototype.isEq?.toString()}</td>
             <td>{prototype.type}</td>
-            <td>{prototype.icon}</td>
-
             <td>
-              <button
+              {prototype.icon}
+              {prototype.icon && (
+                <img
+                  className="admin__item-img"
+                  src={`/media/items/${prototype.icon}.png`}
+                />
+              )}
+            </td>
+            <td className="admin__item-list-button">
+              <Button
+                color="green"
+                size="xs"
                 onClick={() => {
                   generate({ itemPrototypeId: prototype.id });
                 }}
               >
                 Generate Item
-              </button>
-              <button
+              </Button>
+              <Button
+                color="red"
+                size="xs"
                 onClick={() => {
                   deletePrototype(prototype.id);
                 }}
               >
                 Delete
-              </button>
+              </Button>
             </td>
           </tr>
         ))}
       </table>
-      <h2>Generated Items</h2>
+      <h2 className="admin__title-items admin__title-generated">
+        Generated Items
+      </h2>
       <table className="admin__item-list">
-        <tr>
+        <tr className="admin__item-list-tr">
           <th>Name</th>
           <th>Stat</th>
           <th>User</th>
@@ -182,13 +201,16 @@ const Items = () => {
             <td>{item.stat}</td>
             <td>{item.user.username}</td>
             <td>
-              <button
+              <Button
+                m="5px"
+                color="red"
+                size="xs"
                 onClick={() => {
                   deleteUserItem(item.id);
                 }}
               >
                 Delete
-              </button>
+              </Button>
             </td>
           </tr>
         ))}
