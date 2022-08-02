@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from "react-query";
 import { getMobs, deleteMob, createMob, getMap } from "api/endpoints";
 import { useFormik } from "formik";
-import Select from "@mui/material/Select";
-import { MenuItem } from "@mui/material";
+// import Select from "@mui/material/Select";
+import { MenuItem, Select } from "@mui/material";
+import { Button } from "@mantine/core";
 
 const Mobs = () => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
@@ -40,65 +41,67 @@ const Mobs = () => {
 
   return (
     <div className="admin__section">
-      <h2>Mobs</h2>
-      <form onSubmit={mobsForm.handleSubmit}>
-        <label className="main__label">Name</label>
+      <h2 className="admin__title-items">Mobs</h2>
+      <form className="admin__form-items" onSubmit={mobsForm.handleSubmit}>
+        <label className="admin__main-label">Name</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="name"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.name}
         />
-        <label className="main__label">Min Level</label>
+        <label className="admin__main-label">Min Level</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="minLevel"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.minLevel}
         />
-        <label className="main__label">Max Level</label>
+        <label className="admin__main-label">Max Level</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="maxLevel"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.maxLevel}
         />
-        <label className="main__label">HP</label>
+        <label className="admin__main-label">HP</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="hp"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.hp}
         />
-        <label className="main__label">Attack</label>
+        <label className="admin__main-label">Attack</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="attack"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.attack}
         />
-        <label className="main__label">Defence</label>
+        <label className="admin__main-label">Defence</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="defence"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.defence}
         />
-        <label className="main__label">Give Exp</label>
+        <label className="admin__main-label">Give Exp</label>
         <input
-          className="main__input"
+          className="admin__main-input"
           name="giveExp"
           type="number"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.giveExp}
         />
-        <label className="main__label">Map</label>
+        <label className="admin__main-label">Map</label>
         <Select
+          sx={{ m: 1, minWidth: 100, p: 1 }}
+          size="small"
           name="mapId"
           className="admin__map-select"
           value={mobsForm.values.mapId}
@@ -109,10 +112,13 @@ const Mobs = () => {
             <MenuItem value={map.id}>{map.name}</MenuItem>
           ))}
         </Select>
-        <button type="submit">Add Mob</button>
+
+        <Button type="submit" color="green" size="md" m="10px">
+          Add Mob
+        </Button>
       </form>
       <table className="admin__item-list">
-        <tr>
+        <tr className="admin__item-list-tr">
           <th>Name</th>
           <th>Min Level</th>
           <th>Max Level</th>
@@ -134,13 +140,16 @@ const Mobs = () => {
             <td>{mob.giveExp}</td>
             <td>{mob.map.name}</td>
             <td>
-              <button
+              <Button
+                color="red"
+                size="xs"
+                m="5px"
                 onClick={() => {
                   deleteThisMob(mob.id);
                 }}
               >
                 Delete
-              </button>
+              </Button>
             </td>
           </tr>
         ))}
