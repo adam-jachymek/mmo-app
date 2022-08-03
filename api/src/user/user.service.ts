@@ -7,6 +7,10 @@ import { MobSpawn } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async getUsers() {
+    return await this.prisma.user.findMany();
+  }
+
   async editUser(
     userId: number,
     dto: EditUserDto,
