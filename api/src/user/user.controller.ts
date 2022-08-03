@@ -19,7 +19,7 @@ export class UserController {
 
   @Get()
   getUsers() {
-    return this.userService.getUsers;
+    return this.userService.getUsers();
   }
 
   @Get('me')
