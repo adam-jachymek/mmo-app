@@ -31,8 +31,6 @@ const Maps = () => {
     },
   });
 
-  console.log(mapData);
-
   return (
     <div className="admin__section">
       <h2 className="admin__title-items">Maps</h2>
