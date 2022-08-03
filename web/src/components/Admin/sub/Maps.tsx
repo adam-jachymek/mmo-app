@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "react-query";
 import { getMap, createMap, deleteMap } from "api/endpoints";
 import { useFormik } from "formik";
-import { Button } from "@mantine/core";
+import { Button, NumberInputProps } from "@mantine/core";
+import { Map } from "/types";
 
 const Maps = () => {
   const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
@@ -68,7 +69,7 @@ const Maps = () => {
           <th>Max Level</th>
           <th>Action</th>
         </tr>
-        {mapData?.map((map: any) => (
+        {mapData?.map((map: Map) => (
           <tr key={map.id} className="admin__item">
             <td>{map.name}</td>
             <td>{map.minLevel}</td>

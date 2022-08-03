@@ -27,3 +27,29 @@ export type Item = {
   item: ItemPrototype;
   user: User;
 };
+
+export type Mob = {
+  attack: number;
+  createdAt: string;
+  defence: number;
+  giveExp: number;
+  hp: number;
+  id: number;
+  mapId: number;
+  maxLevel: number;
+  minLevel: number;
+  name: string;
+  sprite: string;
+  updatedAt: string;
+};
+
+export type Map = {
+  createdAt: string;
+  id: number;
+  maxLevel: number;
+  minLevel: number;
+  mobs: Mob;
+  name: string;
+  sprite?: string;
+  updateAt: string;
+};

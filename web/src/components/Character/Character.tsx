@@ -66,8 +66,6 @@ const Character = () => {
     });
   };
 
-  console.log("items", itemsData);
-
   const numberOfSlots = 40;
 
   const renderSlots = () => {
