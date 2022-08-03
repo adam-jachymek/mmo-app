@@ -8,7 +8,7 @@ import "./styles.sass";
 
 type Props = {
   currentUser: User;
-  refetchUser: any;
+  refetchUser: () => void;
 };
 
 const TopNavBar = ({ currentUser, refetchUser }: Props) => {

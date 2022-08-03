@@ -106,6 +106,7 @@ const Items = () => {
           value={itemsForm.values.icon}
         />
         <Switch
+          classNames={{ label: "admin__switch-label" }}
           label="isEq?"
           size="md"
           className="admin__switch"
@@ -115,7 +116,10 @@ const Items = () => {
           checked={itemsForm.values.isEq}
         />
         <Select
-          classNames={{ root: "admin__input-select" }}
+          classNames={{
+            root: "admin__input-select",
+            label: "admin__input-select-label",
+          }}
           label="Type"
           size="sm"
           required
@@ -153,8 +157,8 @@ const Items = () => {
             <td>{prototype.maxStat}</td>
             <td>{prototype.isEq?.toString()}</td>
             <td>{prototype.type}</td>
-            <td>
-              {prototype.icon}
+            <td className="admin__item-icon">
+              <span>{prototype.icon}</span>
               {prototype.icon && (
                 <img
                   className="admin__item-img"

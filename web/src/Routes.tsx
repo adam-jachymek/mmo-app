@@ -16,12 +16,10 @@ import ExploreScreen from "./components/ExploreScreen";
 import Character from "./components/Character";
 
 const AppRouter = () => {
-  const {
-    isFetching,
-    isError,
-    data: currentUser,
-    refetch: refetchUser,
-  } = useQuery("currentUser", getUser);
+  const { data: currentUser, refetch: refetchUser } = useQuery(
+    "currentUser",
+    getUser
+  );
 
   if (!currentUser) {
     return (
