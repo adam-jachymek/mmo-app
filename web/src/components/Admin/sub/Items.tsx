@@ -106,7 +106,6 @@ const Items = () => {
           value={itemsForm.values.icon}
         />
         <Switch
-          classNames={{ label: "admin__switch-label" }}
           label="isEq?"
           size="md"
           className="admin__switch"
