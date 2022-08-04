@@ -36,6 +36,9 @@ const SideNavBar = () => {
         <li className="navbar__li">
           <a href="/admin"> Admin</a>
         </li>
+        <li className="navbar__li">
+          <a href="/players"> Players</a>
+        </li>
       </ul>
     </div>
   );

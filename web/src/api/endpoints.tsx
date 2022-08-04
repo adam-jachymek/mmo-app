@@ -99,7 +99,7 @@ export const createMob = async (values: {
   attack?: number;
   defence?: number;
   giveExp?: number;
-  mapId: string;
+  mapId: number;
 }) => {
   const response = await api.post("/mobs/", values);
 
@@ -172,6 +172,12 @@ export const addLevelPoint = async (values: {
 
 export const equipItem = async (itemId?: number) => {
   const response = await api.post(`/item/equip/${itemId}`);
+
+  return response.data;
+};
+
+export const getUsers = async () => {
+  const response = await api.get("/users");
 
   return response.data;
 };
