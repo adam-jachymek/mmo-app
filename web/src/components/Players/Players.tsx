@@ -1,15 +1,15 @@
 import React from "react";
 import { getUsers } from "api/endpoints";
-import "./styles.sass";
 import { useQuery } from "react-query";
 import { Button } from "@mantine/core";
+import "./styles.sass";
 
 const Players = () => {
   const { data: usersData, refetch: refetchUser } = useQuery(
     "getUsers",
     getUsers
   );
-  console.log(usersData);
+
   return (
     <div className="players">
       <table className="players__info">
