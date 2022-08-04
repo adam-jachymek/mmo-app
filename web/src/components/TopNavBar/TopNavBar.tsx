@@ -14,6 +14,7 @@ type Props = {
 const TopNavBar = ({ currentUser, refetchUser }: Props) => {
   const LogOut = () => {
     localStorage.removeItem("userToken");
+    refetchUser();
   };
 
   const { mutate: healMe } = useMutation(healUser, {
@@ -47,7 +48,7 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
         <p style={{ marginLeft: "10px" }}>
           {currentUser?.hp < 1
             ? "0"
-            : currentUser?.hp + " / " + currentUser.maxHp + " HP"}
+            : currentUser?.hp + " / " + currentUser?.maxHp + " HP"}
         </p>
         <button
           className="header__logout"

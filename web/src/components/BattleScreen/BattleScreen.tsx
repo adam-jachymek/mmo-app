@@ -126,8 +126,8 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                 Level: {currentUser?.level}
               </h3>
               <p className="fight__player-info-text">
-                HP: {currentUser.hp < 1 ? 0 : currentUser?.hp} /{" "}
-                {currentUser.maxHp}
+                HP: {currentUser?.hp < 1 ? 0 : currentUser?.hp} /{" "}
+                {currentUser?.maxHp}
               </p>
               <Progress
                 classNames={{ root: "fight__player-hp" }}
@@ -141,7 +141,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
               />
 
               <p className="fight__player-exp">
-                EXP: {currentUser.exp} / {currentUser.maxExp}
+                EXP: {currentUser?.exp} / {currentUser?.maxExp}
               </p>
             </div>
           </div>

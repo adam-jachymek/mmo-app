@@ -17,7 +17,7 @@ const Battle = ({ currentUser }: Props) => {
 
   const { mutate: generateMob } = useMutation(spawnMob, {
     onSuccess: (response, variables) => {
-      navigate(`/battle/${response.id}`, { replace: true });
+      navigate(`/battle/${response.id}`);
     },
   });
 
@@ -42,7 +42,7 @@ const Battle = ({ currentUser }: Props) => {
               <Button
                 color="red"
                 size="xs"
-                disabled={currentUser.hp < 1}
+                disabled={currentUser?.hp < 1}
                 onClick={() => {
                   generateMob({ mobId: mob.id });
                 }}

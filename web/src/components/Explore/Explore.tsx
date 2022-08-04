@@ -19,12 +19,12 @@ const Explore = ({ currentUser }: Props) => {
           <a
             key={map.id}
             href={
-              map.minLevel <= currentUser.level ? `/explore/${map.id}` : "#"
+              map.minLevel <= currentUser?.level ? `/explore/${map.id}` : "#"
             }
           >
             <li
               className={classNames("explore__map-item", {
-                disabled: map.minLevel >= currentUser.level,
+                disabled: map.minLevel >= currentUser?.level,
               })}
             >
               {map.name}

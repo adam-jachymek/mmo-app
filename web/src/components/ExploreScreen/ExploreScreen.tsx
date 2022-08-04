@@ -15,7 +15,7 @@ const ExploreScreen = () => {
 
   useEffect(() => {
     if (exploreData?.mobId) {
-      navigate(`/battle/${exploreData.id}`, { replace: true });
+      navigate(`/battle/${exploreData.id}`);
     }
   }, [exploreData]);
 
