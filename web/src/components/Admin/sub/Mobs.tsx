@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "react-query";
 import { getMobs, deleteMob, createMob, getMap } from "api/endpoints";
 import { useFormik } from "formik";
-// import Select from "@mui/material/Select";
-import { MenuItem, Select } from "@mui/material";
-import { Button } from "@mantine/core";
+
+import { Button, Select } from "@mantine/core";
+import { useMemo } from "react";
 
 const Mobs = () => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
@@ -22,6 +22,15 @@ const Mobs = () => {
     },
   });
 
+  const maps = useMemo(() => {
+    const maps = mapData?.map((map: any) => ({
+      value: map.id.toString(),
+      label: map.name,
+    }));
+
+    return maps;
+  }, [mapData]);
+
   const mobsForm = useFormik({
     initialValues: {
       name: "",
@@ -31,7 +40,7 @@ const Mobs = () => {
       attack: 5,
       defence: 5,
       giveExp: 20,
-      mapId: "0",
+      mapId: 0,
     },
     onSubmit: (values, { resetForm }) => {
       addMob(values);
@@ -100,18 +109,14 @@ const Mobs = () => {
         />
         <label className="admin__main-label">Map</label>
         <Select
-          sx={{ m: 1, minWidth: 100, p: 1 }}
-          size="small"
-          name="mapId"
-          className="admin__map-select"
-          value={mobsForm.values.mapId}
-          label="Age"
-          onChange={mobsForm.handleChange}
-        >
-          {mapData?.map((map: any) => (
-            <MenuItem value={map.id}>{map.name}</MenuItem>
-          ))}
-        </Select>
+          name="type"
+          size="sm"
+          required
+          placeholder="Pick one"
+          data={maps || []}
+          onChange={(value) => mobsForm.setFieldValue("mapId", Number(value))}
+          value={mobsForm.values.mapId.toString()}
+        />
 
         <Button type="submit" color="green" size="md" m="10px">
           Add Mob

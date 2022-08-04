@@ -14,6 +14,7 @@ import Mobs from "./components/Admin/sub/Mobs";
 import Explore from "./components/Explore";
 import ExploreScreen from "./components/ExploreScreen";
 import Character from "./components/Character";
+import Players from "./components/Players";
 
 const AppRouter = () => {
   const { data: currentUser, refetch: refetchUser } = useQuery(
@@ -40,6 +41,7 @@ const AppRouter = () => {
         <Route path="/admin/items" element={<Items />} />
         <Route path="/admin/maps" element={<Maps />} />
         <Route path="/admin/mobs" element={<Mobs />} />
+        <Route path="/players" element={<Players />} />
         <Route
           path="/explore"
           element={<Explore currentUser={currentUser} />}
