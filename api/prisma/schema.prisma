@@ -187,6 +187,7 @@ model Guild {
   updatedAt DateTime @updatedAt
 
   name String
+  description String?
 
   users User[]
 

@@ -10,6 +10,10 @@ export class CreateGuildDto {
   @IsNotEmpty()
   name: string;
 
+  @IsString()
+  @IsOptional()
+  description?: string;
+
   @IsNumber()
   @IsNotEmpty()
   userId: number;
