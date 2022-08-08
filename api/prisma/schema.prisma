@@ -18,6 +18,13 @@ enum ItemType {
   POTION
 }
 
+enum GuildRole {
+  PENDING
+  MEMBER
+  MOD
+  ADMIN
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -53,6 +60,7 @@ model User {
 
   guild Guild? @relation(fields: [guildId], references: [id])
   guildId Int?
+  guildRole GuildRole?
 
   @@map("users")
 }

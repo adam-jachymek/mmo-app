@@ -7,7 +7,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateGuildDto,
   EditGuildDto,
+  KickGuildDto,
 } from './dto';
+import { GuildRole } from '@prisma/client';
 
 @Injectable()
 export class GuildService {
@@ -19,15 +21,54 @@ export class GuildService {
     });
   }
 
-  getGuildById(guildId: number) {
-    return this.prisma.guild.findFirst({
-      where: {
-        id: guildId,
+  async getGuildById(
+    userId: number,
+    guildId: number,
+  ) {
+    const user = await this.prisma.user.findFirst(
+      {
+        where: {
+          id: userId,
+        },
       },
-      include: {
-        users: true,
-      },
-    });
+    );
+
+    if (user.guildId === guildId) {
+      if (
+        user.guildRole === GuildRole.ADMIN ||
+        user.guildRole === GuildRole.MOD
+      ) {
+        const adminGuild =
+          await this.prisma.guild.findFirst({
+            where: {
+              id: guildId,
+            },
+            include: {
+              users: true,
+            },
+          });
+
+        return adminGuild;
+      }
+    }
+
+    const guild =
+      await this.prisma.guild.findFirst({
+        where: {
+          id: guildId,
+        },
+        include: {
+          users: {
+            where: {
+              NOT: {
+                guildRole: GuildRole.PENDING,
+              },
+            },
+          },
+        },
+      });
+
+    return guild;
   }
 
   async createGuild(
@@ -45,7 +86,7 @@ export class GuildService {
         id: userId,
       },
       data: {
-        guildId: guild.id,
+        guildRole: GuildRole.ADMIN,
       },
     });
 
@@ -54,49 +95,169 @@ export class GuildService {
 
   async editGuildById(
     userId: number,
-    guildId: number,
     dto: EditGuildDto,
   ) {
-    const guild =
-      await this.prisma.guild.findUnique({
-        where: {
-          id: guildId,
-        },
-      });
-
-    const user =
-      await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst(
+      {
         where: {
           id: userId,
         },
+      },
+    );
+
+    if (
+      user.guildRole === GuildRole.ADMIN ||
+      user.guildRole === GuildRole.MOD
+    ) {
+      const guild =
+        await this.prisma.guild.findUnique({
+          where: {
+            id: user.guildId,
+          },
+        });
+
+      return this.prisma.guild.update({
+        where: {
+          id: guild.id,
+        },
+        data: {
+          ...dto,
+        },
+      });
+    }
+    throw new ForbiddenException(
+      'Access to resources denied',
+    );
+  }
+
+  async leaveGuild(userId: number) {
+    const user = await this.prisma.user.findFirst(
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    const leavedGuild =
+      await this.prisma.guild.update({
+        where: {
+          id: user.guildId,
+        },
+        data: {
+          users: {
+            disconnect: [{ id: userId }],
+          },
+        },
       });
 
-    if (user.guildId !== guild.id)
+    return leavedGuild;
+  }
+
+  async userRequest(
+    userId: number,
+    guildId: number,
+  ) {
+    const user = await this.prisma.user.findFirst(
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    if (user.guildId)
       throw new ForbiddenException(
         'Access to resources denied',
       );
 
-    return this.prisma.guild.update({
-      where: {
-        id: guild.id,
-      },
+    return await this.prisma.user.update({
+      where: { id: userId },
       data: {
-        ...dto,
+        guildId: guildId,
+        guildRole: GuildRole.PENDING,
       },
     });
   }
 
-  async deleteGuildById(
+  async acceptGuildPlayer(
     userId: number,
-    guildId: number,
+    dto: KickGuildDto,
   ) {
-    const guild =
-      await this.prisma.guild.findUnique({
+    const user = await this.prisma.user.findFirst(
+      {
         where: {
-          id: guildId,
+          id: userId,
+        },
+      },
+    );
+
+    if (
+      user.guildRole === GuildRole.ADMIN ||
+      user.guildRole === GuildRole.MOD
+    ) {
+      const player =
+        await this.prisma.user.findUnique({
+          where: {
+            id: dto.playerId,
+          },
+        });
+
+      if (
+        player.guildRole === GuildRole.PENDING
+      ) {
+        return await this.prisma.user.update({
+          where: {
+            id: dto.playerId,
+          },
+          data: {
+            guildRole: GuildRole.MEMBER,
+          },
+        });
+      }
+    }
+  }
+
+  async kickGuildPlayer(
+    userId: number,
+    dto: KickGuildDto,
+  ) {
+    const user = await this.prisma.user.findFirst(
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    if (
+      user.guildRole === GuildRole.ADMIN ||
+      user.guildRole === GuildRole.MOD
+    ) {
+      const guild =
+        await this.prisma.guild.findFirst({
+          where: {
+            id: user.guildId,
+          },
+        });
+
+      await this.prisma.guild.update({
+        where: {
+          id: guild.id,
+        },
+        data: {
+          users: {
+            disconnect: [{ id: dto.playerId }],
+          },
         },
       });
+    }
+    throw new ForbiddenException(
+      'Access to resources denied',
+    );
+  }
 
+  async deleteGuildById(userId: number) {
     const user =
       await this.prisma.user.findUnique({
         where: {
@@ -104,15 +265,25 @@ export class GuildService {
         },
       });
 
-    if (user.guildId !== guild.id)
-      throw new ForbiddenException(
-        'Access to resources denied',
-      );
+    const guild =
+      await this.prisma.guild.findUnique({
+        where: {
+          id: user.guildId,
+        },
+      });
 
-    await this.prisma.guild.delete({
-      where: {
-        id: guildId,
-      },
-    });
+    if (user.guildId === guild.id) {
+      if (user.guildRole === GuildRole.ADMIN) {
+        await this.prisma.guild.delete({
+          where: {
+            id: user.guildId,
+          },
+        });
+      }
+    }
+
+    throw new ForbiddenException(
+      'Access to resources denied',
+    );
   }
 }

@@ -19,6 +19,7 @@ import { GuildService } from './guild.service';
 import {
   CreateGuildDto,
   EditGuildDto,
+  KickGuildDto,
 } from './dto';
 
 @UseGuards(JwtGuard)
@@ -36,10 +37,22 @@ export class GuildController {
   @Get(':id')
   getGuildById(
     @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) GuildId: number,
+    @Param('id', ParseIntPipe) guildId: number,
   ) {
     return this.GuildService.getGuildById(
-      GuildId,
+      userId,
+      guildId,
+    );
+  }
+
+  @Post('request')
+  userRequest(
+    @GetUser('id') userId: number,
+    @Param('id', ParseIntPipe) guildId: number,
+  ) {
+    return this.GuildService.userRequest(
+      userId,
+      guildId,
     );
   }
 
@@ -54,15 +67,40 @@ export class GuildController {
     );
   }
 
-  @Patch(':id')
+  @Post('accept')
+  acceptGuildPlayer(
+    @GetUser('id') userId: number,
+    @Body() dto: KickGuildDto,
+  ) {
+    return this.GuildService.acceptGuildPlayer(
+      userId,
+      dto,
+    );
+  }
+
+  @Post()
+  leaveGuild(@GetUser('id') userId: number) {
+    return this.GuildService.leaveGuild(userId);
+  }
+
+  @Post('kick')
+  kickGuildPlayer(
+    @GetUser('id') userId: number,
+    @Body() dto: KickGuildDto,
+  ) {
+    return this.GuildService.kickGuildPlayer(
+      userId,
+      dto,
+    );
+  }
+
+  @Patch()
   editGuildById(
     @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) guildId: number,
     @Body() dto: EditGuildDto,
   ) {
     return this.GuildService.editGuildById(
       userId,
-      guildId,
       dto,
     );
   }
@@ -75,7 +113,6 @@ export class GuildController {
   ) {
     return this.GuildService.deleteGuildById(
       userId,
-      guildId,
     );
   }
 }
