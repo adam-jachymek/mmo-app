@@ -11,10 +11,7 @@ import {
 
 @Injectable()
 export class GuildService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   getGuilds() {
     return this.prisma.guild.findMany({
