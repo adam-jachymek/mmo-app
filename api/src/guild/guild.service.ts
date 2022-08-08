@@ -81,6 +81,19 @@ export class GuildService {
       },
     });
 
+    const user = await this.prisma.user.findFirst(
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    if (user.guildId)
+      throw new ForbiddenException(
+        'You are already in the guild',
+      );
+
     await this.prisma.user.update({
       where: {
         id: userId,
