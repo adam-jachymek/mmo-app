@@ -86,6 +86,7 @@ export class GuildService {
         id: userId,
       },
       data: {
+        guildId: guild.id,
         guildRole: GuildRole.ADMIN,
       },
     });
