@@ -89,22 +89,22 @@ export class GuildService {
       },
     );
 
-    if (user.guildId)
-      throw new ForbiddenException(
-        'You are already in the guild',
-      );
+    if (!user.guildId) {
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          guildId: guild.id,
+          guildRole: GuildRole.ADMIN,
+        },
+      });
 
-    await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        guildId: guild.id,
-        guildRole: GuildRole.ADMIN,
-      },
-    });
-
-    return guild;
+      return guild;
+    }
+    throw new ForbiddenException(
+      'You are already in the guild',
+    );
   }
 
   async editGuildById(
