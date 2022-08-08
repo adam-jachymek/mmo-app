@@ -11,6 +11,7 @@ import { MapModule } from './map/map.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { BattleModule } from './battle/battle.module';
 import { ExploreModule } from './explore/explore.module';
+import { GuildModule } from './guild/guild.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ExploreModule } from './explore/explore.module';
     MapModule,
     BattleModule,
     ExploreModule,
+    GuildModule,
   ],
 })
 export class AppModule {}
