@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateGuildDto,
@@ -10,7 +11,10 @@ import {
 
 @Injectable()
 export class GuildService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   getGuilds() {
     return this.prisma.guild.findMany({
@@ -35,8 +39,16 @@ export class GuildService {
   ) {
     const guild = await this.prisma.guild.create({
       data: {
-        userId,
         ...dto,
+      },
+    });
+
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        guildId: guild.id,
       },
     });
 

@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
-import { createUser, loginUser, getUser } from "./api/endpoints";
+import { createUser, loginUser, getUser } from "api/endpoints";
 
 function Login() {
   const { mutate: loginValues } = useMutation(loginUser, {

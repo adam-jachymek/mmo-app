@@ -13,8 +13,4 @@ export class CreateGuildDto {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  userId: number;
 }

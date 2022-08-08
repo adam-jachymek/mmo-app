@@ -8,7 +8,11 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getUsers() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      include: {
+        guild: true,
+      },
+    });
   }
 
   async editUser(
