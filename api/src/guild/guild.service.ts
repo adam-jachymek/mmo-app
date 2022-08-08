@@ -67,6 +67,18 @@ export class GuildService {
         },
       });
 
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+    if (user.guildId !== guild.id)
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
+
     return this.prisma.guild.update({
       where: {
         id: guild.id,
@@ -88,10 +100,17 @@ export class GuildService {
         },
       });
 
-    // if (userI !== userId)
-    //   throw new ForbiddenException(
-    //     'Access to resources denied',
-    //   );
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+    if (user.guildId !== guild.id)
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
 
     await this.prisma.guild.delete({
       where: {

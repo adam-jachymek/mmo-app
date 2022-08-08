@@ -6,7 +6,11 @@ import {
 } from 'class-validator';
 
 export class EditGuildDto {
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  userId?: number;
+  name?: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
 }
