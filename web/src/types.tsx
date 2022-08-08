@@ -1,10 +1,15 @@
+export type GuildRoles = "ADMIN" | "MOD" | "PENDING" | "MEMBER";
+
 export type User = {
+  guild: any;
   username: string;
   hp: number;
   maxHp: number;
   level: number;
   exp: number;
   maxExp: number;
+  guildId: number;
+  guildRole: GuildRoles;
 };
 
 export type ItemPrototype = {
