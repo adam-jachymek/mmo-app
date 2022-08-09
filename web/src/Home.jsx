@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
 const socket = io(`${process.env.REACT_APP_API}`);
@@ -8,17 +8,12 @@ const Home = ({ currentUser, refetchUser }) => {
   const [chat, setChat] = useState([]);
   const [joined, setJoined] = useState(false)
 
-  // useEffect(() => {
-  //   socket.on("message", ({ name, message }) => {
-  //     setChat([...chat, { name, message }]);
-  //   });
-  // });
-
   useEffect(() => {
-    setChat([])
+    if (chat.length < 1) {
     socket.emit("findAllMessages", (response) => {
       setChat([...chat, ...response]);
     });
+  }
   }, []);
 
   useEffect(() => {
@@ -54,7 +49,6 @@ const Home = ({ currentUser, refetchUser }) => {
   return (
     <div>
       <h1>Chat</h1>
-      <button onClick={join}>Join chat</button>
       <form onSubmit={chatFormik.handleSubmit}>
         <input
           name="message"
