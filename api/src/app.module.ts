@@ -12,6 +12,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { BattleModule } from './battle/battle.module';
 import { ExploreModule } from './explore/explore.module';
 import { GuildModule } from './guild/guild.module';
+import { SocketGateway } from './socket.gateway';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { GuildModule } from './guild/guild.module';
     BattleModule,
     ExploreModule,
     GuildModule,
+    MessagesModule,
   ],
+  // providers: [SocketGateway],
 })
 export class AppModule {}

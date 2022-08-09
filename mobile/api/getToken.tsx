@@ -1,5 +1,5 @@
 const getToken = () => {
-  return localStorage.getItem("userToken");
+  // return localStorage.getItem("userToken");
 };
 
 export default getToken;
