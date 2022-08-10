@@ -78,7 +78,7 @@ export class GuildController {
     );
   }
 
-  @Post()
+  @Post('leave')
   leaveGuild(@GetUser('id') userId: number) {
     return this.GuildService.leaveGuild(userId);
   }
