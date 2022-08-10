@@ -1,6 +1,7 @@
 export type GuildRoles = "ADMIN" | "MOD" | "PENDING" | "MEMBER";
 
 export type User = {
+  id: number;
   guild: any;
   username: string;
   hp: number;

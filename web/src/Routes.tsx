@@ -27,64 +27,56 @@ const AppRouter = () => {
 
   const token = getToken();
 
-  if (token) {
+  if ((!currentUser && !token) || !token) {
     return (
-      <>
-        <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
-        <SideNavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/"
-            element={
-              <Home currentUser={currentUser} refetchUser={refetchUser} />
-            }/>
-          <Route path="/character" element={<Character />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/items" element={<Items />} />
-          <Route path="/admin/maps" element={<Maps />} />
-          <Route path="/admin/mobs" element={<Mobs />} />
-          <Route path="/players" element={<Players />} />
-          <Route
-            path="/guild"
-            element={
-              <Guild currentUser={currentUser} refetchUser={refetchUser} />
-            }
-          />
-          <Route
-            path="/guild/:id"
-            element={
-              <GuildInfo currentUser={currentUser} refetchUser={refetchUser} />
-            }
-          />
-          <Route
-            path="/explore"
-            element={<Explore currentUser={currentUser} />}
-          />
-          <Route
-            path="/battle"
-            element={<Battle currentUser={currentUser} />}
-          />
-          <Route
-            path="/battle/:id"
-            element={
-              <BattleScreen
-                currentUser={currentUser}
-                refetchUser={refetchUser}
-              />
-            }
-          />
-          <Route path="/explore/:id" element={<ExploreScreen />} />
-        </Routes>
-      </>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     );
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
+      <SideNavBar />
+      <Routes>
+        <Route
+          path="/"
+          element={<Home currentUser={currentUser} refetchUser={refetchUser} />}
+        />
+        <Route path="/character" element={<Character />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/items" element={<Items />} />
+        <Route path="/admin/maps" element={<Maps />} />
+        <Route path="/admin/mobs" element={<Mobs />} />
+        <Route path="/players" element={<Players />} />
+        <Route
+          path="/guild"
+          element={
+            <Guild currentUser={currentUser} refetchUser={refetchUser} />
+          }
+        />
+        <Route
+          path="/guild/:id"
+          element={
+            <GuildInfo currentUser={currentUser} refetchUser={refetchUser} />
+          }
+        />
+        <Route
+          path="/explore"
+          element={<Explore currentUser={currentUser} />}
+        />
+        <Route path="/battle" element={<Battle currentUser={currentUser} />} />
+        <Route
+          path="/battle/:id"
+          element={
+            <BattleScreen currentUser={currentUser} refetchUser={refetchUser} />
+          }
+        />
+        <Route path="/explore/:id" element={<ExploreScreen />} />
+      </Routes>
+    </>
   );
 };
 

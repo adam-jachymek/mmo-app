@@ -5,11 +5,19 @@ import {
   getGuilds,
   getGuildById,
   userRequest,
+  leaveGuild,
 } from "api/endpoints";
-import { useForm } from "@mantine/form";
-import { Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
-import { useParams } from "react-router-dom";
+import {
+  Button,
+  Group,
+  Modal,
+  TextInput,
+  Textarea,
+  Loader,
+} from "@mantine/core";
 import { User } from "/types";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
 
 import "./styles.sass";
 
@@ -20,6 +28,8 @@ type Props = {
 
 const Guild = ({ currentUser, refetchUser }: Props) => {
   const [opened, setOpened] = useState(false);
+
+  let navigate = useNavigate();
 
   const { data: guildData, refetch: refetchGuilds } = useQuery(
     "getGuilds",
@@ -48,32 +58,53 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
     },
   });
 
-  const form = useForm({
+  const { mutate: leavePending } = useMutation(leaveGuild, {
+    onSuccess: (response) => {
+      refetchUser();
+      refetchGuild();
+    },
+  });
+
+  const guildForm = useFormik({
     initialValues: {
       name: "",
       description: "",
     },
-
-    validate: {
-      name: (value) =>
-        value.length < 2 ? "Name must have at least 2 letters" : null,
-      description: (value) =>
-        value.length < 10 ? "Name must have at least 10 letters" : null,
+    onSubmit: (values) => {
+      guildValues(values);
     },
   });
-
-  const handleSubmit = (values: typeof form.values) => {
-    guildValues(values);
-  };
 
   return (
     <div>
       {userGuildId && (
         <div>
-          <h3>Your Guild: {guild?.name}</h3>
-          <a href={`/guild/${guild?.id}`}>
-            <Button>VIEW GUILD</Button>
-          </a>
+          <h3>
+            <span>
+              {currentUser?.guildRole === "PENDING"
+                ? "Pending to: "
+                : "Your Guild: "}
+            </span>
+            {guild?.name}
+          </h3>
+          <Button
+            onClick={() => {
+              navigate(`/guild/${guild?.id}`);
+            }}
+          >
+            VIEW GUILD
+          </Button>
+          {currentUser?.guildRole === "PENDING" && (
+            <Button
+              style={{ marginLeft: "10px" }}
+              color="red"
+              onClick={() => {
+                leavePending();
+              }}
+            >
+              CANCEL
+            </Button>
+          )}
         </div>
       )}
       <div>
@@ -82,16 +113,20 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
           onClose={() => setOpened(false)}
           title="Create Your Guild"
         >
-          <form onSubmit={form.onSubmit(handleSubmit)}>
+          <form onSubmit={guildForm.handleSubmit}>
             <TextInput
               label="Name"
+              name="name"
               placeholder="Name your Guild"
-              {...form.getInputProps("name")}
+              onChange={guildForm.handleChange}
+              value={guildForm.values.name}
             />
             <Textarea
               label="Description"
+              name="description"
               placeholder="Description"
-              {...form.getInputProps("description")}
+              onChange={guildForm.handleChange}
+              value={guildForm.values.description}
             />
             <Group position="right" mt="md">
               <Button type="submit">Create</Button>
@@ -118,7 +153,14 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
           {guildData?.map((guild: any) => (
             <tr>
               <td>{guild.name}</td>
-              <td>{guild?.users.length} / 100</td>
+              <td>
+                {
+                  guild?.users.filter(
+                    (user: User) => user.guildRole !== "PENDING"
+                  ).length
+                }{" "}
+                / 100
+              </td>
               <td>{guild.description}</td>
               {!userGuildId && (
                 <Button

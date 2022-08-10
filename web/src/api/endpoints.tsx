@@ -223,3 +223,15 @@ export const userRequest = async (guildId: number) => {
 
   return response.data;
 };
+
+export const userGuildAccept = async (values: { playerId: number }) => {
+  const response = await api.post(`guild/accept/`, values);
+
+  return response.data;
+};
+
+export const leaveGuild = async () => {
+  const response = await api.post(`guild/leave/`);
+
+  return response.data;
+};
