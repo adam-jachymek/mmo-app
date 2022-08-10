@@ -144,39 +144,48 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
       </div>
       <div className="guild__table-display">
         <table className="guild__table">
-          <tr className="guild__table-tr">
-            <th>Name</th>
-            <th>Players</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-          {guildData?.map((guild: any) => (
-            <tr>
-              <td>{guild.name}</td>
-              <td>
-                {
-                  guild?.users.filter(
-                    (user: User) => user.guildRole !== "PENDING"
-                  ).length
-                }{" "}
-                / 100
-              </td>
-              <td>{guild.description}</td>
-              {!userGuildId && (
-                <Button
-                  color="green"
-                  onClick={() => {
-                    joinMe(guild.id);
-                  }}
-                >
-                  Join
-                </Button>
-              )}
-              <a href={`/guild/${guild.id}`}>
-                <Button color="green">View</Button>
-              </a>
+          <thead>
+            <tr className="guild__table-tr">
+              <th>Name</th>
+              <th>Players</th>
+              <th>Description</th>
+              <th>Action</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {guildData?.map((guild: any) => (
+              <tr key={guild.id}>
+                <td>{guild.name}</td>
+                <td>
+                  {
+                    guild?.users.filter(
+                      (user: User) => user.guildRole !== "PENDING"
+                    ).length
+                  }
+                  / 100
+                </td>
+                <td>{guild.description}</td>
+                <td>
+                  {!userGuildId && (
+                    <Button
+                      color="green"
+                      onClick={() => {
+                        joinMe(guild.id);
+                      }}
+                    >
+                      Join
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => navigate(`/guild/${guild.id}`)}
+                    color="green"
+                  >
+                    View
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

@@ -63,37 +63,41 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
       <h2>Guild Members</h2>
       <div className="players">
         <table className="players__info">
-          <tr className="players__info-tr">
-            <th>Name</th>
-            <th>LVL</th>
-            <th>Online</th>
-            <th>Role</th>
-            <th>Action</th>
-          </tr>
-          {notPendingPlayers?.map((user: any) => (
-            <tr className="">
-              <td>{user.username}</td>
-              <td>{user.level}</td>
-              <td>TAK/NIE</td>
-              <td>{user.guildRole}</td>
-              <td>
-                <Button
-                  className="players__action-button"
-                  color="green"
-                  size="xs"
-                >
-                  Add Friend
-                </Button>
-                <Button
-                  className="players__action-button"
-                  color="yellow"
-                  size="xs"
-                >
-                  Add to Party
-                </Button>
-              </td>
+          <thead>
+            <tr className="players__info-tr">
+              <th>Name</th>
+              <th>LVL</th>
+              <th>Online</th>
+              <th>Role</th>
+              <th>Action</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {notPendingPlayers?.map((user: User) => (
+              <tr key={user.id}>
+                <td>{user.username}</td>
+                <td>{user.level}</td>
+                <td>TAK/NIE</td>
+                <td>{user.guildRole}</td>
+                <td>
+                  <Button
+                    className="players__action-button"
+                    color="green"
+                    size="xs"
+                  >
+                    Add Friend
+                  </Button>
+                  <Button
+                    className="players__action-button"
+                    color="yellow"
+                    size="xs"
+                  >
+                    Add to Party
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
