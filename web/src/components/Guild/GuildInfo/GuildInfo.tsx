@@ -1,10 +1,12 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
-import { getGuildById } from "api/endpoints";
+import { getGuildById, editGuildById, deleteGuildById } from "api/endpoints";
 import { User } from "/types";
-
-import { Button, Group, Modal, TextInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useFormik } from "formik";
+import GiMagnifyingGlass from "react-icons/gi";
+import { Button, Group, Modal, Textarea, TextInput } from "@mantine/core";
 
 type Props = {
   currentUser: User;
@@ -13,47 +15,122 @@ type Props = {
 
 const GuildInfo = ({ currentUser, refetchUser }: Props) => {
   const { id } = useParams();
-
-  const userGuildId = currentUser?.guildId;
-
+  const [opened, setOpened] = useState(false);
   const { data: guild, refetch: refetchGuild } = useQuery(
     ["getGuildById,", id],
     () => getGuildById(id)
   );
 
+  const { mutate: deleteThis } = useMutation(deleteGuildById, {
+    onSuccess: (response) => {
+      refetchGuild();
+      refetchUser();
+    },
+  });
+
+  const { mutate: guildValues } = useMutation(editGuildById, {
+    onSuccess: () => {
+      setOpened(false);
+      refetchGuild();
+      refetchUser();
+    },
+  });
+
+  // const form = useForm({
+  //   initialValues: {
+  //     name: "",
+  //     description: "",
+  //   },
+
+  //   validate: {
+  //     name: (value) =>
+  //       value.length < 2 ? "Name must have at least 2 letters" : null,
+  //     description: (value) =>
+  //       value.length < 10 ? "Name must have at least 10 letters" : null,
+  //   },
+  // });
+  const edit = useFormik({
+    initialValues: {
+      description: guild?.description,
+    },
+    onSubmit: (values) => {
+      guildValues(values);
+    },
+  });
+
+  const userGuildId = currentUser?.guildId;
   const isAdmin = useMemo(
     () =>
-      id == currentUser?.guildId.toString() &&
-      currentUser?.guildRole === "ADMIN",
+      Number(id) === currentUser?.guildId && currentUser?.guildRole === "ADMIN",
     [id, currentUser]
   );
 
   const isMod = useMemo(
     () =>
-      id == currentUser?.guildId.toString() && currentUser?.guildRole === "MOD",
+      Number(id) === currentUser?.guildId && currentUser?.guildRole === "MOD",
     [id, currentUser]
   );
 
   const isMember = useMemo(
     () =>
-      id == currentUser?.guildId.toString() &&
+      Number(id) === currentUser?.guildId &&
       currentUser?.guildRole === "MEMBER",
     [id, currentUser]
   );
 
   return (
-    <div>
+    <div className="guild__info">
       <div>
         <Group position="right">
           {isMod || (isAdmin && <Button color="green">Invite Player</Button>)}
           {isMod || (isMember && <Button>Leave Guild</Button>)}
-          {isAdmin && <Button color="red">Delete Guild</Button>}
+          {isAdmin && (
+            <a href={`/guild/`}>
+              <Button color="red" onClick={() => deleteThis(guild.id)}>
+                Delete Guild
+              </Button>
+            </a>
+          )}
+          <a href={`/guild/`}>
+            <Button>Back</Button>
+          </a>
         </Group>
       </div>
       <div>
-        {isMod || (isAdmin && <Button>Edit</Button>)}
-        <h3>Name: {guild?.name}</h3>
-        <p>Description: {guild?.description}</p>
+        <div>
+          <Modal
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title="Edit Your Guild"
+          >
+            <form onSubmit={edit.handleSubmit}>
+              <Textarea
+                label="Description"
+                placeholder="Description"
+                defaultValue={guild?.description}
+                name="description"
+                onChange={edit.handleChange}
+                value={edit.values.description}
+              />
+              <Group position="right" mt="md">
+                <Button type="submit">Save</Button>
+              </Group>
+            </form>
+          </Modal>
+
+          <div className="">
+            <div className="guild__info-title">
+              <h3>Name: {guild?.name}</h3>
+              <p>Description: {guild?.description}</p>
+            </div>
+            {isMod ||
+              (isAdmin && (
+                <Group position="right">
+                  <Button onClick={() => setOpened(true)}>Edit</Button>
+                </Group>
+              ))}
+          </div>
+        </div>
       </div>
       <div>
         {isMod ||
@@ -66,6 +143,7 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
                     <th>Name</th>
                     <th>LVL</th>
                     <th>Online</th>
+                    <th>Role</th>
                     <th>Action</th>
                   </tr>
                   {guild?.users?.map((user: any) => (
@@ -73,20 +151,21 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
                       <td>{user.username}</td>
                       <td>{user.level}</td>
                       <td>TAK/NIE</td>
+                      <td>{user.guildRole}</td>
                       <td>
                         <Button
                           className="players__action-button"
                           color="green"
                           size="xs"
                         >
-                          Add Friend
+                          Accept
                         </Button>
                         <Button
                           className="players__action-button"
-                          color="yellow"
+                          color="red"
                           size="xs"
                         >
-                          Add to Party
+                          Reject
                         </Button>
                       </td>
                     </tr>
@@ -103,6 +182,7 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
               <th>Name</th>
               <th>LVL</th>
               <th>Online</th>
+              <th>Role</th>
               <th>Action</th>
             </tr>
             {guild?.users?.map((user: any) => (
@@ -110,6 +190,7 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
                 <td>{user.username}</td>
                 <td>{user.level}</td>
                 <td>TAK/NIE</td>
+                <td>{user.guildRole}</td>
                 <td>
                   <Button
                     className="players__action-button"

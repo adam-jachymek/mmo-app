@@ -148,25 +148,31 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         </div>
         <div className="fight__menu-display">
           {!battle && (
-            <div className="fight__menu">
-              <button
-                className="fight__button fight__attack"
-                onClick={fightHandle}
-              >
-                FIGHT
-              </button>
-              <button
-                className="fight__button fight__attack"
-                onClick={() => {
-                  navigate(-1);
-                }}
-              >
-                RUN
-              </button>
+            <div className="fight__menu-1">
+              <div className="fight__menu-text">
+                <h2>Wild {mob?.mob?.name} appered!</h2>
+              </div>
+              <div className="fight__button-chose">
+                <button
+                  className="fight__button-fight__fight"
+                  onClick={fightHandle}
+                >
+                  FIGHT
+                </button>
+                <button
+                  className="fight__button-fight__run"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                >
+                  RUN
+                </button>
+              </div>
             </div>
           )}
+
           {battle && (
-            <div className="fight__menu">
+            <div className="fight__menu-2">
               <button
                 className="fight__button fight__attack"
                 onClick={() => {

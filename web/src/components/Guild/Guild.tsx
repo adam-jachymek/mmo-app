@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { createGuild, getGuilds, getGuildById } from "api/endpoints";
+import {
+  createGuild,
+  getGuilds,
+  getGuildById,
+  userRequest,
+} from "api/endpoints";
 import { useForm } from "@mantine/form";
-import { Button, Group, Modal, TextInput } from "@mantine/core";
+import { Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { User } from "/types";
 
@@ -29,6 +34,12 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
     { enabled: Boolean(userGuildId) }
   );
 
+  const { mutate: joinMe } = useMutation(userRequest, {
+    onSuccess: (response) => {
+      refetchGuild();
+      refetchUser();
+    },
+  });
   const { mutate: guildValues } = useMutation(createGuild, {
     onSuccess: () => {
       setOpened(false);
@@ -77,7 +88,7 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
               placeholder="Name your Guild"
               {...form.getInputProps("name")}
             />
-            <TextInput
+            <Textarea
               label="Description"
               placeholder="Description"
               {...form.getInputProps("description")}
@@ -109,7 +120,16 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
               <td>{guild.name}</td>
               <td>{guild?.users.length} / 100</td>
               <td>{guild.description}</td>
-              {!userGuildId && <Button color="green">Join</Button>}
+              {!userGuildId && (
+                <Button
+                  color="green"
+                  onClick={() => {
+                    joinMe(guild.id);
+                  }}
+                >
+                  Join
+                </Button>
+              )}
               <a href={`/guild/${guild.id}`}>
                 <Button color="green">View</Button>
               </a>

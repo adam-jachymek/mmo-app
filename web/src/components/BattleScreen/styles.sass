@@ -5,7 +5,18 @@
   box-shadow: 0px 0px 10px 4px #880808
   border-radius: 10px
 
-  &__menu
+  &__menu-1
+    width: 900px
+    height: 164px
+    background: #171717
+    box-shadow: 0px 0px 10px 4px #880808
+    border-radius: 10px
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: space-between
+
+  &__menu-2
     width: 900px
     height: 164px
     background: #171717
@@ -16,10 +27,42 @@
     align-items: center
     justify-content: center
 
+
+  &__menu-text
+    margin-left: 50px
+    font-size: 25px
+
   &__menu-display
     display: flex
     justify-content: center
     align-items: center
+
+  &__button-chose
+    display: flex
+    width: 280px
+    height: 75px
+    background: #252525
+    border: 1px solid #252525
+    box-shadow: 0px 0px 15px 6px #880808
+    border-radius: 10px
+    flex-direction: row
+    align-items: center
+    justify-content: space-around
+    margin-right: 50px
+
+  &__button-fight__fight
+    color: #fff
+    border: none
+    font-size: 30px
+    background: #252525
+    cursor: pointer
+
+  &__button-fight__run
+    color: #00FA9A
+    border: none
+    font-size: 30px
+    background: #252525
+    cursor: pointer
 
   &__player
     display: flex
