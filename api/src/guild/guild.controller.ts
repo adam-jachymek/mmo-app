@@ -45,7 +45,7 @@ export class GuildController {
     );
   }
 
-  @Post('request')
+  @Post('/request/:id')
   userRequest(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) guildId: number,
@@ -107,7 +107,7 @@ export class GuildController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  deleteItemById(
+  deleteGuildById(
     @GetUser('id') userId: number,
     @Param('id', ParseIntPipe) guildId: number,
   ) {

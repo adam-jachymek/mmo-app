@@ -181,3 +181,45 @@ export const getUsers = async () => {
 
   return response.data;
 };
+
+export const getGuilds = async () => {
+  const response = await api.get("/guild");
+
+  return response.data;
+};
+
+export const createGuild = async (values: {
+  name?: string;
+  description?: string;
+}) => {
+  const response = await api.post("/guild", values);
+
+  return response.data;
+};
+
+export const getGuildById = async (guildId?: string) => {
+  const response = await api.get(`/guild/${guildId}`);
+
+  return response.data;
+};
+
+export const editGuildById = async (values: {
+  name?: string;
+  description?: string;
+}) => {
+  const response = await api.patch("/guild", values);
+
+  return response.data;
+};
+
+export const deleteGuildById = async (guildId: number) => {
+  const response = await api.delete(`/guild/${guildId}`);
+
+  return response.data;
+};
+
+export const userRequest = async (guildId: number) => {
+  const response = await api.post(`guild/request/${guildId}`);
+
+  return response.data;
+};

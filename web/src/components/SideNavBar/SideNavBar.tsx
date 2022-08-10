@@ -39,6 +39,9 @@ const SideNavBar = () => {
         <li className="navbar__li">
           <a href="/players"> Players</a>
         </li>
+        <li className="navbar__li">
+          <a href="/guild"> Guild</a>
+        </li>
       </ul>
     </div>
   );

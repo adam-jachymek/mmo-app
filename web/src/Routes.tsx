@@ -15,7 +15,9 @@ import Explore from "./components/Explore";
 import ExploreScreen from "./components/ExploreScreen";
 import Character from "./components/Character";
 import Players from "./components/Players";
+import Guild from "./components/Guild";
 import getToken from "./api/getToken";
+import GuildInfo from "./components/Guild/GuildInfo";
 
 const AppRouter = () => {
   const { data: currentUser, refetch: refetchUser } = useQuery(
@@ -31,18 +33,30 @@ const AppRouter = () => {
         <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
         <SideNavBar />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route
             path="/"
             element={
               <Home currentUser={currentUser} refetchUser={refetchUser} />
-            }
-          />
+            }/>
           <Route path="/character" element={<Character />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/items" element={<Items />} />
           <Route path="/admin/maps" element={<Maps />} />
           <Route path="/admin/mobs" element={<Mobs />} />
           <Route path="/players" element={<Players />} />
+          <Route
+            path="/guild"
+            element={
+              <Guild currentUser={currentUser} refetchUser={refetchUser} />
+            }
+          />
+          <Route
+            path="/guild/:id"
+            element={
+              <GuildInfo currentUser={currentUser} refetchUser={refetchUser} />
+            }
+          />
           <Route
             path="/explore"
             element={<Explore currentUser={currentUser} />}
