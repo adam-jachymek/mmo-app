@@ -34,6 +34,11 @@ const AppRouter = () => {
         <SideNavBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <Home currentUser={currentUser} refetchUser={refetchUser} />
+            }/>
           <Route path="/character" element={<Character />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/items" element={<Items />} />
