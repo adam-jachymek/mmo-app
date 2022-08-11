@@ -1,46 +1,39 @@
 import { GiCrossedSwords, GiCharacter } from "react-icons/gi";
 import { TiHomeOutline } from "react-icons/ti";
 import { AiOutlineQuestion } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 import "./styles.sass";
 
 const SideNavBar = () => {
+  let navigate = useNavigate();
+
   return (
     <div className="navbar">
       <ul className="navbar__ul">
-        <li className="navbar__li">
-          <a href="/">
-            <TiHomeOutline /> Home
-          </a>
+        <li onClick={() => navigate("/")} className="navbar__li">
+          <TiHomeOutline /> Home
         </li>
-        <li className="navbar__li">
-          <a href="/character">
-            <GiCharacter /> Character
-          </a>
+        <li onClick={() => navigate("/character")} className="navbar__li">
+          <GiCharacter /> Character
         </li>
-        <li className="navbar__li">
-          <a href="#">
-            <AiOutlineQuestion /> Quest
-          </a>
+        {/* <li onClick={() => navigate("#")} className="navbar__li">
+          <AiOutlineQuestion /> Quest
+        </li> */}
+        <li onClick={() => navigate("/explore")} className="navbar__li">
+          <AiOutlineQuestion /> Explore
         </li>
-        <li className="navbar__li">
-          <a href="/explore">
-            <AiOutlineQuestion /> Explore
-          </a>
+        <li onClick={() => navigate("/battle")} className="navbar__li">
+          <GiCrossedSwords /> Battle
         </li>
-        <li className="navbar__li">
-          <a href="/battle">
-            <GiCrossedSwords /> Battle
-          </a>
+        <li onClick={() => navigate("/admin")} className="navbar__li">
+          Admin
         </li>
-        <li className="navbar__li">
-          <a href="/admin"> Admin</a>
+        <li onClick={() => navigate("/players")} className="navbar__li">
+          Players
         </li>
-        <li className="navbar__li">
-          <a href="/players"> Players</a>
-        </li>
-        <li className="navbar__li">
-          <a href="/guild"> Guild</a>
+        <li onClick={() => navigate("/guild")} className="navbar__li">
+          Guild
         </li>
       </ul>
     </div>

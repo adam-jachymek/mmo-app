@@ -20,17 +20,25 @@ import getToken from "./api/getToken";
 import GuildInfo from "./components/Guild/GuildInfo";
 
 const AppRouter = () => {
+  const token = getToken();
+
   const { data: currentUser, refetch: refetchUser } = useQuery(
     "currentUser",
-    getUser
+    getUser,
+    {
+      enabled: Boolean(token),
+    }
   );
-
-  const token = getToken();
 
   if ((!currentUser && !token) || !token) {
     return (
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <Login currentUser={currentUser} refetchUser={refetchUser} />
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );

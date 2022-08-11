@@ -7,14 +7,7 @@ import {
   userRequest,
   leaveGuild,
 } from "api/endpoints";
-import {
-  Button,
-  Group,
-  Modal,
-  TextInput,
-  Textarea,
-  Loader,
-} from "@mantine/core";
+import { Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
 import { User } from "/types";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";

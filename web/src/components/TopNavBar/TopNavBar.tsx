@@ -2,7 +2,7 @@ import { useMutation } from "react-query";
 import { healUser } from "api/endpoints";
 import { User } from "/types";
 import { HPlusMobiledata } from "@mui/icons-material";
-import { RingProgress, Text } from "@mantine/core";
+import { Button, RingProgress, Text } from "@mantine/core";
 
 import "./styles.sass";
 
@@ -50,17 +50,19 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
             ? "0"
             : currentUser?.hp + " / " + currentUser?.maxHp + " HP"}
         </p>
-        <button
+        <Button
+          compact
+          color="green"
           className="header__logout"
           onClick={() => {
             healMe();
           }}
         >
           Heal Me
-        </button>
-        <button className="header__logout" onClick={LogOut}>
+        </Button>
+        <Button compact color="red" className="header__logout" onClick={LogOut}>
           Log Out
-        </button>
+        </Button>
       </div>
     </div>
   );

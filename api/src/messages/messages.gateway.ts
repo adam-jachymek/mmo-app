@@ -52,13 +52,13 @@ export class MessagesGateway {
 
   // TO DO - add rooms
 
-  // @SubscribeMessage('joinRoom')
-  // joinRoom(
-  //   @MessageBody('room') room: string,
-  //   @ConnectedSocket() client: Socket,
-  // ) {
-  //   client.join(room);
-  // }
+  @SubscribeMessage('joinRoom')
+  joinRoom(
+    @MessageBody('room') room: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(room);
+  }
 
   // @SubscribeMessage('leaveRoom')
   // leaveRoom(

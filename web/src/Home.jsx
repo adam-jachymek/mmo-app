@@ -1,3 +1,4 @@
+import { TextInput, Button } from "@mantine/core";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
@@ -6,7 +7,6 @@ const socket = io(`${process.env.REACT_APP_API}`);
 
 const Home = ({ currentUser, refetchUser }) => {
   const [chat, setChat] = useState([]);
-  const [joined, setJoined] = useState(false)
 
   useEffect(() => {
     if (chat.length < 1) {
@@ -22,12 +22,6 @@ const Home = ({ currentUser, refetchUser }) => {
     });
   });
 
-  const join = () => {
-    socket.emit('join', {name: currentUser?.username}, () => {
-      setJoined(true)
-    })
-  }
-
   const chatFormik = useFormik({
     initialValues: {
       message: "",
@@ -39,25 +33,27 @@ const Home = ({ currentUser, refetchUser }) => {
   });
 
   const renderChat = () => {
-    return chat.map(({ name, message }, index) => (
-      <p key={index}>
-        {name}: <span>{message}</span>
-      </p>
+    return chat.slice(0).reverse().map(({ name, message }, index) => (
+      <div style={{margin: "15px 0"}} key={index}>
+        <span style={{display: "block", fontSize: "14px"}}>[{name}]</span>
+        <span>{message}</span>
+      </div>
     ));
   };
 
   return (
     <div>
-      <h1>Chat</h1>
-      <form onSubmit={chatFormik.handleSubmit}>
-        <input
+      <h2>Chat</h2>
+      <form style={{display: "flex"}} onSubmit={chatFormik.handleSubmit}>
+        <TextInput
           name="message"
+          style={{width: "300px", marginRight: "10px"}}
           onChange={chatFormik.handleChange}
           value={chatFormik.values.message}
         />
-        <button type="submit">Send message</button>
+        <Button type="submit">SEND</Button>
       </form>
-      <div style={{marginTop: "50px"}}>
+      <div style={{marginTop: "30px"}}>
         {renderChat()}
       </div>
     </div>

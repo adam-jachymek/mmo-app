@@ -158,7 +158,7 @@ const Character = () => {
   };
 
   if (isFetching) {
-    return <h1>"Loading..."</h1>;
+    return null;
   }
 
   return (
@@ -175,7 +175,7 @@ const Character = () => {
               <GiAbdominalArmor className="player__eq-icon" />
             </span>
             <span className="player__eq-head">
-              {itemsData.map(
+              {itemsData?.map(
                 (item: any) =>
                   item.equip &&
                   item.item.type === "head" && (
@@ -196,7 +196,7 @@ const Character = () => {
               <GiBorderedShield className="player__eq-icon" />
             </span>
             <span className="player__eq-rightarm">
-              {itemsData.map(
+              {itemsData?.map(
                 (item: any) =>
                   item.equip &&
                   item.item.type === "weapon" && (

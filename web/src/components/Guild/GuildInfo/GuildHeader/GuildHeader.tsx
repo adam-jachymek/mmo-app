@@ -93,15 +93,18 @@ const GuildHeader = ({
               color="red"
               onClick={() => {
                 setConfirmModalOpen(true);
-                deleteThis(guild.id);
               }}
             >
               Delete Guild
             </Button>
           )}
-          <a href={`/guild/`}>
-            <Button>Back</Button>
-          </a>
+          <Button
+            onClick={() => {
+              navigate("/guild");
+            }}
+          >
+            Back
+          </Button>
         </Group>
       </div>
       <div>
@@ -144,10 +147,10 @@ const GuildHeader = ({
         isVisible={confirmModalOpen}
         title={"Do you want delete this guild?"}
         onConfirmAction={() => {
-          navigate("/guild");
-          refetchGuild();
-          refetchUser();
           deleteThis(guild.id);
+          refetchUser();
+          refetchGuild();
+          navigate("/guild");
         }}
         onCancelAction={() => setConfirmModalOpen(false)}
       />

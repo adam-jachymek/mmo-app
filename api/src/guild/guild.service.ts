@@ -153,6 +153,15 @@ export class GuildService {
       },
     );
 
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        guildRole: null,
+      },
+    });
+
     const leavedGuild =
       await this.prisma.guild.update({
         where: {
