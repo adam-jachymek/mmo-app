@@ -9,23 +9,19 @@ import AppRouter from "./Routes";
 import "./styles/main.sass";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { MantineProvider } from "@mantine/core";
+import { removeToken } from "./api/token";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-    },
-  },
-});
-
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#b2102f",
-    },
-    secondary: {
-      main: "#62BCF6",
+      retry: 1,
+      onError: (error: any) => {
+        if ((error.response.status = 401)) {
+          removeToken();
+          window.location.reload();
+        }
+      },
     },
   },
 });

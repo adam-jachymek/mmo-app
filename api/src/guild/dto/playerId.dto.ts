@@ -1,12 +1,10 @@
 import {
   IsNotEmpty,
   IsNumber,
-  IsOptional,
-  IsString,
 } from 'class-validator';
 
-export class KickGuildDto {
+export class PlayerIdDto {
   @IsNumber()
   @IsNotEmpty()
-  playerId?: number;
+  playerId: number;
 }

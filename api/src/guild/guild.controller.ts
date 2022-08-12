@@ -13,14 +13,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from '../auth/decorator';
-import { Header } from 'src/auth/decorator/request-header';
 import { JwtGuard } from '../auth/guard';
 import { GuildService } from './guild.service';
 import {
   CreateGuildDto,
   EditGuildDto,
-  KickGuildDto,
+  PlayerIdDto,
 } from './dto';
+import { User } from '@prisma/client';
 
 @UseGuards(JwtGuard)
 @Controller('guild')
@@ -36,71 +36,71 @@ export class GuildController {
 
   @Get(':id')
   getGuildById(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Param('id', ParseIntPipe) guildId: number,
   ) {
     return this.GuildService.getGuildById(
-      userId,
+      user,
       guildId,
     );
   }
 
   @Post('/request/:id')
   userRequest(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Param('id', ParseIntPipe) guildId: number,
   ) {
     return this.GuildService.userRequest(
-      userId,
+      user,
       guildId,
     );
   }
 
   @Post()
   createGuild(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Body() dto: CreateGuildDto,
   ) {
     return this.GuildService.createGuild(
-      userId,
+      user,
       dto,
     );
   }
 
   @Post('accept')
   acceptGuildPlayer(
-    @GetUser('id') userId: number,
-    @Body() dto: KickGuildDto,
+    @GetUser() user: User,
+    @Body() dto: PlayerIdDto,
   ) {
     return this.GuildService.acceptGuildPlayer(
-      userId,
+      user,
       dto,
     );
   }
 
   @Post('leave')
-  leaveGuild(@GetUser('id') userId: number) {
-    return this.GuildService.leaveGuild(userId);
+  leaveGuild(@GetUser() user: User) {
+    return this.GuildService.leaveGuild(user);
   }
 
   @Post('kick')
   kickGuildPlayer(
-    @GetUser('id') userId: number,
-    @Body() dto: KickGuildDto,
+    @GetUser() user: User,
+    @Body() dto: PlayerIdDto,
   ) {
     return this.GuildService.kickGuildPlayer(
-      userId,
+      user,
       dto,
     );
   }
 
   @Patch()
   editGuildById(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Body() dto: EditGuildDto,
   ) {
     return this.GuildService.editGuildById(
-      userId,
+      user,
       dto,
     );
   }
@@ -108,11 +108,11 @@ export class GuildController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteGuildById(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Param('id', ParseIntPipe) guildId: number,
   ) {
     return this.GuildService.deleteGuildById(
-      userId,
+      user,
     );
   }
 }

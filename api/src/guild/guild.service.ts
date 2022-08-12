@@ -7,39 +7,59 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateGuildDto,
   EditGuildDto,
-  KickGuildDto,
+  PlayerIdDto,
 } from './dto';
-import { GuildRole } from '@prisma/client';
+import { GuildRole, User } from '@prisma/client';
 
 @Injectable()
 export class GuildService {
   constructor(private prisma: PrismaService) {}
 
-  getGuilds() {
-    return this.prisma.guild.findMany({
-      include: { users: true },
+  async getGuilds() {
+    const guilds =
+      await this.prisma.guild.findMany({
+        include: {
+          users: {
+            select: { id: true },
+            where: {
+              NOT: {
+                guildRole: GuildRole.PENDING,
+              },
+            },
+          },
+        },
+      });
+
+    return guilds.map((guild) => ({
+      id: guild.id,
+      name: guild.name,
+      description: guild.description,
+      usersCount: guild.users.length,
+    }));
+  }
+
+  countGuildMembers(userGuildId: number) {
+    return this.prisma.user.count({
+      where: {
+        guildId: userGuildId,
+        NOT: {
+          guildRole: GuildRole.PENDING,
+        },
+      },
     });
   }
 
   async getGuildById(
-    userId: number,
+    user: User,
     guildId: number,
   ) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
     if (user.guildId === guildId) {
       if (
         user.guildRole === GuildRole.ADMIN ||
         user.guildRole === GuildRole.MOD
       ) {
         const adminGuild =
-          await this.prisma.guild.findFirst({
+          await this.prisma.guild.findUnique({
             where: {
               id: guildId,
             },
@@ -53,7 +73,7 @@ export class GuildService {
     }
 
     const guild =
-      await this.prisma.guild.findFirst({
+      await this.prisma.guild.findUnique({
         where: {
           id: guildId,
         },
@@ -72,27 +92,20 @@ export class GuildService {
   }
 
   async createGuild(
-    userId: number,
+    user: User,
     dto: CreateGuildDto,
   ) {
-    const guild = await this.prisma.guild.create({
-      data: {
-        ...dto,
-      },
-    });
-
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
     if (!user.guildId) {
+      const guild =
+        await this.prisma.guild.create({
+          data: {
+            ...dto,
+          },
+        });
+
       await this.prisma.user.update({
         where: {
-          id: userId,
+          id: user.id,
         },
         data: {
           guildId: guild.id,
@@ -108,17 +121,9 @@ export class GuildService {
   }
 
   async editGuildById(
-    userId: number,
+    user: User,
     dto: EditGuildDto,
   ) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
     if (
       user.guildRole === GuildRole.ADMIN ||
       user.guildRole === GuildRole.MOD
@@ -144,15 +149,7 @@ export class GuildService {
     );
   }
 
-  async leaveGuild(userId: number) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
+  async leaveGuild(user: User) {
     await this.prisma.user.update({
       where: {
         id: user.id,
@@ -169,7 +166,7 @@ export class GuildService {
         },
         data: {
           users: {
-            disconnect: [{ id: userId }],
+            disconnect: [{ id: user.id }],
           },
         },
       });
@@ -177,25 +174,15 @@ export class GuildService {
     return leavedGuild;
   }
 
-  async userRequest(
-    userId: number,
-    guildId: number,
-  ) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
-    if (user.guildId)
+  async userRequest(user: User, guildId: number) {
+    if (user.guildId) {
       throw new ForbiddenException(
-        'Access to resources denied',
+        'You are already in the guild',
       );
+    }
 
     return await this.prisma.user.update({
-      where: { id: userId },
+      where: { id: user.id },
       data: {
         guildId: guildId,
         guildRole: GuildRole.PENDING,
@@ -204,17 +191,9 @@ export class GuildService {
   }
 
   async acceptGuildPlayer(
-    userId: number,
-    dto: KickGuildDto,
+    user: User,
+    dto: PlayerIdDto,
   ) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
-
     if (
       user.guildRole === GuildRole.ADMIN ||
       user.guildRole === GuildRole.MOD
@@ -242,21 +221,16 @@ export class GuildService {
   }
 
   async kickGuildPlayer(
-    userId: number,
-    dto: KickGuildDto,
+    user: User,
+    dto: PlayerIdDto,
   ) {
-    const user = await this.prisma.user.findFirst(
-      {
-        where: {
-          id: userId,
-        },
-      },
-    );
+    if (user.guildRole === GuildRole.ADMIN) {
+      if (dto.playerId === user.id) {
+        throw new ForbiddenException(
+          'You cannot kick yourself from the guild',
+        );
+      }
 
-    if (
-      user.guildRole === GuildRole.ADMIN ||
-      user.guildRole === GuildRole.MOD
-    ) {
       const guild =
         await this.prisma.guild.findFirst({
           where: {
@@ -280,14 +254,7 @@ export class GuildService {
     );
   }
 
-  async deleteGuildById(userId: number) {
-    const user =
-      await this.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-      });
-
+  async deleteGuildById(user: User) {
     const guild =
       await this.prisma.guild.findUnique({
         where: {
