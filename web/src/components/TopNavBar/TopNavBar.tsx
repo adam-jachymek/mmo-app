@@ -1,8 +1,8 @@
 import { useMutation } from "react-query";
 import { healUser } from "api/endpoints";
 import { User } from "/types";
-import { HPlusMobiledata } from "@mui/icons-material";
 import { Button, RingProgress, Text } from "@mantine/core";
+import { removeToken } from "api/token";
 
 import "./styles.sass";
 
@@ -13,8 +13,8 @@ type Props = {
 
 const TopNavBar = ({ currentUser, refetchUser }: Props) => {
   const LogOut = () => {
-    localStorage.removeItem("userToken");
-    refetchUser();
+    removeToken();
+    window.location.reload();
   };
 
   const { mutate: healMe } = useMutation(healUser, {
