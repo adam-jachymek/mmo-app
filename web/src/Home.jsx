@@ -1,9 +1,7 @@
 import { TextInput, Button } from "@mantine/core";
 import { useFormik } from "formik";
 import { useState, useEffect } from "react";
-import io from "socket.io-client";
-
-const socket = io(`${process.env.REACT_APP_API}`);
+import { socket } from "./api/socket";
 
 const Home = ({ currentUser, refetchUser }) => {
   const [chat, setChat] = useState([]);

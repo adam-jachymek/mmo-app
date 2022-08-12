@@ -31,8 +31,8 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
 
   const userGuildId = currentUser?.guildId;
 
-  const { data: guild, refetch: refetchGuild } = useQuery(
-    ["getGuildById,", userGuildId],
+  const { data: yourGuild, refetch: refetchGuild } = useQuery(
+    ["yourGuild,", userGuildId],
     () => getGuildById(userGuildId.toString()),
     { enabled: Boolean(userGuildId) }
   );
@@ -78,11 +78,11 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
                 ? "Pending to: "
                 : "Your Guild: "}
             </span>
-            {guild?.name}
+            {yourGuild?.name}
           </h3>
           <Button
             onClick={() => {
-              navigate(`/guild/${guild?.id}`);
+              navigate(`/guild/${yourGuild?.id}`);
             }}
           >
             VIEW GUILD
@@ -149,14 +149,7 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
             {guildData?.map((guild: any) => (
               <tr key={guild.id}>
                 <td>{guild.name}</td>
-                <td>
-                  {
-                    guild?.users.filter(
-                      (user: User) => user.guildRole !== "PENDING"
-                    ).length
-                  }
-                  / 100
-                </td>
+                <td>{guild.usersCount} / 100</td>
                 <td>{guild.description}</td>
                 <td>
                   {!userGuildId && (

@@ -16,21 +16,32 @@ import ExploreScreen from "./components/ExploreScreen";
 import Character from "./components/Character";
 import Players from "./components/Players";
 import Guild from "./components/Guild";
-import getToken from "./api/getToken";
+import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
+import { Loader } from "@mantine/core";
 
 const AppRouter = () => {
   const token = getToken();
 
-  const { data: currentUser, refetch: refetchUser } = useQuery(
-    "currentUser",
-    getUser,
-    {
-      enabled: Boolean(token),
-    }
-  );
+  const {
+    isLoading,
+    data: currentUser,
+    refetch: refetchUser,
+    isLoadingError,
+  } = useQuery("currentUser", getUser, {
+    enabled: Boolean(token),
+    retry: 1,
+  });
 
-  if ((!currentUser && !token) || !token) {
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isLoadingError) {
+    removeToken();
+  }
+
+  if (!currentUser || !token) {
     return (
       <Routes>
         <Route
@@ -97,7 +108,7 @@ const AppRouter = () => {
     );
   }
 
-  return null;
+  return <div>Something went wrong. Refresh the page.</div>;
 };
 
 export default AppRouter;
