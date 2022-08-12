@@ -235,3 +235,9 @@ export const leaveGuild = async () => {
 
   return response.data;
 };
+
+export const kickGuildPlayer = async (values: { playerId: number }) => {
+  const response = await api.post(`guild/kick/`, values);
+
+  return response.data;
+};

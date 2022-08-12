@@ -59,3 +59,9 @@ export type Map = {
   sprite?: string;
   updateAt: string;
 };
+
+export type Guild = {
+  description: string;
+  id: number;
+  name: string;
+};

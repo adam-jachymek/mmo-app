@@ -95,7 +95,7 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
                 leavePending();
               }}
             >
-              CANCEL
+              CANCEL PENDING
             </Button>
           )}
         </div>

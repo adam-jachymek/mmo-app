@@ -30,7 +30,7 @@ const AppRouter = () => {
     }
   );
 
-  if ((!currentUser && !token) || !token) {
+  if (!currentUser || !token) {
     return (
       <Routes>
         <Route

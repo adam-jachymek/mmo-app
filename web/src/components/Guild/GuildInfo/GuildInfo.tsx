@@ -1,11 +1,14 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getGuildById } from "api/endpoints";
 import GuildHeader from "./GuildHeader";
 import { User } from "/types";
 import { Button } from "@mantine/core";
 import GuildPendingTable from "./GuildPendingTable";
+import GuildMember from "./GuildMember";
+
+import Players from "/components/Players";
 
 type Props = {
   currentUser: User;
@@ -39,10 +42,6 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
     [id, currentUser]
   );
 
-  const notPendingPlayers = guild?.users.filter(
-    (user: User) => user.guildRole !== "PENDING"
-  );
-
   return (
     <div className="guild__info">
       <GuildHeader
@@ -60,46 +59,14 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
         isAdmin={isAdmin}
         isMod={isMod}
       />
-      <h2>Guild Members</h2>
-      <div className="players">
-        <table className="players__info">
-          <thead>
-            <tr className="players__info-tr">
-              <th>Name</th>
-              <th>LVL</th>
-              <th>Online</th>
-              <th>Role</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notPendingPlayers?.map((user: User) => (
-              <tr key={user.id}>
-                <td>{user.username}</td>
-                <td>{user.level}</td>
-                <td>TAK/NIE</td>
-                <td>{user.guildRole}</td>
-                <td>
-                  <Button
-                    className="players__action-button"
-                    color="green"
-                    size="xs"
-                  >
-                    Add Friend
-                  </Button>
-                  <Button
-                    className="players__action-button"
-                    color="yellow"
-                    size="xs"
-                  >
-                    Add to Party
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <GuildMember
+        currentUser={currentUser}
+        refetchUser={refetchUser}
+        refetchGuild={refetchGuild}
+        guild={guild}
+        isAdmin={isAdmin}
+        isMod={isMod}
+      />
     </div>
   );
 };
