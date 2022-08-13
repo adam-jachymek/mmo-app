@@ -11,11 +11,23 @@ datasource db {
 }
 
 enum ItemType {
+  HEAD
+  CHEST
   WEAPON
-  HELMET
-  ARMOR
+  OFFHAND
   LEGS
   POTION
+  BAG
+  COMMON
+}
+
+enum ItemQuality {
+  RANDOM
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
 }
 
 enum GuildRole {
@@ -46,14 +58,11 @@ model User {
   stamina Int? @default(10)
   strength Int? @default(10)
   defence Int? @default(10)
-  speed Int? @default(10)
+  dexterity Int? @default(10)
   intelligence Int? @default(10)
 
   eqStamina Int? @default(0)
-  eqStrength Int? @default(0)
   eqDefence Int? @default(0)
-  eqSpeed Int? @default(0)
-  eqIntelligence Int? @default(0)
 
   items Item[]
   battle Battle[]
@@ -71,12 +80,15 @@ model ItemPrototype {
   updatedAt DateTime @updatedAt
 
   name  String
-  icon  String?
+  sprite  String?
   description String?
-  type String?
+  type ItemType?
+  quality ItemQuality?
   minStat Int?
   maxStat Int?
-  isEq Boolean?
+  isEquipment Boolean?
+  actionAmount Int?
+  actionName String?
 
   items Item[]
 
@@ -88,9 +100,19 @@ model Item {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  stat Int?
+  name String?
+  sprite String?
+  type ItemType?
+  quality ItemQuality?
+  isEquipment Boolean?
+  stamina Int?
+  defence Int?
   level Int?
   score Int?
+  minAttack Int?
+  maxAttack Int?
+  actionAmount Int?
+  actionName String?
   amount Int?
   equip Boolean? @default(false)
 

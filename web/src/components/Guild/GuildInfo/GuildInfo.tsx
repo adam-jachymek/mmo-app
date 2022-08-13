@@ -1,14 +1,11 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { getGuildById } from "api/endpoints";
 import GuildHeader from "./GuildHeader";
 import { User } from "/types";
-import { Button } from "@mantine/core";
 import GuildPendingTable from "./GuildPendingTable";
 import GuildMember from "./GuildMember";
-
-import Players from "/components/Players";
 
 type Props = {
   currentUser: User;

@@ -2,7 +2,12 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { ItemPrototype } from '@prisma/client';
+import {
+  ItemPrototype,
+  ItemQuality,
+  ItemType,
+  User,
+} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateItemDto,
@@ -13,8 +18,11 @@ import {
 export class ItemService {
   constructor(private prisma: PrismaService) {}
 
-  getItems(userId: number) {
+  getItems(user: User) {
     return this.prisma.item.findMany({
+      where: {
+        userId: user.id,
+      },
       include: {
         item: true,
         user: true,
@@ -44,41 +52,205 @@ export class ItemService {
   }
 
   async createItem(
-    level: number,
-    userId: number,
+    user: User,
     dto: CreateItemDto,
   ) {
     const itemPrototype =
-      await this.prisma.itemPrototype.findFirst({
+      await this.prisma.itemPrototype.findUnique({
         where: {
           id: dto.itemPrototypeId,
         },
       });
 
-    const item = await this.prisma.item.create({
+    if (
+      itemPrototype.type === ItemType.HEAD ||
+      itemPrototype.type === ItemType.CHEST ||
+      itemPrototype.type === ItemType.LEGS
+    ) {
+      const generatedLevel =
+        this.generateItemLevel(
+          itemPrototype.quality,
+          user.level,
+        );
+
+      const generatedStat = Math.round(
+        (this.generateItemStat(
+          itemPrototype.minStat,
+          itemPrototype.maxStat,
+        ) +
+          generatedLevel) *
+          (1 +
+            this.addQualityBonus(
+              itemPrototype.quality,
+            )),
+      );
+
+      return await this.prisma.item.create({
+        data: {
+          name: itemPrototype.name,
+          sprite: itemPrototype.sprite,
+          level: generatedLevel,
+          stamina: Math.round(
+            (this.generateItemStat(
+              itemPrototype.minStat,
+              itemPrototype.maxStat,
+            ) +
+              generatedLevel) *
+              (1 +
+                this.addQualityBonus(
+                  itemPrototype.quality,
+                )),
+          ),
+          defence: Math.round(
+            (this.generateItemStat(
+              itemPrototype.minStat,
+              itemPrototype.maxStat,
+            ) +
+              generatedLevel) *
+              (1 +
+                this.addQualityBonus(
+                  itemPrototype.quality,
+                )),
+          ),
+          isEquipment: true,
+          quality: itemPrototype.quality,
+          itemPrototypeId: dto.itemPrototypeId,
+          userId: user.id,
+          type: itemPrototype.type,
+        },
+      });
+    }
+
+    if (itemPrototype.type === ItemType.WEAPON) {
+      const generatedLevel =
+        this.generateItemLevel(
+          itemPrototype.quality,
+          user.level,
+        );
+
+      return await this.prisma.item.create({
+        data: {
+          name: itemPrototype.name,
+          sprite: itemPrototype.sprite,
+          level: generatedLevel,
+          minAttack: Math.round(
+            (itemPrototype.minStat +
+              generatedLevel) *
+              (1 +
+                this.addQualityBonus(
+                  itemPrototype.quality,
+                )),
+          ),
+          maxAttack: Math.round(
+            (itemPrototype.maxStat +
+              generatedLevel) *
+              (1 +
+                this.addQualityBonus(
+                  itemPrototype.quality,
+                )),
+          ),
+          itemPrototypeId: dto.itemPrototypeId,
+          isEquipment: true,
+          quality: itemPrototype.quality,
+          userId: user.id,
+          type: itemPrototype.type,
+        },
+      });
+    }
+
+    return await this.prisma.item.create({
       data: {
-        stat: this.generateItemStat(
-          itemPrototype,
-        ),
+        name: itemPrototype.name,
+        sprite: itemPrototype.sprite,
         itemPrototypeId: dto.itemPrototypeId,
-        userId,
-        ...dto,
+        userId: user.id,
+        type: itemPrototype.type,
+        actionName: itemPrototype.actionName,
+        actionAmount: itemPrototype.actionAmount,
       },
     });
-
-    return item;
   }
 
-  generateItemStat(itemPrototype: ItemPrototype) {
+  addQualityBonus(quality: ItemQuality) {
+    if (quality === ItemQuality.COMMON) {
+      return 0;
+    }
+
+    if (quality === ItemQuality.UNCOMMON) {
+      return 0.05;
+    }
+
+    if (quality === ItemQuality.RARE) {
+      return 0.1;
+    }
+
+    if (quality === ItemQuality.EPIC) {
+      return 0.15;
+    }
+
+    if (quality === ItemQuality.LEGENDARY) {
+      return 0.2;
+    }
+  }
+
+  generateItemLevel(
+    quality: ItemQuality,
+    userLevel: number,
+  ) {
+    const calculateMinLevel = () => {
+      if (quality === ItemQuality.COMMON) {
+        return 1;
+      }
+
+      if (quality === ItemQuality.UNCOMMON) {
+        const minLevel = userLevel - 30;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.RARE) {
+        const minLevel = userLevel - 20;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.EPIC) {
+        const minLevel = userLevel - 10;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.LEGENDARY) {
+        return userLevel;
+      }
+    };
+
     const difference =
-      itemPrototype.maxStat -
-      itemPrototype.minStat;
+      userLevel - calculateMinLevel();
 
     let rand = Math.random();
 
     rand = Math.floor(rand * difference);
 
-    rand = rand + itemPrototype.minStat;
+    rand = rand + calculateMinLevel();
+
+    return rand;
+  }
+
+  generateItemStat(min: number, max: number) {
+    const difference = max - min;
+
+    let rand = Math.random();
+
+    rand = Math.floor(rand * difference);
+
+    rand = rand + min;
 
     return rand;
   }
@@ -99,16 +271,14 @@ export class ItemService {
 
     if (item.userId !== userId)
       throw new ForbiddenException(
-        'Access to resources denied',
+        'This is not your item',
       );
 
     const equipedItem =
       await this.prisma.item.findFirst({
         where: {
           equip: true,
-          item: {
-            type: item.item.type,
-          },
+          type: item.type,
         },
         include: {
           item: true,
@@ -126,8 +296,8 @@ export class ItemService {
       });
     }
 
-    if (item.item.isEq) {
-      return this.prisma.item.update({
+    if (item.isEquipment) {
+      await this.prisma.item.update({
         where: {
           id: itemId,
         },

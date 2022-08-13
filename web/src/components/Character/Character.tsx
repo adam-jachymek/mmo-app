@@ -11,9 +11,10 @@ import {
   GiBoots,
   GiArmoredPants,
 } from "react-icons/gi";
-import { Modal, Button } from "@mantine/core";
+import { Modal, Button, Loader } from "@mantine/core";
 
 import "./styles.sass";
+import classNames from "classnames";
 
 const Character = () => {
   const [openItem, setOpenItem] = useState(false);
@@ -21,11 +22,16 @@ const Character = () => {
   const [item, setItem] = useState({
     id: 0,
     name: "",
-    stat: "",
-    isEq: false,
+    minAttack: 0,
+    maxAttack: 0,
+    isEquipment: false,
     type: "",
+    level: 0,
+    quality: "",
+    stamina: 0,
+    defence: 0,
     equip: false,
-    icon: "",
+    sprite: "",
   });
   const { data: user, refetch: refetchUser } = useQuery("currentUser", getUser);
 
@@ -57,31 +63,46 @@ const Character = () => {
     setOpenItem(true);
     setItem({
       id: item.id,
-      name: item.item.name,
-      stat: item.stat,
-      isEq: item.item.isEq,
-      type: item.item.type,
+      name: item.name,
+      minAttack: item.minAttack,
+      maxAttack: item.maxAttack,
+      quality: item.quality,
+      level: item.level,
+      isEquipment: item.isEquipment,
+      type: item.type,
       equip: item.equip,
-      icon: item.item.icon,
+      stamina: item.stamina,
+      defence: item.defence,
+      sprite: item.sprite,
     });
   };
 
-  const numberOfSlots = 40;
+  const inventory = itemsData?.filter((item: any) => !item.equip);
+
+  const numberOfSlots = 39;
 
   const renderSlots = () => {
     let items = [];
     for (let i = 0; i < numberOfSlots; i++) {
-      if (!itemsData[i]?.equip) {
+      if (!inventory[i]?.equip) {
         items.push(
           <li
             onClick={() => {
-              itemsData[i] && openItemModal(itemsData[i]);
+              inventory[i] && openItemModal(inventory[i]);
             }}
-            className="player__item"
+            className={classNames(
+              "player__item",
+              { uncommon: inventory[i]?.quality === "UNCOMMON" },
+              {
+                epic: inventory[i]?.quality === "EPIC",
+              },
+              { rare: inventory[i]?.quality === "RARE" },
+              { legendary: inventory[i]?.quality === "LEGENDARY" }
+            )}
           >
-            {itemsData[i] && (
+            {inventory[i] && (
               <img
-                src={`/media/items/${itemsData[i].item.icon}.png`}
+                src={`/media/items/${inventory[i].item.sprite}.png`}
                 className="player__item-icon"
               />
             )}
@@ -107,13 +128,42 @@ const Character = () => {
         onClose={handleCloseModal}
       >
         <img
-          src={`/media/items/${item.icon}.png`}
+          src={`/media/items/${item.sprite}.png`}
           className="player__modal-icon"
         />
         <h3>{item.name}</h3>
-        Stat: {item.stat}
+        <h4>{item.level} lvl</h4>
+        <h4
+          className={classNames(
+            {
+              uncommon: item.quality === "UNCOMMON",
+            },
+            {
+              rare: item.quality === "RARE",
+            },
+            {
+              epic: item.quality === "EPIC",
+            },
+            {
+              legendary: item.quality === "LEGENDARY",
+            }
+          )}
+        >
+          {item.quality}
+        </h4>
+        {item.type === "WEAPON" && (
+          <p>
+            Attack: {item.minAttack} - {item.maxAttack}
+          </p>
+        )}
+        {item.type === "HEAD" && (
+          <div>
+            <p>Stamina: {item.stamina}</p>
+            <p>Defence: {item.defence}</p>
+          </div>
+        )}
         <div className="player__modal-buttons">
-          {item.isEq && (
+          {item.isEquipment && (
             <Button
               variant="outline"
               color="lime"
@@ -158,7 +208,7 @@ const Character = () => {
   };
 
   if (isFetching) {
-    return null;
+    return <Loader />;
   }
 
   return (
@@ -178,15 +228,29 @@ const Character = () => {
               {itemsData?.map(
                 (item: any) =>
                   item.equip &&
-                  item.item.type === "head" && (
+                  item.type === "HEAD" && (
                     <div
                       onClick={() => {
                         openItemModal(item);
                       }}
                     >
                       <img
-                        src={`/media/items/${item.item.icon}.png`}
-                        className="player__item-icon"
+                        src={`/media/items/${item.item.sprite}.png`}
+                        className={classNames(
+                          "player__item-icon",
+                          {
+                            uncommon: item.quality === "UNCOMMON",
+                          },
+                          {
+                            rare: item.quality === "RARE",
+                          },
+                          {
+                            epic: item.quality === "EPIC",
+                          },
+                          {
+                            legendary: item.quality === "LEGENDARY",
+                          }
+                        )}
                       />
                     </div>
                   )
@@ -199,14 +263,14 @@ const Character = () => {
               {itemsData?.map(
                 (item: any) =>
                   item.equip &&
-                  item.item.type === "weapon" && (
+                  item.type === "WEAPON" && (
                     <div
                       onClick={() => {
                         openItemModal(item);
                       }}
                     >
                       <img
-                        src={`/media/items/${item.item.icon}.png`}
+                        src={`/media/items/${item.item.sprite}.png`}
                         className="player__item-icon"
                       />
                     </div>

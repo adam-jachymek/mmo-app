@@ -5,12 +5,12 @@ import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { deleteGuildById, editGuildById, leaveGuild } from "api/endpoints";
 import ConfirmModal from "components/ConfirmModal";
-import { User } from "/types";
+import { Guild, User } from "/types";
 
 type Props = {
   currentUser: User;
   refetchUser: () => void;
-  guild: any;
+  guild: Guild;
   refetchGuild: () => void;
   isAdmin: boolean;
   isMod: boolean;

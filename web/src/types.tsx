@@ -18,20 +18,26 @@ export type ItemPrototype = {
   name: string;
   description: string;
   type: string;
-  icon: string;
+  sprite: string;
   minStat: number;
   maxStat: number;
-  isEq: string;
+  isEquipment: string;
+  quality: string;
 };
 
 export type Item = {
   id: number;
   name: string;
   description: string;
-  stat: number;
+  minAttack: number;
+  maxAttack: number;
   userId: number;
   item: ItemPrototype;
   user: User;
+  quality: string;
+  level: number;
+  stamina: number;
+  defence: number;
 };
 
 export type Mob = {
@@ -61,7 +67,8 @@ export type Map = {
 };
 
 export type Guild = {
-  description: string;
   id: number;
   name: string;
+  description: string;
+  usersCount: number;
 };

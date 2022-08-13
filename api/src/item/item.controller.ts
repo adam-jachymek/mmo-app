@@ -20,6 +20,7 @@ import {
   CreateItemDto,
   EditItemDto,
 } from './dto';
+import { User } from '@prisma/client';
 
 @UseGuards(JwtGuard)
 @Controller('item')
@@ -27,8 +28,8 @@ export class ItemController {
   constructor(private ItemService: ItemService) {}
 
   @Get()
-  getItems(@GetUser('id') userId: number) {
-    return this.ItemService.getItems(userId);
+  getItems(@GetUser() user: User) {
+    return this.ItemService.getItems(user);
   }
 
   @Get('admin')
@@ -46,15 +47,10 @@ export class ItemController {
 
   @Post()
   createItems(
-    @GetUser('id') level: number,
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Body() dto: CreateItemDto,
   ) {
-    return this.ItemService.createItem(
-      level,
-      userId,
-      dto,
-    );
+    return this.ItemService.createItem(user, dto);
   }
 
   @Post('/equip/:id')

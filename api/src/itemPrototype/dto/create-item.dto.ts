@@ -1,15 +1,24 @@
 import {
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+import {
+  ItemQuality,
+  ItemType,
+} from '@prisma/client';
 
 export class CreateItemDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @IsOptional()
+  sprite?: string;
 
   @IsString()
   @IsOptional()
@@ -25,13 +34,21 @@ export class CreateItemDto {
 
   @IsBoolean()
   @IsOptional()
-  isEq?: boolean;
+  isEquipment?: boolean;
+
+  @IsEnum(ItemType)
+  @IsOptional()
+  type?: ItemType;
+
+  @IsEnum(ItemQuality)
+  @IsOptional()
+  quality?: ItemQuality;
 
   @IsString()
   @IsOptional()
-  type?: string;
+  actionName?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  icon?: string;
+  actionAmount?: number;
 }

@@ -1,5 +1,10 @@
 import {
-  IsNotEmpty,
+  ItemQuality,
+  ItemType,
+} from '@prisma/client';
+import {
+  IsBoolean,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
@@ -12,6 +17,10 @@ export class EditItemDto {
 
   @IsString()
   @IsOptional()
+  sprite?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
 
   @IsNumber()
@@ -21,4 +30,24 @@ export class EditItemDto {
   @IsNumber()
   @IsOptional()
   maxStat?: number;
+
+  @IsBoolean()
+  @IsOptional()
+  isEquipment?: boolean;
+
+  @IsEnum(ItemType)
+  @IsOptional()
+  type?: ItemType;
+
+  @IsEnum(ItemQuality)
+  @IsOptional()
+  quality?: ItemQuality;
+
+  @IsString()
+  @IsOptional()
+  actionName?: string;
+
+  @IsNumber()
+  @IsOptional()
+  actionAmount?: number;
 }

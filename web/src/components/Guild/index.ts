@@ -1,3 +1,3 @@
-import Guild from "./Guild";
+import GuildHome from "./GuildHome";
 
-export default Guild;
+export default GuildHome;

@@ -15,7 +15,7 @@ import Explore from "./components/Explore";
 import ExploreScreen from "./components/ExploreScreen";
 import Character from "./components/Character";
 import Players from "./components/Players";
-import Guild from "./components/Guild";
+import GuildHome from "./components/Guild";
 import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
@@ -76,7 +76,7 @@ const AppRouter = () => {
           <Route
             path="/guild"
             element={
-              <Guild currentUser={currentUser} refetchUser={refetchUser} />
+              <GuildHome currentUser={currentUser} refetchUser={refetchUser} />
             }
           />
           <Route

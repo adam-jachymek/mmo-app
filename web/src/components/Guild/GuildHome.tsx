@@ -8,7 +8,7 @@ import {
   leaveGuild,
 } from "api/endpoints";
 import { Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
-import { User } from "/types";
+import { Guild, User } from "/types";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
@@ -19,7 +19,7 @@ type Props = {
   refetchUser: () => void;
 };
 
-const Guild = ({ currentUser, refetchUser }: Props) => {
+const GuildHome = ({ currentUser, refetchUser }: Props) => {
   const [opened, setOpened] = useState(false);
 
   let navigate = useNavigate();
@@ -146,7 +146,7 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {guildData?.map((guild: any) => (
+            {guildData?.map((guild: Guild) => (
               <tr key={guild.id}>
                 <td>{guild.name}</td>
                 <td>{guild.usersCount} / 100</td>
@@ -178,4 +178,4 @@ const Guild = ({ currentUser, refetchUser }: Props) => {
   );
 };
 
-export default Guild;
+export default GuildHome;
