@@ -30,8 +30,8 @@ export class UserController {
   }
 
   @Post('heal')
-  healUser(@GetUser('id') userId: number) {
-    return this.userService.healUser(userId);
+  healUser(@GetUser() user: User) {
+    return this.userService.healUser(user);
   }
 
   @Patch()

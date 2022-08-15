@@ -60,17 +60,10 @@ export class UserService {
     return user;
   }
 
-  async healUser(userId: number) {
-    const user =
-      await this.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-      });
-
+  async healUser(user: User) {
     return this.prisma.user.update({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         hp: user.maxHp,
@@ -97,10 +90,10 @@ export class UserService {
         },
         data: {
           level: user.level + level_count,
-          points: user.points + 5,
+          points: 5 * level_count + user.points,
           exp: userExp,
           maxExp: nextLevelExpLimit,
-          maxHp: user.maxHp * (2 ^ level_count),
+          maxHp: 20 * level_count + user.maxHp,
         },
       });
     }
