@@ -23,6 +23,7 @@ const Battle = ({ currentUser }: Props) => {
 
   const { mutate: createNewBattle } = useMutation(createBattle, {
     onSuccess: (response, variables) => {
+      console.log(response);
       navigate(`/battle/${response.id}`);
     },
   });

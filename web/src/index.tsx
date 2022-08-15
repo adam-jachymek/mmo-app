@@ -18,8 +18,8 @@ const queryClient = new QueryClient({
       retry: 1,
       onError: (error: any) => {
         if ((error.response.status = 401)) {
-          removeToken();
-          window.location.reload();
+          // removeToken();
+          // window.location.reload();
         }
       },
     },

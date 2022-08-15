@@ -65,7 +65,7 @@ model User {
   eqDefence Int? @default(0)
 
   items Item[]
-  battle Battle[]
+  inBattle UsersInBattle[]
 
   guild Guild? @relation(fields: [guildId], references: [id])
   guildId Int?
@@ -163,7 +163,7 @@ model MobSpawn {
   mob Mob @relation(fields: [mobId], references: [id])
   mobId Int
 
-  battle Battle[]
+  inBattle MobsInBattle[]
 
   @@map("mobSpawn")
 }
@@ -188,13 +188,30 @@ model Battle {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  mobSpawn MobSpawn @relation(fields: [mobSpawnId], references: [id])
-  mobSpawnId Int
-
-  user User @relation(fields: [userId], references: [id])
-  userId Int
+  usersInBattle UsersInBattle[]
+  mobsInBattle MobsInBattle[]
 
   @@map("battle")
+}
+
+model UsersInBattle {
+  battle       Battle     @relation(fields: [battleId], references: [id])
+  battleId     Int
+  user        User @relation(fields: [userId], references: [id])
+  userId       Int
+  assignedAt   DateTime @default(now())
+
+  @@id([battleId, userId])
+}
+
+model MobsInBattle {
+  battle       Battle     @relation(fields: [battleId], references: [id])
+  battleId     Int
+  mob         MobSpawn @relation(fields: [mobId], references: [id])
+  mobId        Int
+  assignedAt   DateTime @default(now())
+
+  @@id([battleId, mobId])
 }
 
 model Explore {

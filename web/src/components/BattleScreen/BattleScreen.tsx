@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
+import { socket } from "api/socket";
 
 import { Progress } from "@mantine/core";
 
@@ -21,28 +22,34 @@ type Props = {
   refetchUser: any;
 };
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+type Battle = {
+  mobId: number;
 };
 
 const BattleScreen = ({ currentUser, refetchUser }: Props) => {
-  const { id } = useParams();
+  const { id: battleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [lostModal, setLostModal] = useState(false);
-  const [battle, setBattle] = useState(false);
+  const [fight, setFight] = useState(false);
+  const [battle, setBattle] = useState<any>({});
   let navigate = useNavigate();
 
-  const { data: mob, refetch: refetchMob } = useQuery(["getBattle", id], () =>
-    getBattle(id)
+  const { data: mob, refetch: refetchMob } = useQuery(
+    ["getBattle", battleId],
+    () => getBattle(battleId)
   );
+
+  useEffect(() => {
+    battleId && socket.emit("joinBattle", battleId.toString());
+  }, []);
+
+  useEffect(() => {
+    battleId &&
+      socket.on(battleId.toString(), (response) => {
+        console.log("Socket", response);
+        setBattle(response);
+      });
+  });
 
   const { mutate: startBattle } = useMutation(createBattle, {
     onSuccess: (response) => {},
@@ -66,7 +73,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   }, [mob?.hp, navigate, setOpenModal]);
 
   const mobHpProgress = () => {
-    return (mob?.hp / mob?.maxHp) * 100;
+    return (battle.mob?.hp / battle.mob?.maxHp) * 100;
   };
 
   const playerHpProgress = () => {
@@ -78,8 +85,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   };
 
   const fightHandle = () => {
-    // startBattle(mob?.id);
-    setBattle(true);
+    setFight(true);
   };
 
   const closeModal = () => {
@@ -93,13 +99,17 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="fight">
+        {battle.mobId}
         <div className="fight__mob">
           <div className="fight__mob-info">
             <div className="fight__mob-info-text-display">
-              <h2 className="fight__mob-info-text">{mob?.mob?.name}</h2>
-              <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
+              <h2 className="fight__mob-info-text">{battle.mob?.mob?.name}</h2>
+              <h3 className="fight__mob-info-text">
+                Level: {battle.mob?.level}
+              </h3>
               <p className="fight__mob-info-text-hp">
-                HP: {mob?.hp < 1 ? 0 : mob?.hp} / {mob?.maxHp}
+                HP: {battle.mob?.hp < 1 ? 0 : battle.mob?.hp} /{" "}
+                {battle.mob?.maxHp}
               </p>
               <Progress
                 classNames={{
@@ -114,7 +124,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
           <div className="fight__mob-sprite">
             <img
               className="fight__mob-img"
-              src={`/media/mobs/${mob?.sprite}.png`}
+              src={`/media/mobs/${battle.mob?.sprite}.png`}
             />
           </div>
         </div>
@@ -152,7 +162,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
           </div>
         </div>
         <div className="fight__menu-display">
-          {!battle && (
+          {!fight && (
             <div className="fight__menu-1">
               <div className="fight__menu-text">
                 <h2>Wild {mob?.mob?.name} appered!</h2>
@@ -176,13 +186,14 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
             </div>
           )}
 
-          {battle && (
+          {fight && (
             <div className="fight__menu-2">
               <button
                 className="fight__button fight__attack"
                 onClick={() => {
-                  attack(Number(id));
+                  attack(Number(battleId));
                   refetchUser();
+                  socket.emit("turn", battleId?.toString());
                 }}
               >
                 ATTACK

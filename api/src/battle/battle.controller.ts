@@ -23,7 +23,6 @@ import {
   CreateBattleDto,
   EditBattleDto,
 } from './dto';
-import { WebSocketServer } from '@nestjs/websockets';
 
 @UseGuards(JwtGuard)
 @Controller('battle')

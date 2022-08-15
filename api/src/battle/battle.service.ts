@@ -12,6 +12,8 @@ import {
 } from './dto';
 import { UserService } from 'src/user/user.service';
 import { Server, Socket } from 'socket.io';
+import { BattleSocketGateway } from 'src/battleSocket/battleSocket.gateway';
+import { connect } from 'http2';
 
 @Injectable()
 export class BattleService {
@@ -33,12 +35,52 @@ export class BattleService {
     const battle =
       await this.prisma.battle.create({
         data: {
-          userId: user.id,
-          mobSpawnId: mobSpawned.id,
+          usersInBattle: {
+            create: [
+              {
+                user: {
+                  connect: {
+                    id: user.id,
+                  },
+                },
+              },
+            ],
+          },
+          mobsInBattle: {
+            create: [
+              {
+                mob: {
+                  connect: {
+                    id: mobSpawned.id,
+                  },
+                },
+              },
+            ],
+          },
         },
       });
 
     return battle;
+  }
+
+  async getBattle(battleId: number) {
+    return await this.prisma.battle.findUnique({
+      where: {
+        id: battleId,
+      },
+      include: {
+        usersInBattle: {
+          select: {
+            user: true,
+          },
+        },
+        mobsInBattle: {
+          select: {
+            mob: true,
+          },
+        },
+      },
+    });
   }
 
   generateAttack(user: User) {
@@ -55,26 +97,34 @@ export class BattleService {
 
   async turn(user: User, battleId: number) {
     const battle =
-      await this.prisma.battle.findUnique({
+      await this.prisma.battle.findFirst({
         where: {
           id: battleId,
         },
         include: {
-          mobSpawn: true,
+          usersInBattle: true,
+          mobsInBattle: {
+            select: {
+              mob: true,
+            },
+          },
         },
       });
 
-    if (battle.mobSpawn.hp < 1) {
+    if (battle.mobsInBattle[0].mob.hp < 1) {
       await this.userService.giveExp(
         user,
-        battle.mobSpawn.giveExp,
+        battle.mobsInBattle[0].mob.giveExp,
       );
     }
 
-    this.attackMob(user, battle.mobSpawn);
+    this.attackMob(
+      user,
+      battle.mobsInBattle[0].mob,
+    );
     this.userService.attackUser(
       user.id,
-      battle.mobSpawn,
+      battle.mobsInBattle[0].mob,
     );
   }
 
@@ -125,18 +175,18 @@ export class BattleService {
   }
 
   async getBattleById(battleId: number) {
-    return await this.prisma.battle.findUnique({
-      where: {
-        id: battleId,
-      },
-      include: {
-        mobSpawn: {
-          include: {
-            mob: true,
-          },
+    const battle =
+      await this.prisma.battle.findFirst({
+        where: {
+          id: battleId,
         },
-      },
-    });
+        include: {
+          usersInBattle: true,
+          mobsInBattle: true,
+        },
+      });
+
+    return battle;
   }
 
   // async editMobSpawnById(

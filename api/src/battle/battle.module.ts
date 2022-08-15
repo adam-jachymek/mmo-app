@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BattleSocketModule } from 'src/battleSocket/battleSocket.module';
 import { MobSpawnModule } from 'src/mobSpawn/mobSpawn.module';
 import { MobSpawnService } from 'src/mobSpawn/mobSpawn.service';
 import { UserModule } from 'src/user/user.module';
@@ -10,5 +11,6 @@ import { BattleService } from './battle.service';
   controllers: [BattleController],
   providers: [BattleService],
   imports: [MobSpawnModule, UserModule],
+  exports: [BattleService],
 })
 export class BattleModule {}

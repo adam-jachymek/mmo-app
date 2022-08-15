@@ -13,6 +13,7 @@ import { BattleModule } from './battle/battle.module';
 import { ExploreModule } from './explore/explore.module';
 import { GuildModule } from './guild/guild.module';
 import { MessagesModule } from './messages/messages.module';
+import { BattleSocketModule } from './battleSocket/battleSocket.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MessagesModule } from './messages/messages.module';
     ExploreModule,
     GuildModule,
     MessagesModule,
+    BattleSocketModule,
   ],
 })
 export class AppModule {}
