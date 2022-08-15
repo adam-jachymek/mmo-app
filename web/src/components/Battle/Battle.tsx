@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { getMobs, spawnMob } from "api/endpoints";
+import { getMobs, spawnMob, createBattle } from "api/endpoints";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { User } from "/types";
@@ -16,6 +16,12 @@ const Battle = ({ currentUser }: Props) => {
   let navigate = useNavigate();
 
   const { mutate: generateMob } = useMutation(spawnMob, {
+    onSuccess: (response, variables) => {
+      navigate(`/battle/${response.id}`);
+    },
+  });
+
+  const { mutate: createNewBattle } = useMutation(createBattle, {
     onSuccess: (response, variables) => {
       navigate(`/battle/${response.id}`);
     },
@@ -44,7 +50,7 @@ const Battle = ({ currentUser }: Props) => {
                 size="xs"
                 disabled={currentUser?.hp < 1}
                 onClick={() => {
-                  generateMob({ mobId: mob.id });
+                  createNewBattle({ mobId: mob.id });
                 }}
               >
                 Fight

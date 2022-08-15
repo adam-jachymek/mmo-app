@@ -1,6 +1,12 @@
 import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { getSpawnMobById, attackMob, createBattle } from "api/endpoints";
+import {
+  getSpawnMobById,
+  attackMob,
+  createBattle,
+  battleTurn,
+  getBattle,
+} from "api/endpoints";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { User } from "/types";
@@ -34,16 +40,15 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const [battle, setBattle] = useState(false);
   let navigate = useNavigate();
 
-  const { data: mob, refetch: refetchMob } = useQuery(
-    ["getSpawnedMob", id],
-    () => getSpawnMobById(id)
+  const { data: mob, refetch: refetchMob } = useQuery(["getBattle", id], () =>
+    getBattle(id)
   );
 
   const { mutate: startBattle } = useMutation(createBattle, {
     onSuccess: (response) => {},
   });
 
-  const { mutate: attack } = useMutation(attackMob, {
+  const { mutate: attack } = useMutation(battleTurn, {
     onSuccess: (response) => {
       refetchMob();
     },
@@ -73,7 +78,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   };
 
   const fightHandle = () => {
-    startBattle(mob?.id);
+    // startBattle(mob?.id);
     setBattle(true);
   };
 
@@ -109,7 +114,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
           <div className="fight__mob-sprite">
             <img
               className="fight__mob-img"
-              src={`/media/mobs/${mob?.mob.sprite}.png`}
+              src={`/media/mobs/${mob?.sprite}.png`}
             />
           </div>
         </div>
@@ -176,7 +181,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
               <button
                 className="fight__button fight__attack"
                 onClick={() => {
-                  attack(id);
+                  attack(Number(id));
                   refetchUser();
                 }}
               >

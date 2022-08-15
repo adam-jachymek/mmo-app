@@ -25,14 +25,9 @@ export class MessagesService {
   }
 
   create(createMessageDto: CreateMessageDto) {
-    const message = {
-      name: createMessageDto.name,
-      message: createMessageDto.message,
-    };
+    this.messages.push(createMessageDto);
 
-    this.messages.push(message);
-
-    return message;
+    return createMessageDto;
   }
 
   findAll() {

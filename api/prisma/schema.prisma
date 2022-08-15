@@ -158,6 +158,7 @@ model MobSpawn {
   attack Int?
   defence Int?
   giveExp Int?
+  sprite String?
 
   mob Mob @relation(fields: [mobId], references: [id])
   mobId Int

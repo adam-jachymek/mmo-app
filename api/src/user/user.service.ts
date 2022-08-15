@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
-import { MobSpawn } from '@prisma/client';
+import { MobSpawn, User } from '@prisma/client';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -77,49 +78,41 @@ export class UserService {
     });
   }
 
-  async giveExp(
-    userId: number,
-    amountOfExp: number,
-  ) {
-    const user =
-      await this.prisma.user.findUnique({
+  async giveExp(user: User, amountOfExp: number) {
+    let userExp = user.exp + amountOfExp;
+    let nextLevelExpLimit = user.maxExp;
+    let level_count = 0;
+
+    if (userExp >= nextLevelExpLimit) {
+      while (userExp >= nextLevelExpLimit) {
+        userExp = userExp - nextLevelExpLimit;
+        nextLevelExpLimit = nextLevelExpLimit * 2;
+
+        level_count++;
+      }
+
+      return await this.prisma.user.update({
         where: {
-          id: userId,
+          id: user.id,
+        },
+        data: {
+          level: user.level + level_count,
+          points: user.points + 5,
+          exp: userExp,
+          maxExp: nextLevelExpLimit,
+          maxHp: user.maxHp * (2 ^ level_count),
         },
       });
+    }
 
-    await this.prisma.user.update({
+    return await this.prisma.user.update({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         exp: user.exp + amountOfExp,
       },
     });
-
-    const userAfterExp =
-      await this.prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-      });
-
-    if (userAfterExp.exp >= userAfterExp.maxExp) {
-      await this.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          level: user.level + 1,
-          points: user.points + 5,
-          exp:
-            userAfterExp.exp -
-            userAfterExp.maxExp,
-          maxExp: userAfterExp.maxExp * 2,
-          maxHp: userAfterExp.maxHp * 2,
-        },
-      });
-    }
   }
 
   async attackUser(

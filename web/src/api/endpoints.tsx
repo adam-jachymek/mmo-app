@@ -35,7 +35,7 @@ export const createItem = async (values: {
   description?: string;
   minStat?: number;
   maxStat?: number;
-  isEq?: boolean;
+  isEquipment?: boolean;
   type?: string;
   quality?: string;
   actionAmount?: number;
@@ -144,6 +144,18 @@ export const createMap = async (values: {
 
 export const createBattle = async (values: { mobId: number }) => {
   const response = await api.post("/battle/", values);
+
+  return response.data;
+};
+
+export const getBattle = async (battleId?: string) => {
+  const response = await api.get(`/battle/${battleId}`);
+
+  return response.data.mobSpawn;
+};
+
+export const battleTurn = async (battleId: number) => {
+  const response = await api.post(`/battle/${battleId}`);
 
   return response.data;
 };

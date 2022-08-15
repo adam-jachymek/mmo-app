@@ -6,6 +6,7 @@ import { Mob } from '@prisma/client';
 import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { MobSpawnModule } from './mobSpawn.module';
 import {
   CreateMobSpawnDto,
   EditMobSpawnDto,
@@ -56,6 +57,7 @@ export class MobSpawnService {
           attack: mob.attack * mobLevel,
           defence: mob.defence * mobLevel,
           giveExp: mob.giveExp * mobLevel,
+          sprite: mob.sprite,
         },
         include: {
           mob: true,
@@ -88,7 +90,7 @@ export class MobSpawnService {
 
     if (spawnedMob.hp < 1) {
       await this.userService.giveExp(
-        user.id,
+        user,
         spawnedMob.giveExp,
       );
     }
@@ -131,7 +133,7 @@ export class MobSpawnService {
 
     if (mobAfterAttack.hp < 1) {
       await this.userService.giveExp(
-        user.id,
+        user,
         spawnedMob.giveExp,
       );
 

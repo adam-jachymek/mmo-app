@@ -12,14 +12,18 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
+import { MobSpawnService } from 'src/mobSpawn/mobSpawn.service';
+import { Server, Socket } from 'socket.io';
 
 import { BattleService } from './battle.service';
 import {
   CreateBattleDto,
   EditBattleDto,
 } from './dto';
+import { WebSocketServer } from '@nestjs/websockets';
 
 @UseGuards(JwtGuard)
 @Controller('battle')
@@ -30,12 +34,32 @@ export class BattleController {
 
   @Post()
   createBattle(
-    @GetUser('id') userId: number,
+    @GetUser() user: User,
     @Body() dto: CreateBattleDto,
   ) {
     return this.BattleService.createBattle(
-      userId,
+      user,
       dto,
+    );
+  }
+
+  @Post(':id')
+  battleTurn(
+    @GetUser() user: User,
+    @Param('id', ParseIntPipe) battleId: number,
+  ) {
+    return this.BattleService.turn(
+      user,
+      battleId,
+    );
+  }
+
+  @Get(':id')
+  getBattleById(
+    @Param('id', ParseIntPipe) battleId: number,
+  ) {
+    return this.BattleService.getBattleById(
+      battleId,
     );
   }
 }
