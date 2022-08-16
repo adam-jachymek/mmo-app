@@ -152,6 +152,7 @@ model MobSpawn {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  name String?
   level Int?
   hp Int?
   maxHp Int?
