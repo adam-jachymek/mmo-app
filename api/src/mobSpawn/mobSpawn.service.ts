@@ -50,6 +50,7 @@ export class MobSpawnService {
     const mobSpawned =
       await this.prisma.mobSpawn.create({
         data: {
+          name: mob.name,
           level: mobLevel,
           hp: mob.hp * mobLevel,
           maxHp: mob.hp * mobLevel,
