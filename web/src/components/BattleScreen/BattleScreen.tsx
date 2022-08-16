@@ -38,7 +38,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     ["getBattle", battleId],
     () => getBattle(battleId)
   );
-
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
   }, []);
@@ -72,10 +71,9 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     }
   }, [mob?.hp, navigate, setOpenModal]);
 
-  const mobHpProgress = () => {
-    return (battle.mob?.hp / battle.mob?.maxHp) * 100;
-  };
-
+  // const mobHpProgress = () => {
+  //   return (battle.mob?.hp / battle.mob?.maxHp) * 100;
+  // };
   const playerHpProgress = () => {
     return (currentUser?.hp / currentUser?.maxHp) * 100;
   };
@@ -99,73 +97,81 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="fight">
-        {battle.mobId}
-        <div className="fight__mob">
-          <div className="fight__mob-info">
-            <div className="fight__mob-info-text-display">
-              <h2 className="fight__mob-info-text">{battle.mob?.mob?.name}</h2>
-              <h3 className="fight__mob-info-text">
-                Level: {battle.mob?.level}
-              </h3>
-              <p className="fight__mob-info-text-hp">
-                HP: {battle.mob?.hp < 1 ? 0 : battle.mob?.hp} /{" "}
-                {battle.mob?.maxHp}
-              </p>
-              <Progress
-                classNames={{
-                  root: "fight__mob-hp",
-                }}
-                color="red"
-                size="lg"
-                value={mobHpProgress()}
+        {battle?.mobsInBattle?.map((mob: any) => (
+          <div className="fight__mob">
+            <div className="fight__mob-info">
+              <div className="fight__mob-info-text-display">
+                <h2 className="fight__mob-info-text">{mob?.mob.name}</h2>
+                <h3 className="fight__mob-info-text">
+                  Level: {mob?.mob.level}
+                </h3>
+                <p className="fight__mob-info-text-hp">
+                  HP: {mob?.mob.hp < 1 ? 0 : mob?.mob.hp} / {mob?.mob.maxHp}
+                </p>
+                <Progress
+                  classNames={{
+                    root: "fight__mob-hp",
+                  }}
+                  color="red"
+                  size="lg"
+                  value={(mob.mob.hp / mob.mob.maxHp) * 100}
+                  // value={mobHpProgress()}
+                />
+              </div>
+            </div>
+            <div className="fight__mob-sprite">
+              <img
+                className="fight__mob-img"
+                src={`/media/mobs/${mob?.mob.sprite}.png`}
               />
             </div>
           </div>
-          <div className="fight__mob-sprite">
-            <img
-              className="fight__mob-img"
-              src={`/media/mobs/${battle.mob?.sprite}.png`}
-            />
-          </div>
-        </div>
-        <div className="fight__player">
-          <div className="fight__player-sprite">
-            <img className="fight__player-img" src="/media/player/player.png" />
-          </div>
-          <div className="fight__player-info">
-            <div className="fight__player-info-display">
-              <h2 className="fight__player-info-text">
-                {currentUser?.username}
-              </h2>
-              <h3 className="fight__player-info-text">
-                Level: {currentUser?.level}
-              </h3>
-              <p className="fight__player-info-text">
-                HP: {currentUser?.hp < 1 ? 0 : currentUser?.hp} /{" "}
-                {currentUser?.maxHp}
-              </p>
-              <Progress
-                classNames={{ root: "fight__player-hp" }}
-                color="red"
-                value={playerHpProgress()}
+        ))}
+        {battle?.usersInBattle?.map((user: any) => (
+          <div className="fight__player">
+            <div className="fight__player-sprite">
+              <img
+                className="fight__player-img"
+                src="/media/player/player.png"
               />
-              <Progress
-                classNames={{ root: "fight__player-hp" }}
-                color="indigo"
-                value={playerExpProgress()}
-              />
+            </div>
+            <div className="fight__player-info">
+              <div className="fight__player-info-display">
+                <h2 className="fight__player-info-text">
+                  {user?.user?.username}
+                </h2>
+                <h3 className="fight__player-info-text">
+                  Level: {user?.user?.level}
+                </h3>
+                <p className="fight__player-info-text">
+                  HP: {user?.user?.hp < 1 ? 0 : user?.user?.hp} /{" "}
+                  {user?.user?.maxHp}
+                </p>
+                <Progress
+                  classNames={{ root: "fight__player-hp" }}
+                  color="red"
+                  value={playerHpProgress()}
+                />
+                <Progress
+                  classNames={{ root: "fight__player-hp" }}
+                  color="indigo"
+                  value={playerExpProgress()}
+                />
 
-              <p className="fight__player-exp">
-                EXP: {currentUser?.exp} / {currentUser?.maxExp}
-              </p>
+                <p className="fight__player-exp">
+                  EXP: {user?.user?.exp} / {user?.user?.maxExp}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
         <div className="fight__menu-display">
           {!fight && (
             <div className="fight__menu-1">
               <div className="fight__menu-text">
-                <h2>Wild {mob?.mob?.name} appered!</h2>
+                {battle?.mobsInBattle?.map((mob: any) => (
+                  <h2>Wild {mob?.mob?.name} appered!</h2>
+                ))}
               </div>
               <div className="fight__button-chose">
                 <button
@@ -208,13 +214,20 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         withCloseButton={false}
         onClose={closeModal}
       >
-        <div className="fight__modal">
-          <h3 className="fight__modal-title">You Win!</h3>
-          <p>You got: {mob?.giveExp} EXP</p>
-          <Button onClick={closeModal} variant="outline" color="gray" size="md">
-            CLOSE
-          </Button>
-        </div>
+        {battle?.mobsInBattle?.map((mob: any) => (
+          <div className="fight__modal">
+            <h3 className="fight__modal-title">You Win!</h3>
+            <p>You got: {mob?.mob?.giveExp} EXP</p>
+            <Button
+              onClick={closeModal}
+              variant="outline"
+              color="gray"
+              size="md"
+            >
+              CLOSE
+            </Button>
+          </div>
+        ))}
       </Modal>
       <Modal
         centered
