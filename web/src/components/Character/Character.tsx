@@ -292,7 +292,7 @@ const Character = () => {
             <p className="player__stats-text">
               <span>Stamina:</span>
               <span className="player__stats_count">
-                {user?.stamina}
+                {user?.stamina} ({user?.eqStamina})
                 {user?.points > 0 && (
                   <button
                     onClick={() => {
@@ -307,7 +307,7 @@ const Character = () => {
             <p className="player__stats-text">
               <span>Strength:</span>
               <span className="player__stats_count">
-                {user?.strength} ({user?.eqStrength})
+                {user?.strength}
                 {user?.points > 0 && (
                   <button
                     onClick={() => {
@@ -322,7 +322,7 @@ const Character = () => {
             <p className="player__stats-text">
               <span>Defence:</span>
               <span className="player__stats_count">
-                {user?.defence}
+                {user?.defence} ({user?.eqDefence})
                 {user?.points > 0 && (
                   <button
                     onClick={() => {
@@ -335,13 +335,13 @@ const Character = () => {
               </span>
             </p>
             <p className="player__stats-text">
-              <span>Attack Speed:</span>
+              <span>Dexterity:</span>
               <span className="player__stats_count">
-                {user?.speed}
+                {user?.dexterity}
                 {user?.points > 0 && (
                   <button
                     onClick={() => {
-                      addPoint({ speed: user?.speed + 1 });
+                      addPoint({ dexterity: user?.dexterity + 1 });
                     }}
                   >
                     +

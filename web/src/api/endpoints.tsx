@@ -176,7 +176,7 @@ export const addLevelPoint = async (values: {
   stamina?: number;
   strength?: number;
   defence?: number;
-  speed?: number;
+  dexterity?: number;
   intelligence?: number;
 }) => {
   const response = await api.patch("/users/points", values);
