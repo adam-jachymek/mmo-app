@@ -64,23 +64,50 @@ export class BattleService {
   }
 
   async getBattle(battleId: number) {
-    return await this.prisma.battle.findUnique({
-      where: {
-        id: battleId,
-      },
-      include: {
-        usersInBattle: {
-          select: {
-            user: true,
+    const getBattle =
+      await this.prisma.battle.findUnique({
+        where: {
+          id: battleId,
+        },
+        include: {
+          usersInBattle: {
+            select: {
+              user: true,
+            },
+          },
+          mobsInBattle: {
+            select: {
+              mob: true,
+            },
           },
         },
-        mobsInBattle: {
-          select: {
-            mob: true,
-          },
-        },
-      },
-    });
+      });
+
+    const battle = {
+      id: getBattle.id,
+      users: getBattle.usersInBattle.map(
+        (user) => ({
+          id: user.user.id,
+          avatar: user.user.avatar,
+          username: user.user.username,
+          level: user.user.level,
+          exp: user.user.exp,
+          maxExp: user.user.maxExp,
+          hp: user.user.hp,
+          maxHp: user.user.maxExp,
+        }),
+      ),
+      mobs: getBattle.mobsInBattle.map((mob) => ({
+        id: mob.mob.id,
+        name: mob.mob.name,
+        level: mob.mob.level,
+        hp: mob.mob.hp,
+        maxHp: mob.mob.maxHp,
+        sprite: mob.mob.sprite,
+      })),
+    };
+
+    return battle;
   }
 
   generateAttack(user: User) {

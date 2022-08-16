@@ -38,27 +38,27 @@ export class BattleSocketGateway {
       .emit(battleSocket, battle);
   }
 
-  @SubscribeMessage('turn')
-  async turn(battleId: number) {
-    const battleSocket = battleId.toString();
+  // @SubscribeMessage('turn')
+  // async turn(battleId: number) {
+  //   const battleSocket = battleId.toString();
 
-    const getUser =
-      await this.battleService.getBattle(
-        Number(battleId),
-      );
+  //   const getUser =
+  //     await this.battleService.getBattle(
+  //       Number(battleId),
+  //     );
 
-    await this.battleService.turn(
-      getUser.usersInBattle[0].user,
-      battleId,
-    );
+  //   await this.battleService.turn(
+  //     getUser.usersInBattle[0].user,
+  //     battleId,
+  //   );
 
-    const battle =
-      await this.battleService.getBattle(
-        Number(battleId),
-      );
+  //   const battle =
+  //     await this.battleService.getBattle(
+  //       Number(battleId),
+  //     );
 
-    this.server
-      .to(battleSocket)
-      .emit(battleSocket, battle);
-  }
+  //   this.server
+  //     .to(battleSocket)
+  //     .emit(battleSocket, battle);
+  // }
 }

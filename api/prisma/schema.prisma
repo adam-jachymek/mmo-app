@@ -54,6 +54,7 @@ model User {
   maxExp Int? @default(100)
   points Int? @default(5)
   gold Int? @default(0)
+  avatar String?
 
   stamina Int? @default(10)
   strength Int? @default(10)

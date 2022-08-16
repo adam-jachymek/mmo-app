@@ -97,16 +97,14 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="fight">
-        {battle?.mobsInBattle?.map((mob: any) => (
+        {battle?.mobs?.map((mob: any) => (
           <div className="fight__mob">
             <div className="fight__mob-info">
               <div className="fight__mob-info-text-display">
-                <h2 className="fight__mob-info-text">{mob?.mob.name}</h2>
-                <h3 className="fight__mob-info-text">
-                  Level: {mob?.mob.level}
-                </h3>
+                <h2 className="fight__mob-info-text">{mob?.name}</h2>
+                <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
                 <p className="fight__mob-info-text-hp">
-                  HP: {mob?.mob.hp < 1 ? 0 : mob?.mob.hp} / {mob?.mob.maxHp}
+                  HP: {mob?.hp < 1 ? 0 : mob?.hp} / {mob?.maxHp}
                 </p>
                 <Progress
                   classNames={{
@@ -114,7 +112,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                   }}
                   color="red"
                   size="lg"
-                  value={(mob.mob.hp / mob.mob.maxHp) * 100}
+                  value={(mob.hp / mob.maxHp) * 100}
                   // value={mobHpProgress()}
                 />
               </div>
@@ -122,30 +120,27 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
             <div className="fight__mob-sprite">
               <img
                 className="fight__mob-img"
-                src={`/media/mobs/${mob?.mob.sprite}.png`}
+                src={`/media/mobs/${mob?.sprite}.png`}
               />
             </div>
           </div>
         ))}
-        {battle?.usersInBattle?.map((user: any) => (
+        {battle?.users?.map((user: any) => (
           <div className="fight__player">
             <div className="fight__player-sprite">
               <img
                 className="fight__player-img"
-                src="/media/player/player.png"
+                src={`/media/users/${user.avatar}.png`}
               />
             </div>
             <div className="fight__player-info">
               <div className="fight__player-info-display">
-                <h2 className="fight__player-info-text">
-                  {user?.user?.username}
-                </h2>
+                <h2 className="fight__player-info-text">{user?.username}</h2>
                 <h3 className="fight__player-info-text">
-                  Level: {user?.user?.level}
+                  Level: {user?.level}
                 </h3>
                 <p className="fight__player-info-text">
-                  HP: {user?.user?.hp < 1 ? 0 : user?.user?.hp} /{" "}
-                  {user?.user?.maxHp}
+                  HP: {user?.hp < 1 ? 0 : user?.hp} / {user?.maxHp}
                 </p>
                 <Progress
                   classNames={{ root: "fight__player-hp" }}
@@ -159,7 +154,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                 />
 
                 <p className="fight__player-exp">
-                  EXP: {user?.user?.exp} / {user?.user?.maxExp}
+                  EXP: {user?.exp} / {user?.maxExp}
                 </p>
               </div>
             </div>
