@@ -48,17 +48,6 @@ export class MobSpawnController {
     );
   }
 
-  @Patch(':id')
-  editMobSpawnById(
-    @GetUser() user: User,
-    @Param('id', ParseIntPipe) MobSpawnId: number,
-  ) {
-    return this.MobSpawnService.turn(
-      user,
-      MobSpawnId,
-    );
-  }
-
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteMobSpawnById(

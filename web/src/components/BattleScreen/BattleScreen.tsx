@@ -1,12 +1,4 @@
-import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import {
-  getSpawnMobById,
-  attackMob,
-  createBattle,
-  battleTurn,
-  getBattle,
-} from "api/endpoints";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { User } from "/types";
@@ -22,10 +14,6 @@ type Props = {
   refetchUser: any;
 };
 
-type Battle = {
-  mobId: number;
-};
-
 const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const { id: battleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
@@ -34,10 +22,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const [battle, setBattle] = useState<any>({});
   let navigate = useNavigate();
 
-  const { data: mob, refetch: refetchMob } = useQuery(
-    ["getBattle", battleId],
-    () => getBattle(battleId)
-  );
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
   }, []);
@@ -50,37 +34,17 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
       });
   });
 
-  const { mutate: startBattle } = useMutation(createBattle, {
-    onSuccess: (response) => {},
-  });
-
-  const { mutate: attack } = useMutation(battleTurn, {
-    onSuccess: (response) => {
-      refetchMob();
-    },
-  });
-
   useEffect(() => {
-    if (mob?.hp < 1) {
+    if (battle?.youWin) {
       setOpenModal(true);
       refetchUser();
     }
 
-    if (currentUser?.hp < 1) {
+    if (battle?.youLost) {
       setLostModal(true);
+      refetchUser();
     }
-  }, [mob?.hp, navigate, setOpenModal]);
-
-  // const mobHpProgress = () => {
-  //   return (battle.mob?.hp / battle.mob?.maxHp) * 100;
-  // };
-  const playerHpProgress = () => {
-    return (currentUser?.hp / currentUser?.maxHp) * 100;
-  };
-
-  const playerExpProgress = () => {
-    return (currentUser?.exp / currentUser?.maxExp) * 100;
-  };
+  }, [battle?.battleEnded, battle?.youLost, navigate, setOpenModal]);
 
   const fightHandle = () => {
     setFight(true);
@@ -145,12 +109,12 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                 <Progress
                   classNames={{ root: "fight__player-hp" }}
                   color="red"
-                  value={playerHpProgress()}
+                  value={(user.hp / user.maxHp) * 100}
                 />
                 <Progress
                   classNames={{ root: "fight__player-hp" }}
                   color="indigo"
-                  value={playerExpProgress()}
+                  value={(user.exp / user.maxExp) * 100}
                 />
 
                 <p className="fight__player-exp">
@@ -189,16 +153,19 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
 
           {fight && (
             <div className="fight__menu-2">
-              <button
-                className="fight__button fight__attack"
-                onClick={() => {
-                  attack(Number(battleId));
-                  refetchUser();
-                  socket.emit("turn", battleId?.toString());
-                }}
-              >
-                ATTACK
-              </button>
+              {battle?.userTurn && battle?.activeUser === currentUser?.id && (
+                <button
+                  className="fight__button fight__attack"
+                  onClick={() => {
+                    socket.emit("userAttack", {
+                      battleId: battleId,
+                      userId: currentUser?.id,
+                    });
+                  }}
+                >
+                  ATTACK
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -209,10 +176,10 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         withCloseButton={false}
         onClose={closeModal}
       >
-        {battle?.mobsInBattle?.map((mob: any) => (
+        {battle?.mobs?.map((mob: any) => (
           <div className="fight__modal">
             <h3 className="fight__modal-title">You Win!</h3>
-            <p>You got: {mob?.mob?.giveExp} EXP</p>
+            <p>You got: {mob?.giveExp} EXP</p>
             <Button
               onClick={closeModal}
               variant="outline"

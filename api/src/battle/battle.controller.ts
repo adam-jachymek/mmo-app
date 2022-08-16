@@ -42,16 +42,16 @@ export class BattleController {
     );
   }
 
-  @Post(':id')
-  battleTurn(
-    @GetUser() user: User,
-    @Param('id', ParseIntPipe) battleId: number,
-  ) {
-    return this.BattleService.turn(
-      user,
-      battleId,
-    );
-  }
+  // @Post(':id')
+  // battleTurn(
+  //   @GetUser() user: User,
+  //   @Param('id', ParseIntPipe) battleId: number,
+  // ) {
+  //   return this.BattleService.turn(
+  //     user,
+  //     battleId,
+  //   );
+  // }
 
   @Get(':id')
   getBattleById(

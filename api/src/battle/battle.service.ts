@@ -35,6 +35,8 @@ export class BattleService {
     const battle =
       await this.prisma.battle.create({
         data: {
+          userTurn: true,
+          battleEnded: false,
           usersInBattle: {
             create: [
               {
@@ -63,13 +65,15 @@ export class BattleService {
     return battle;
   }
 
-  async getBattle(battleId: number) {
+  async returnBattle(battleId: number) {
     const getBattle =
       await this.prisma.battle.findUnique({
         where: {
           id: battleId,
         },
         include: {
+          activeUser: true,
+          activeMob: true,
           usersInBattle: {
             select: {
               user: true,
@@ -85,6 +89,66 @@ export class BattleService {
 
     const battle = {
       id: getBattle.id,
+      userTurn: getBattle.userTurn,
+      activeUser: getBattle.activeUserId,
+      activeMob: getBattle.activeMobId,
+      battleEnded: getBattle.battleEnded,
+      youWin: getBattle.youWin,
+      youLost: getBattle.youLost,
+      users: getBattle.usersInBattle.map(
+        (user) => ({
+          id: user.user.id,
+          avatar: user.user.avatar,
+          username: user.user.username,
+          level: user.user.level,
+          exp: user.user.exp,
+          maxExp: user.user.maxExp,
+          hp: user.user.hp,
+          maxHp: user.user.maxHp,
+        }),
+      ),
+      mobs: getBattle.mobsInBattle.map((mob) => ({
+        id: mob.mob.id,
+        name: mob.mob.name,
+        level: mob.mob.level,
+        hp: mob.mob.hp,
+        maxHp: mob.mob.maxHp,
+        sprite: mob.mob.sprite,
+        giveExp: mob.mob.giveExp,
+      })),
+    };
+
+    return battle;
+  }
+
+  async getBattle(battleId: number) {
+    const getBattle =
+      await this.prisma.battle.findUnique({
+        where: {
+          id: battleId,
+        },
+        include: {
+          activeUser: true,
+          activeMob: true,
+          usersInBattle: {
+            select: {
+              user: true,
+            },
+          },
+          mobsInBattle: {
+            select: {
+              mob: true,
+            },
+          },
+        },
+      });
+
+    const battle = {
+      id: getBattle.id,
+      userTurn: getBattle.userTurn,
+      battleEnded: getBattle.battleEnded,
+      activeUser: getBattle.activeUser,
+      activeMob: getBattle.activeMob,
       users: getBattle.usersInBattle.map(
         (user) => ({
           id: user.user.id,
@@ -110,95 +174,191 @@ export class BattleService {
     return battle;
   }
 
-  generateAttack(user: User) {
-    const difference = user.strength - 1;
+  async startBattle(battleId: number) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
 
-    let rand = Math.random();
+    const getRandomUser = () => {
+      const randomUser =
+        usersInBattle[
+          Math.floor(
+            Math.random() * usersInBattle.length,
+          )
+        ];
 
-    rand = Math.floor(rand * difference);
+      return randomUser.id;
+    };
 
-    rand = rand + 1;
+    const getRandomMob = () => {
+      const randomMob =
+        mobsInBattle[
+          Math.floor(
+            Math.random() * mobsInBattle.length,
+          )
+        ];
 
-    return rand;
-  }
+      return randomMob.id;
+    };
 
-  async turn(user: User, battleId: number) {
-    const battle =
-      await this.prisma.battle.findFirst({
-        where: {
-          id: battleId,
-        },
-        include: {
-          usersInBattle: true,
-          mobsInBattle: {
-            select: {
-              mob: true,
-            },
-          },
-        },
-      });
-
-    if (battle.mobsInBattle[0].mob.hp < 1) {
-      await this.userService.giveExp(
-        user,
-        battle.mobsInBattle[0].mob.giveExp,
-      );
-    }
-
-    this.attackMob(
-      user,
-      battle.mobsInBattle[0].mob,
-    );
-    this.userService.attackUser(
-      user.id,
-      battle.mobsInBattle[0].mob,
-    );
-  }
-
-  async attackMob(
-    user: User,
-    mobSpawn: MobSpawn,
-  ) {
-    await this.prisma.mobSpawn.update({
+    await this.prisma.battle.update({
       where: {
-        id: mobSpawn.id,
+        id: battleId,
       },
       data: {
-        hp:
-          mobSpawn.hp - this.generateAttack(user),
+        activeUserId: getRandomUser(),
+        activeMobId: getRandomMob(),
+      },
+    });
+  }
+
+  generateRandomDamage = (
+    maximum: number,
+    minimum: number,
+  ) => {
+    const min = Math.ceil(minimum);
+    const max = Math.floor(maximum);
+    return (
+      Math.floor(
+        Math.random() * (max - min + 1),
+      ) + min
+    );
+  };
+
+  async userAttack(
+    battleId: number,
+    userId: number,
+  ) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
+
+    const activeUser = (await battle).activeUser;
+    const activeMob = (await battle).activeMob;
+
+    if (userId === activeUser.id) {
+      if (activeMob.hp > 0) {
+        const damage = this.generateRandomDamage(
+          1,
+          activeUser.strength,
+        );
+
+        return await this.prisma.mobSpawn.update({
+          where: {
+            id: activeMob.id,
+          },
+          data: {
+            hp: activeMob.hp - damage,
+          },
+        });
+      }
+      return activeMob;
+    }
+  }
+
+  async userTurnChanger(
+    battleId: number,
+    userTurn: boolean,
+  ) {
+    await this.prisma.battle.update({
+      where: {
+        id: battleId,
+      },
+      data: {
+        userTurn: userTurn,
+      },
+    });
+  }
+
+  async youWin(battleId: number) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
+
+    const activeUser = (await battle).activeUser;
+    const activeMob = (await battle).activeMob;
+
+    await this.userService.giveExp(
+      activeUser,
+      activeMob.giveExp,
+    );
+
+    await this.prisma.mobSpawn.update({
+      where: {
+        id: activeUser.id,
+      },
+      data: {
+        hp: 0,
       },
     });
 
-    const mobAfterAttack =
-      await this.prisma.mobSpawn.findUnique({
-        where: {
-          id: mobSpawn.id,
-        },
-      });
+    await this.prisma.battle.update({
+      where: {
+        id: battleId,
+      },
+      data: {
+        battleEnded: true,
+        youWin: true,
+      },
+    });
+  }
 
-    if (mobAfterAttack.hp < 1) {
-      await this.userService.giveExp(
-        user,
-        mobSpawn.giveExp,
-      );
+  async attackUser(
+    battleId: number,
+    userId: number,
+  ) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
 
-      await this.prisma.mobSpawn.update({
-        where: {
-          id: mobSpawn.id,
-        },
-        data: {
-          hp: 0,
-        },
-      });
+    const activeUser = (await battle).activeUser;
+    const activeMob = (await battle).activeMob;
 
-      return mobAfterAttack;
-
-      // await this.prisma.mobSpawn.delete({
-      //   where: {
-      //     id: mobSpawnId,
-      //   },
-      // });
+    if (userId === activeUser.id) {
+      if (activeUser.hp > 0) {
+        return this.prisma.user.update({
+          where: {
+            id: activeUser.id,
+          },
+          data: {
+            hp:
+              activeUser.hp -
+              this.generateRandomDamage(
+                1,
+                activeMob.attack,
+              ),
+          },
+        });
+      }
     }
+  }
+
+  async youLost(battleId: number) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
+
+    const activeUser = (await battle).activeUser;
+    const activeMob = (await battle).activeMob;
+
+    await this.prisma.user.update({
+      where: {
+        id: activeUser.id,
+      },
+      data: {
+        hp: 0,
+      },
+    });
+
+    await this.prisma.battle.update({
+      where: {
+        id: battleId,
+      },
+      data: {
+        battleEnded: true,
+        youLost: true,
+      },
+    });
   }
 
   async getBattleById(battleId: number) {
@@ -215,36 +375,4 @@ export class BattleService {
 
     return battle;
   }
-
-  // async editMobSpawnById(
-  //   user: User,
-  //   mobSpawnId: number,
-  //   dto: EditBattleDto,
-  // ) {
-  //   const spawnedMob =
-  //     await this.prisma.mobSpawn.findUnique({
-  //       where: {
-  //         id: mobSpawnId,
-  //       },
-  //     });
-
-  //   if (spawnedMob.hp < 1) {
-  //     await this.prisma.mobSpawn.delete({
-  //       where: {
-  //         id: mobSpawnId,
-  //       },
-  //     });
-  //   }
-
-  //   return this.prisma.mobSpawn.update({
-  //     where: {
-  //       id: mobSpawnId,
-  //     },
-  //     data: {
-  //       hp:
-  //         spawnedMob.hp -
-  //         this.generateAttack(user),
-  //     },
-  //   });
-  // }
 }

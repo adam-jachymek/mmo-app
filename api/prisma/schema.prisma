@@ -67,6 +67,7 @@ model User {
 
   items Item[]
   inBattle UsersInBattle[]
+  activeInBattle Battle[]
 
   guild Guild? @relation(fields: [guildId], references: [id])
   guildId Int?
@@ -166,6 +167,7 @@ model MobSpawn {
   mobId Int
 
   inBattle MobsInBattle[]
+  activeInBattle Battle[]
 
   @@map("mobSpawn")
 }
@@ -192,6 +194,14 @@ model Battle {
 
   usersInBattle UsersInBattle[]
   mobsInBattle MobsInBattle[]
+  activeUser   User? @relation(fields: [activeUserId], references: [id])
+  activeUserId Int?
+  activeMob    MobSpawn? @relation(fields: [activeMobId], references: [id])
+  activeMobId  Int?
+  userTurn     Boolean?
+  battleEnded  Boolean?
+  youWin       Boolean?
+  youLost      Boolean?
 
   @@map("battle")
 }
@@ -199,9 +209,10 @@ model Battle {
 model UsersInBattle {
   battle       Battle     @relation(fields: [battleId], references: [id])
   battleId     Int
-  user        User @relation(fields: [userId], references: [id])
+  user         User @relation(fields: [userId], references: [id])
   userId       Int
   assignedAt   DateTime @default(now())
+  turn         Boolean?
 
   @@id([battleId, userId])
 }
@@ -209,9 +220,10 @@ model UsersInBattle {
 model MobsInBattle {
   battle       Battle     @relation(fields: [battleId], references: [id])
   battleId     Int
-  mob         MobSpawn @relation(fields: [mobId], references: [id])
+  mob          MobSpawn @relation(fields: [mobId], references: [id])
   mobId        Int
   assignedAt   DateTime @default(now())
+  turn         Boolean?
 
   @@id([battleId, mobId])
 }
