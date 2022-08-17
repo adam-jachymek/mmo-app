@@ -5,6 +5,7 @@ import { Button, RingProgress, Text } from "@mantine/core";
 import { removeToken } from "api/token";
 
 import "./styles.sass";
+import { useState } from "react";
 
 type Props = {
   currentUser: User;
@@ -16,6 +17,9 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
     removeToken();
     window.location.reload();
   };
+  const [sidebar, setSidebar] = useState(false);
+
+  const showSiderbar = () => setSidebar(!sidebar);
 
   const { mutate: healMe } = useMutation(healUser, {
     onSuccess: (response) => {

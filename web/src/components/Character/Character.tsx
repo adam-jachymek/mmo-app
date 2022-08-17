@@ -34,7 +34,7 @@ const Character = () => {
     sprite: "",
   });
   const { data: user, refetch: refetchUser } = useQuery("currentUser", getUser);
-
+  console.log(user);
   const {
     data: itemsData,
     refetch: refetchItems,
@@ -217,9 +217,9 @@ const Character = () => {
         <div className="player__info">
           <img
             className="player__avatar-img"
-            src="/media/player/player.png"
-            alt=""
+            src={`/media/users/${user.avatar}.png`}
           />
+
           <div className="player__eq">
             <span className="player__eq-armor">
               <GiAbdominalArmor className="player__eq-icon" />
