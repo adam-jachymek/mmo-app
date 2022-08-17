@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
-
 import { Progress } from "@mantine/core";
 
 import "./styles.sass";
@@ -21,7 +20,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const [fight, setFight] = useState(false);
   const [battle, setBattle] = useState<any>({});
   let navigate = useNavigate();
-
+  console.log(battle);
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
   }, []);
@@ -75,7 +74,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                     root: "fight__mob-hp",
                   }}
                   color="red"
-                  size="lg"
                   value={(mob.hp / mob.maxHp) * 100}
                   // value={mobHpProgress()}
                 />
@@ -86,14 +84,50 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
                 className="fight__mob-img"
                 src={`/media/mobs/${mob?.sprite}.png`}
               />
+              <div>
+                {" "}
+                <img
+                  className="fight__mobs-img"
+                  src={`/media/mobs/${mob?.sprite}.png`}
+                />
+                <span>
+                  <Progress
+                    color="red"
+                    value={(mob.hp / mob.maxHp) * 100}
+                    // value={mobHpProgress()}
+                  />
+                </span>
+              </div>
+
+              <div>
+                <img
+                  className="fight__mobs-img"
+                  src={`/media/mobs/${mob?.sprite}.png`}
+                />
+                <span>
+                  <Progress
+                    color="red"
+                    value={(mob.hp / mob.maxHp) * 100}
+                    // value={mobHpProgress()}
+                  />
+                </span>
+              </div>
             </div>
           </div>
         ))}
         {battle?.users?.map((user: any) => (
           <div className="fight__player">
-            <div className="fight__player-sprite">
+            <div className="fight__players-avatars">
               <img
                 className="fight__player-img"
+                src={`/media/users/${user.avatar}.png`}
+              />
+              <img
+                className="fight__players-img"
+                src={`/media/users/${user.avatar}.png`}
+              />
+              <img
+                className="fight__players-img"
                 src={`/media/users/${user.avatar}.png`}
               />
             </div>

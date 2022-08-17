@@ -10,11 +10,13 @@
   width: 320px
   height: 100%
   padding: 20px 0
+  transition: 50ms
 
   &__ul
     list-style: none
     padding: 0
     margin-top: 200px
+
 
   &__li
     text-align: center
@@ -28,3 +30,10 @@
     border-top: 1px solid rgba(255,255,255,0.1)
     border-bottom: 1px solid black
     cursor: pointer
+
+  &__close
+    position: fixed
+    top: 0
+    left: 240px
+    margin-top: 150px
+    z-index: 2
