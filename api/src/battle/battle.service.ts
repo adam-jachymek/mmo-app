@@ -11,9 +11,6 @@ import {
   EditBattleDto,
 } from './dto';
 import { UserService } from 'src/user/user.service';
-import { Server, Socket } from 'socket.io';
-import { BattleSocketGateway } from 'src/battleSocket/battleSocket.gateway';
-import { connect } from 'http2';
 
 @Injectable()
 export class BattleService {

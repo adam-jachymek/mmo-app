@@ -63,7 +63,7 @@ export const deletePrototypeItem = async (itemId: number) => {
   return response.data;
 };
 
-export const deleteItem = async (itemId: number) => {
+export const deleteItem = async (itemId?: number) => {
   const response = await api.delete(`/item/${itemId}`);
 
   return response.data;

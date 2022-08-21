@@ -1,29 +1,32 @@
-.Party
+.party
   background: #252525
   background-color: #252525
   position: fixed
   top: 0
   border-right: 1px solid #FFFFFF
   right: 0
-  width: 320px
+  width: 280px
   height: 100%
   padding: 20px 0
 
   &__display
-    margin-top: 100px
+    margin-top: 50px
     display: flex
     align-items: flex-start
     flex-direction: column
 
-  &__players-info
+  &__player
     display: flex
-    flex-direction: row
-    align-items: center
-    margin-left: 15px
+    gap: 15px
+    margin-bottom: 20px
 
   &__players-avatar
-   width: 115px
-   height: 120px
+    width: 100px
+
+  &__players-info
+    display: flex
+    flex-direction: column
+    gap: 5px
 
   &__players-list
     list-style: none
@@ -31,10 +34,21 @@
     padding: 15px
     margin: 0
 
-  &__players-leader
+  &__players-name
     display: flex
     align-items: center
     margin: 0
 
+  &__players-level
+    font-size: 11px
+
+  &__players-hp
+    font-size: 14px
+
+  &__players-leader-img
+    width: 25px
+    margin-left: 5px
+
   &__progress-hp
+    margin-top: 2px
     width: 100px
