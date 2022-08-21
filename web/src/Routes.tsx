@@ -69,7 +69,12 @@ const AppRouter = () => {
               <Home currentUser={currentUser} refetchUser={refetchUser} />
             }
           />
-          <Route path="/character" element={<Character />} />
+          <Route
+            path="/character"
+            element={
+              <Character currentUser={currentUser} refetchUser={refetchUser} />
+            }
+          />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/items" element={<Items />} />
           <Route path="/admin/maps" element={<Maps />} />

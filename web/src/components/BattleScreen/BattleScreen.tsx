@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
-import { Progress } from "@mantine/core";
+import BattleMobs from "./BattleMobs";
+import BattleUsers from "./BattleUsers";
+import BattleMenu from "./BattleMenu";
 
 import "./styles.sass";
 
@@ -17,10 +19,9 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const { id: battleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [lostModal, setLostModal] = useState(false);
-  const [fight, setFight] = useState(false);
   const [battle, setBattle] = useState<any>({});
   let navigate = useNavigate();
-  console.log(battle);
+
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
   }, []);
@@ -45,10 +46,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     }
   }, [battle?.battleEnded, battle?.youLost, navigate, setOpenModal]);
 
-  const fightHandle = () => {
-    setFight(true);
-  };
-
   const closeModal = () => {
     navigate(-1);
   };
@@ -61,147 +58,18 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     <>
       <div className="fight">
         {battle?.mobs?.map((mob: any) => (
-          <div className="fight__mob">
-            <div className="fight__mob-info">
-              <div className="fight__mob-info-text-display">
-                <h2 className="fight__mob-info-text">{mob?.name}</h2>
-                <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
-                <p className="fight__mob-info-text-hp">
-                  HP: {mob?.hp < 1 ? 0 : mob?.hp} / {mob?.maxHp}
-                </p>
-                <Progress
-                  classNames={{
-                    root: "fight__mob-hp",
-                  }}
-                  color="red"
-                  value={(mob.hp / mob.maxHp) * 100}
-                  // value={mobHpProgress()}
-                />
-              </div>
-            </div>
-            <div className="fight__mob-sprite">
-              <img
-                className="fight__mob-img"
-                src={`/media/mobs/${mob?.sprite}.png`}
-              />
-              <div>
-                {" "}
-                <img
-                  className="fight__mobs-img"
-                  src={`/media/mobs/${mob?.sprite}.png`}
-                />
-                <span>
-                  <Progress
-                    color="red"
-                    value={(mob.hp / mob.maxHp) * 100}
-                    // value={mobHpProgress()}
-                  />
-                </span>
-              </div>
-
-              <div>
-                <img
-                  className="fight__mobs-img"
-                  src={`/media/mobs/${mob?.sprite}.png`}
-                />
-                <span>
-                  <Progress
-                    color="red"
-                    value={(mob.hp / mob.maxHp) * 100}
-                    // value={mobHpProgress()}
-                  />
-                </span>
-              </div>
-            </div>
-          </div>
+          <BattleMobs mob={mob} />
         ))}
         {battle?.users?.map((user: any) => (
-          <div className="fight__player">
-            <div className="fight__players-avatars">
-              <img
-                className="fight__player-img"
-                src={`/media/users/${user.avatar}.png`}
-              />
-              <img
-                className="fight__players-img"
-                src={`/media/users/${user.avatar}.png`}
-              />
-              <img
-                className="fight__players-img"
-                src={`/media/users/${user.avatar}.png`}
-              />
-            </div>
-            <div className="fight__player-info">
-              <div className="fight__player-info-display">
-                <h2 className="fight__player-info-text">{user?.username}</h2>
-                <h3 className="fight__player-info-text">
-                  Level: {user?.level}
-                </h3>
-                <p className="fight__player-info-text">
-                  HP: {user?.hp < 1 ? 0 : user?.hp} / {user?.maxHp}
-                </p>
-                <Progress
-                  classNames={{ root: "fight__player-hp" }}
-                  color="red"
-                  value={(user.hp / user.maxHp) * 100}
-                />
-                <Progress
-                  classNames={{ root: "fight__player-hp" }}
-                  color="indigo"
-                  value={(user.exp / user.maxExp) * 100}
-                />
-
-                <p className="fight__player-exp">
-                  EXP: {user?.exp} / {user?.maxExp}
-                </p>
-              </div>
-            </div>
-          </div>
+          <BattleUsers user={user} />
         ))}
         <div className="fight__menu-display">
-          {!fight && (
-            <div className="fight__menu-1">
-              <div className="fight__menu-text">
-                {battle?.mobsInBattle?.map((mob: any) => (
-                  <h2>Wild {mob?.mob?.name} appered!</h2>
-                ))}
-              </div>
-              <div className="fight__button-chose">
-                <button
-                  className="fight__button-fight__fight"
-                  onClick={fightHandle}
-                >
-                  FIGHT
-                </button>
-                <button
-                  className="fight__button-fight__run"
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                >
-                  RUN
-                </button>
-              </div>
-            </div>
-          )}
-
-          {fight && (
-            <div className="fight__menu-2">
-              {battle?.userTurn && battle?.activeUser === currentUser?.id && (
-                <button
-                  className="fight__button fight__attack"
-                  onClick={() => {
-                    socket.emit("userAttack", {
-                      battleId: battleId,
-                      userId: currentUser?.id,
-                    });
-                  }}
-                >
-                  ATTACK
-                </button>
-              )}
-            </div>
-          )}
+          <BattleMenu
+            battle={battle}
+            socket={socket}
+            battleId={battleId}
+            currentUser={currentUser}
+          />
         </div>
       </div>
       <Modal

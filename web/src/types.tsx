@@ -45,7 +45,9 @@ export type Mob = {
   createdAt: string;
   defence: number;
   giveExp: number;
+  level: number;
   hp: number;
+  maxHp: number;
   id: number;
   mapId: number;
   maxLevel: number;
@@ -71,4 +73,19 @@ export type Guild = {
   name: string;
   description: string;
   usersCount: number;
+};
+
+export type EquipItem = {
+  id?: number;
+  name?: string;
+  minAttack?: number;
+  maxAttack?: number;
+  isEquipment?: boolean;
+  type?: string;
+  level?: number;
+  quality?: string;
+  stamina?: number;
+  defence?: number;
+  equip?: boolean;
+  sprite?: string;
 };
