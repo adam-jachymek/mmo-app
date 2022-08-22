@@ -50,10 +50,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     navigate(-1);
   };
 
-  const closeLostModal = () => {
-    navigate(-1);
-  };
-
   return (
     <>
       <div className="fight">
@@ -97,17 +93,12 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         centered
         opened={lostModal}
         withCloseButton={false}
-        onClose={closeLostModal}
+        onClose={closeModal}
       >
         <div className="fight__modal">
           <h3 className="fight__modal-title">You Lost!</h3>
           <p>You are dead</p>
-          <Button
-            onClick={closeLostModal}
-            variant="outline"
-            color="gray"
-            size="md"
-          >
+          <Button onClick={closeModal} variant="outline" color="gray" size="md">
             CLOSE
           </Button>
         </div>
