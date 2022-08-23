@@ -2,7 +2,8 @@ import { Button, Modal } from "@mantine/core";
 import classNames from "classnames";
 import { useMutation, useQuery } from "react-query";
 import { deleteItem, equipItem, getItems } from "api/endpoints";
-import { EquipItem } from "/types";
+
+import "./styles.sass";
 
 type Props = {
   item: any;
@@ -26,18 +27,18 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
 
   return (
     <Modal
-      classNames={{ root: "player__modal" }}
+      classNames={{ modal: "modal" }}
       centered
       withCloseButton={false}
       opened={openItem}
+      overlayOpacity={0.55}
+      overlayBlur={3}
+      closeOnClickOutside={false}
       onClose={() => {
         setOpenItem(false);
       }}
     >
-      <img
-        src={`/media/items/${item?.sprite}.png`}
-        className="player__modal-icon"
-      />
+      <img src={`/media/items/${item?.sprite}.png`} className="modal__icon" />
       <h3>{item?.name}</h3>
       <h4>{item?.level} lvl</h4>
       <h4
@@ -69,19 +70,17 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
           <p>Defence: {item?.defence}</p>
         </div>
       )}
-      <div className="player__modal-buttons">
-        {item?.isEquipment && (
-          <Button
-            variant="outline"
-            color="lime"
-            onClick={() => {
-              equipThisItem(item?.id);
-              setOpenItem(false);
-            }}
-          >
-            {item?.equip ? "UNEQUIP" : "EQUIP"}
-          </Button>
-        )}
+      <div className="modal__buttons">
+        <Button
+          variant="outline"
+          color="lime"
+          onClick={() => {
+            equipThisItem(item?.id);
+            setOpenItem(false);
+          }}
+        >
+          {item?.equip ? "UNEQUIP" : "EQUIP"}
+        </Button>
         {item?.type === "potion" && (
           <Button
             variant="outline"

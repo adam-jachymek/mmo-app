@@ -285,7 +285,10 @@ export class ItemService {
         },
       });
 
-    if (equipedItem !== null) {
+    if (
+      equipedItem !== null &&
+      item.isEquipment
+    ) {
       await this.prisma.item.update({
         where: {
           id: equipedItem.id,
@@ -296,8 +299,11 @@ export class ItemService {
       });
     }
 
-    if (item.isEquipment) {
-      await this.prisma.item.update({
+    if (
+      item.isEquipment ||
+      item.type === ItemType.BAG
+    ) {
+      return await this.prisma.item.update({
         where: {
           id: itemId,
         },

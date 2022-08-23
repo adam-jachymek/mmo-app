@@ -1,84 +1,154 @@
-import classNames from "classnames";
-import {
-  GiDrippingSword,
-  GiAbdominalArmor,
-  GiShardSword,
-  GiVikingHead,
-  GiBorderedShield,
-  GiBoots,
-  GiArmoredPants,
-} from "react-icons/gi";
+import { useMemo } from "react";
+import { Item } from "types";
 
 type Props = {
-  itemsData: any;
+  itemsData: Array<Item>;
   openItemModal: (item: any) => void;
 };
 
 const CharacterEq = ({ itemsData, openItemModal }: Props) => {
+  const equippedItems = useMemo(() => {
+    const head = itemsData.find(
+      (item: Item) => item.type === "HEAD" && item.equip === true
+    );
+    const chest = itemsData.find(
+      (item: Item) => item.type === "CHEST" && item.equip === true
+    );
+    const weapon = itemsData.find(
+      (item: Item) => item.type === "WEAPON" && item.equip === true
+    );
+    const offhand = itemsData.find(
+      (item: Item) => item.type === "OFFHAND" && item.equip === true
+    );
+
+    const legs = itemsData.find(
+      (item: Item) => item.type === "LEGS" && item.equip === true
+    );
+
+    return {
+      head: head,
+      weapon: weapon,
+      chest: chest,
+      offhand: offhand,
+      legs: legs,
+    };
+  }, [itemsData]);
+
   return (
-    <div className="player__eq">
-      <span className="player__eq-armor">
-        <GiAbdominalArmor className="player__eq-icon" />
-      </span>
-      <span className="player__eq-head">
-        {itemsData?.map(
-          (item: any) =>
-            item.equip &&
-            item.type === "HEAD" && (
-              <div
-                onClick={() => {
-                  openItemModal(item);
-                }}
-              >
-                <img
-                  src={`/media/items/${item.item.sprite}.png`}
-                  className={classNames(
-                    "player__item-icon",
-                    {
-                      uncommon: item.quality === "UNCOMMON",
-                    },
-                    {
-                      rare: item.quality === "RARE",
-                    },
-                    {
-                      epic: item.quality === "EPIC",
-                    },
-                    {
-                      legendary: item.quality === "LEGENDARY",
-                    }
-                  )}
-                />
-              </div>
-            )
+    <div className="player__eq-wrapper">
+      <div
+        className={`player__eq player__eq-head ${
+          equippedItems?.head && equippedItems.head.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.head && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.head);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.head.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
         )}
-      </span>
-      <span className="player__eq-leftarm">
-        <GiBorderedShield className="player__eq-icon" />
-      </span>
-      <span className="player__eq-rightarm">
-        {itemsData?.map(
-          (item: any) =>
-            item.equip &&
-            item.type === "WEAPON" && (
-              <div
-                onClick={() => {
-                  openItemModal(item);
-                }}
-              >
-                <img
-                  src={`/media/items/${item.item.sprite}.png`}
-                  className="player__item-icon"
-                />
-              </div>
-            )
+      </div>
+
+      <div
+        className={`player__eq player__eq-chest ${
+          equippedItems?.chest && equippedItems.chest.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.chest && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.chest);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.chest.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
         )}
-      </span>
-      <span className="player__eq-legs">
-        <GiArmoredPants className="player__eq-icon" />
-      </span>
-      <span className="player__eq-boots">
-        <GiBoots className="player__eq-icon" />
-      </span>
+      </div>
+
+      <div
+        className={`player__eq player__eq-weapon ${
+          equippedItems?.weapon && equippedItems.weapon.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.weapon && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.weapon);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.weapon.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`player__eq player__eq-offhand ${
+          equippedItems?.offhand && equippedItems.offhand.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.offhand && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.offhand);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.offhand.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`player__eq player__eq-legs ${
+          equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.legs && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.legs);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.legs.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`player__eq player__eq-boots ${
+          equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
+        }`}
+      >
+        {equippedItems.legs && (
+          <div
+            onClick={() => {
+              openItemModal(equippedItems.legs);
+            }}
+          >
+            <img
+              src={`/media/items/${equippedItems.legs.sprite}.png`}
+              className="player__item-icon"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

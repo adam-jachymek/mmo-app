@@ -6,7 +6,6 @@
     margin: 0
     display: grid
     grid-template-columns: repeat(13, 4fr)
-    grid-template-rows: repeat(3, 1fr)
     grid-row-gap: 4px
     grid-column-gap: 1px
     justify-items: center
@@ -83,14 +82,12 @@
     text-align: center
     text-align: left
 
-  &__eq
+  &__eq-wrapper
     position: relative
     z-index: 0
 
-  &__eq-armor
+  &__eq
     position: absolute
-    top: 26%
-    right: 50%
     background: #171717
     border: 2px solid #880808
     box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
@@ -100,73 +97,49 @@
     box-sizing: border-box
 
   &__eq-head
-    position: absolute
     top: 0
     right: 50%
-    background: #171717
-    border: 2px solid #880808
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
-    border-radius: 5px
-    width: 60px
-    height: 60px
-    box-sizing: border-box
 
-  &__eq-leftarm
-    position: absolute
+  &__eq-chest
+    top: 26%
+    right: 50%
+
+  &__eq-offhand
     top: 30%
     right: 75%
-    background: #171717
-    border: 2px solid #880808
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
-    border-radius: 5px
-    width: 60px
-    height: 60px
-    box-sizing: border-box
 
-  &__eq-rightarm
-    position: absolute
+  &__eq-weapon
     top: 30%
     right: 25%
-    background: #171717
-    border: 2px solid #880808
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
-    border-radius: 5px
-    width: 60px
-    height: 60px
-    box-sizing: border-box
 
   &__eq-legs
-    position: absolute
     top: 52%
     right: 50%
-    background: #171717
-    border: 2px solid #880808
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
-    border-radius: 5px
-    width: 60px
-    height: 60px
-    box-sizing: border-box
 
   &__eq-boots
-    position: absolute
     top: 78%
     right: 50%
-    background: #171717
-    border: 2px solid #880808
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
-    border-radius: 5px
-    width: 60px
-    height: 60px
-    box-sizing: border-box
 
   &__eq-icon
     font-size: 50px
     padding: 3px
     color: mediumspringgreen
 
+  &__header
+    display: flex
+    gap: 10px
+
+  &__header-info
+    display: flex
+    flex-direction: column
+    gap: 10px
+
+  &__header-info-level
+    font-size: 12px
+
   &__avatar-img
-    margin-left: 10px
     margin-top: 5px
+    width: 100px
 
   &__inventory-text
     font-weight: 400
@@ -174,23 +147,14 @@
     font-size: 24px
     margin-bottom: 10px
 
-  &__modal
-    margin: 0 auto
-    text-align: center
-    width: 350px
 
-  &__modal-icon
-    width: 150px
-    height: 150px
-
-  &__modal-buttons
-    margin-top: 30px
-    display: flex
-    gap: 20px
+.common
+  border-color: #ffffff
+  color: #ffffff
 
 .uncommon
-    border-color: #1EFF00
-    color: #1EFF00
+  border-color: #1EFF00
+  color: #1EFF00
 
 .rare
   border-color: #0070FF

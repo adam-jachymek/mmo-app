@@ -51,10 +51,23 @@ const Character = ({ currentUser, refetchUser }: Props) => {
     <>
       <div className="player">
         <div className="player__info">
-          <img
-            className="player__avatar-img"
-            src={`/media/users/${currentUser.avatar}.png`}
-          />
+          <div>
+            <div className="player__header">
+              <img
+                className="player__avatar-img"
+                src={`/media/users/${currentUser.avatar}.png`}
+              />
+              <div className="player__header-info">
+                <span>{currentUser?.username}</span>
+                <span>
+                  {currentUser?.level}
+                  <span className="player__header-info-level"> LVL</span>
+                </span>
+                <span>{currentUser?.guild}</span>
+              </div>
+            </div>
+            <div>Damage: 100 - 149</div>
+          </div>
           <CharacterEq itemsData={itemsData} openItemModal={openItemModal} />
           <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
         </div>

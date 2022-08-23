@@ -38,6 +38,9 @@ export type Item = {
   level: number;
   stamina: number;
   defence: number;
+  type: string;
+  equip: boolean;
+  sprite: string;
 };
 
 export type Mob = {
