@@ -1,26 +1,61 @@
 .inventory
 
+  &__header
+    position: sticky
+    top: 38vh
+    background-color: #171717
+    display: flex
+    justify-content: space-around
+    gap: 10px
+    padding: 10px
+
+  &__button
+    width: 50%
+
+  &__bag-list
+    list-style-type: none
+    padding: 0
+    margin: 0
+    display: grid
+    grid-template-columns: auto auto auto auto auto
+    grid-row-gap: 10px
+    grid-column-gap: 10px
+    justify-items: center
+    margin: 10px 10px 20px 10px
+
   &__items-list
     list-style-type: none
     padding: 0
     margin: 0
     display: grid
-    grid-template-columns: repeat(13, 4fr)
-    grid-row-gap: 4px
-    grid-column-gap: 1px
+    grid-template-columns: auto auto auto auto auto
+    grid-row-gap: 10px
+    grid-column-gap: 10px
     justify-items: center
-    margin: 5px
+    margin: 10px
 
   &__item
     width: 60px
     height: 60px
     background: #171717
-    border: 1px solid rgba(254, 254, 254, 0.8)
+    border: 2px solid #A7A7A7
     box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
     border-radius: 5px
     text-align: center
-    padding: 4px
 
   &__item-icon
     width: 60px
     height: 60px
+
+  &__bag
+    width: 55px
+    height: 55px
+    background: #171717
+    border: 1px solid #A7A7A7
+    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
+    border-radius: 5px
+    text-align: center
+
+  &__bag-icon
+    width: 50px
+    height: 50px

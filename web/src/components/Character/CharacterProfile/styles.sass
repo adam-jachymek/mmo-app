@@ -1,28 +1,99 @@
+@import 'styles/base'
+
 .profile
-  background: #252525
-  display: grid
-  grid-template-columns: 1fr 1fr 1fr
-  grid-gap: 50px
-  height: 300px
-  border-radius: 5px
-  padding: 10px
-  margin-top: 5px
-  margin-bottom: 5px
-  box-shadow: 0px 0px 10px 1px #880808
-  border-radius: 10px
+  height: 35vh
+  width: 100%
+  position: sticky
+  top: 3vh
+  background-image: url("backgrounds/profile1.png")
+  background-repeat: no-repeat
+  background-size: cover
 
-  &__header
+  &__wrapper
+    height: 31vh
     display: flex
-    gap: 10px
+    justify-content: space-between
+    padding: 10px
 
-  &__header-info
+  &__eq-slots
     display: flex
     flex-direction: column
-    gap: 10px
+    justify-content: space-between
+    width: 60px
 
-  &__header-info-level
+  &__slot
+    width: 60px
+    height: 60px
+    background: rgba(0, 0, 0, 0.4)
+    border: 2px solid #A7A7A7
+    border-radius: 5px
+
+  &__center
+    display: flex
+    flex-direction: column
+    justify-content: center
+
+  &__info
+    display: flex
+    flex-direction: column
+    text-align: center
+    gap: 5px
+
+  &__guild
+    color: #46B744
+
+  &__lvl
     font-size: 12px
 
-  &__avatar-img
-    margin-top: 5px
-    width: 100px
+  &__item-icon
+    width: 60px
+    height: 60px
+
+  &__progress
+    position: relative
+    opacity: 0.9
+    bottom: 0
+
+
+  &__bar
+    height: 15px
+    border: 1px solid #000
+    border-radius: 0
+    position: relative
+
+  &__bar-bar
+    border-radius: 0 !important
+
+  &__progress-amount
+    position: absolute
+    color: #a5a5a5
+    top: 5%
+    left: 44%
+    font-size: 12px
+
+.common
+  border-color: #ffffff
+  color: #ffffff
+
+.uncommon
+  border-color: #1EFF00
+  color: #1EFF00
+
+.rare
+  border-color: #0070FF
+  color: #0070FF
+
+.epic
+  border-color: #a335ee
+  color: #a335ee
+
+.legendary
+  border-color: #ff8000
+  color: #ff8000
+
+
+
+@include media-breakpoint-up(sm)
+
+  .profile
+    height: 100px

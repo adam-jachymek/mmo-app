@@ -1,3 +1,4 @@
+import { Button } from "@mantine/core";
 import classNames from "classnames";
 import { useMemo } from "react";
 
@@ -29,7 +30,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
             bags[i] && openItemModal(bags[i]);
           }}
           className={classNames(
-            "inventory__item",
+            "inventory__bag",
             { uncommon: bags[i]?.quality === "UNCOMMON" },
             {
               epic: bags[i]?.quality === "EPIC",
@@ -41,7 +42,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
           {bags[i] && (
             <img
               src={`/media/items/${bags[i].item.sprite}.png`}
-              className="inventory__item-icon"
+              className="inventory__bag-icon"
             />
           )}
         </li>
@@ -84,13 +85,20 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
   }, [inventory]);
 
   return (
-    <div>
-      <h3 className="inventory">Inventory</h3>
-      <div className="inventory__items">
-        <ul className="inventory__items-list">{renderBags}</ul>
+    <>
+      <div className="inventory__header">
+        <Button className="inventory__button" variant="outline" color="gray">
+          Inventory
+        </Button>
+        <Button className="inventory__button" variant="outline" color="gray">
+          Stats
+        </Button>
+      </div>
+      <div className="inventory__wrapper-list">
+        <ul className="inventory__bag-list">{renderBags}</ul>
         <ul className="inventory__items-list">{renderSlots}</ul>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -7,9 +7,9 @@ import ItemModal from "../ItemModal";
 import CharacterEq from "./CharacterEq";
 import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";
+import CharacterProfile from "./CharacterProfile";
 
 import "./styles.sass";
-import CharacterProfile from "./CharacterProfile";
 
 type Props = {
   currentUser: User;
@@ -38,9 +38,13 @@ const Character = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="character">
-        <CharacterProfile currentUser={currentUser} />
-        <CharacterEq itemsData={itemsData} openItemModal={openItemModal} />
-        <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
+        <CharacterProfile
+          currentUser={currentUser}
+          itemsData={itemsData}
+          openItemModal={openItemModal}
+        />
+        {/* <CharacterEq itemsData={itemsData} openItemModal={openItemModal} /> */}
+        {/* <CharacterStats currentUser={currentUser} refetchUser={refetchUser} /> */}
         <CharacterInventory
           itemsData={itemsData}
           openItemModal={openItemModal}

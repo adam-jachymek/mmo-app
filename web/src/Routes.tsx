@@ -20,6 +20,7 @@ import PartyNavBar from "./components/Party";
 import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
+import MobileMenu from "./components/MobileMenu";
 
 const AppRouter = () => {
   const token = getToken();
@@ -60,8 +61,8 @@ const AppRouter = () => {
     return (
       <>
         <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
-        <SideNavBar />
-        <PartyNavBar />
+        {/* <SideNavBar />
+        <PartyNavBar /> */}
         <Routes>
           <Route
             path="/"
@@ -111,6 +112,7 @@ const AppRouter = () => {
           />
           <Route path="/explore/:id" element={<ExploreScreen />} />
         </Routes>
+        <MobileMenu />
       </>
     );
   }
