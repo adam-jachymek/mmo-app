@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Item } from "types";
 
+import "./styles.sass";
+
 type Props = {
   itemsData: Array<Item>;
   openItemModal: (item: any) => void;
@@ -35,9 +37,9 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
   }, [itemsData]);
 
   return (
-    <div className="player__eq-wrapper">
+    <div className="eq">
       <div
-        className={`player__eq player__eq-head ${
+        className={`eq__slot eq__head ${
           equippedItems?.head && equippedItems.head.quality.toLowerCase()
         }`}
       >
@@ -49,14 +51,14 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.head.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}
       </div>
 
       <div
-        className={`player__eq player__eq-chest ${
+        className={`eq__slot eq__chest ${
           equippedItems?.chest && equippedItems.chest.quality.toLowerCase()
         }`}
       >
@@ -68,14 +70,14 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.chest.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}
       </div>
 
       <div
-        className={`player__eq player__eq-weapon ${
+        className={`eq__slot eq__weapon ${
           equippedItems?.weapon && equippedItems.weapon.quality.toLowerCase()
         }`}
       >
@@ -87,14 +89,14 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.weapon.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}
       </div>
 
       <div
-        className={`player__eq player__eq-offhand ${
+        className={`eq__slot eq__offhand ${
           equippedItems?.offhand && equippedItems.offhand.quality.toLowerCase()
         }`}
       >
@@ -106,14 +108,14 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.offhand.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}
       </div>
 
       <div
-        className={`player__eq player__eq-legs ${
+        className={`eq__slot eq__legs ${
           equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
         }`}
       >
@@ -125,14 +127,14 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.legs.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}
       </div>
 
       <div
-        className={`player__eq player__eq-boots ${
+        className={`eq__slot eq__boots ${
           equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
         }`}
       >
@@ -144,7 +146,7 @@ const CharacterEq = ({ itemsData, openItemModal }: Props) => {
           >
             <img
               src={`/media/items/${equippedItems.legs.sprite}.png`}
-              className="player__item-icon"
+              className="eq__item-icon"
             />
           </div>
         )}

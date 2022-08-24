@@ -9,9 +9,10 @@ import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";
 
 import "./styles.sass";
+import CharacterProfile from "./CharacterProfile";
 
 type Props = {
-  currentUser: any;
+  currentUser: User;
   refetchUser: () => void;
 };
 
@@ -26,21 +27,8 @@ const Character = ({ currentUser, refetchUser }: Props) => {
   } = useQuery("getItems", getItems);
 
   const openItemModal = (item: any) => {
+    setItem(item);
     setOpenItem(true);
-    setItem({
-      id: item.id,
-      name: item.name,
-      minAttack: item.minAttack,
-      maxAttack: item.maxAttack,
-      quality: item.quality,
-      level: item.level,
-      isEquipment: item.isEquipment,
-      type: item.type,
-      equip: item.equip,
-      stamina: item.stamina,
-      defence: item.defence,
-      sprite: item.sprite,
-    });
   };
 
   if (isFetching) {
@@ -49,28 +37,10 @@ const Character = ({ currentUser, refetchUser }: Props) => {
 
   return (
     <>
-      <div className="player">
-        <div className="player__info">
-          <div>
-            <div className="player__header">
-              <img
-                className="player__avatar-img"
-                src={`/media/users/${currentUser.avatar}.png`}
-              />
-              <div className="player__header-info">
-                <span>{currentUser?.username}</span>
-                <span>
-                  {currentUser?.level}
-                  <span className="player__header-info-level"> LVL</span>
-                </span>
-                <span>{currentUser?.guild}</span>
-              </div>
-            </div>
-            <div>Damage: 100 - 149</div>
-          </div>
-          <CharacterEq itemsData={itemsData} openItemModal={openItemModal} />
-          <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
-        </div>
+      <div className="character">
+        <CharacterProfile currentUser={currentUser} />
+        <CharacterEq itemsData={itemsData} openItemModal={openItemModal} />
+        <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
         <CharacterInventory
           itemsData={itemsData}
           openItemModal={openItemModal}

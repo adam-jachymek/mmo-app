@@ -11,6 +11,7 @@ export type User = {
   maxExp: number;
   guildId: number;
   guildRole: GuildRoles;
+  avatar: string;
 };
 
 export type ItemPrototype = {

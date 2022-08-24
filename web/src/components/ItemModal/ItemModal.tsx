@@ -1,6 +1,6 @@
-import { Button, Modal } from "@mantine/core";
 import classNames from "classnames";
-import { useMutation, useQuery } from "react-query";
+import { Button, Modal } from "@mantine/core";
+import { useMutation } from "react-query";
 import { deleteItem, equipItem, getItems } from "api/endpoints";
 
 import "./styles.sass";

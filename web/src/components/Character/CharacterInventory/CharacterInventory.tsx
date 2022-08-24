@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 
+import "./styles.sass";
+
 type Props = {
   itemsData: any;
   openItemModal: (item: any) => void;
@@ -27,7 +29,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
             bags[i] && openItemModal(bags[i]);
           }}
           className={classNames(
-            "player__item",
+            "inventory__item",
             { uncommon: bags[i]?.quality === "UNCOMMON" },
             {
               epic: bags[i]?.quality === "EPIC",
@@ -39,7 +41,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
           {bags[i] && (
             <img
               src={`/media/items/${bags[i].item.sprite}.png`}
-              className="player__item-icon"
+              className="inventory__item-icon"
             />
           )}
         </li>
@@ -59,7 +61,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
             inventory[i] && openItemModal(inventory[i]);
           }}
           className={classNames(
-            "player__item",
+            "inventory__item",
             { uncommon: inventory[i]?.quality === "UNCOMMON" },
             {
               epic: inventory[i]?.quality === "EPIC",
@@ -71,7 +73,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
           {inventory[i] && (
             <img
               src={`/media/items/${inventory[i].item.sprite}.png`}
-              className="player__item-icon"
+              className="inventory__item-icon"
             />
           )}
         </li>
@@ -83,10 +85,10 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
 
   return (
     <div>
-      <h3 className="player__inventory-text">Inventory</h3>
-      <div className="player__items">
-        <ul className="player__items-list">{renderBags}</ul>
-        <ul className="player__items-list">{renderSlots}</ul>
+      <h3 className="inventory">Inventory</h3>
+      <div className="inventory__items">
+        <ul className="inventory__items-list">{renderBags}</ul>
+        <ul className="inventory__items-list">{renderSlots}</ul>
       </div>
     </div>
   );
