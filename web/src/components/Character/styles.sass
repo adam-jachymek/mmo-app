@@ -1,5 +1,25 @@
 @import 'styles/base'
 
+.character
+  background-size: cover
+
+  &__menu
+    position: sticky
+    top: 38vh
+    background-image: url('./backgrounds/back.png')
+    background-position: center
+    background-size: cover
+    display: flex
+    justify-content: space-around
+    gap: 10px
+    padding: 10px
+
+  &__button
+    width: 50%
+
+  .active
+    background: rgba(0, 0, 0, 0.4)
+
 .common
   border-color: #ffffff
   color: #ffffff

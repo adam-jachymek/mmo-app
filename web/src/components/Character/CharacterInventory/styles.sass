@@ -1,16 +1,10 @@
 .inventory
 
-  &__header
-    position: sticky
-    top: 38vh
-    background-color: #171717
-    display: flex
-    justify-content: space-around
-    gap: 10px
-    padding: 10px
-
-  &__button
-    width: 50%
+  &__wrapper-list
+    min-height: 60vh
+    background-image: url('./backgrounds/back.png')
+    background-position: center
+    background-size: cover
 
   &__bag-list
     list-style-type: none
@@ -21,7 +15,7 @@
     grid-row-gap: 10px
     grid-column-gap: 10px
     justify-items: center
-    margin: 10px 10px 20px 10px
+    padding: 10px 10px 20px 10px
 
   &__items-list
     list-style-type: none
@@ -32,29 +26,31 @@
     grid-row-gap: 10px
     grid-column-gap: 10px
     justify-items: center
-    margin: 10px
+    padding: 10px
 
   &__item
     width: 60px
     height: 60px
-    background: #171717
+    background: rgba(0, 0, 0, 0.3)
     border: 2px solid #A7A7A7
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
     border-radius: 5px
-    text-align: center
+    display: flex
+    justify-content: center
+    align-items: center
 
   &__item-icon
-    width: 60px
-    height: 60px
+    width: 50px
+    height: 50px
 
   &__bag
     width: 55px
     height: 55px
-    background: #171717
+    background: rgba(0, 0, 0, 0.3)
     border: 1px solid #A7A7A7
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
     border-radius: 5px
-    text-align: center
+    disply: flex
+    justify-content: center
+    align-items: center
 
   &__bag-icon
     width: 50px

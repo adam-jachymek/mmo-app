@@ -86,14 +86,6 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
 
   return (
     <>
-      <div className="inventory__header">
-        <Button className="inventory__button" variant="outline" color="gray">
-          Inventory
-        </Button>
-        <Button className="inventory__button" variant="outline" color="gray">
-          Stats
-        </Button>
-      </div>
       <div className="inventory__wrapper-list">
         <ul className="inventory__bag-list">{renderBags}</ul>
         <ul className="inventory__items-list">{renderSlots}</ul>

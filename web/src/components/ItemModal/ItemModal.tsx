@@ -39,38 +39,48 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
       }}
     >
       <img src={`/media/items/${item?.sprite}.png`} className="modal__icon" />
-      <h3>{item?.name}</h3>
-      <h4>{item?.level} lvl</h4>
-      <h4
-        className={classNames(
-          {
-            uncommon: item?.quality === "UNCOMMON",
-          },
-          {
-            rare: item?.quality === "RARE",
-          },
-          {
-            epic: item?.quality === "EPIC",
-          },
-          {
-            legendary: item?.quality === "LEGENDARY",
-          }
+      <div className="modal__info">
+        <h3>{item?.name}</h3>
+        <h4>{item?.level} lvl</h4>
+        <h4
+          className={classNames(
+            {
+              uncommon: item?.quality === "UNCOMMON",
+            },
+            {
+              rare: item?.quality === "RARE",
+            },
+            {
+              epic: item?.quality === "EPIC",
+            },
+            {
+              legendary: item?.quality === "LEGENDARY",
+            }
+          )}
+        >
+          {item?.quality}
+        </h4>
+        {item?.type === "WEAPON" && (
+          <p>
+            Attack: {item?.minAttack} - {item?.maxAttack}
+          </p>
         )}
-      >
-        {item?.quality}
-      </h4>
-      {item?.type === "WEAPON" && (
-        <p>
-          Attack: {item?.minAttack} - {item?.maxAttack}
-        </p>
-      )}
-      {item?.type === "HEAD" && (
-        <div>
-          <p>Stamina: {item?.stamina}</p>
-          <p>Defence: {item?.defence}</p>
-        </div>
-      )}
+        {item?.type === "HEAD" && (
+          <div>
+            <p>Stamina: {item?.stamina}</p>
+            <p>Defence: {item?.defence}</p>
+          </div>
+        )}
+      </div>
       <div className="modal__buttons">
+        <Button
+          onClick={() => deleteThis(item?.id)}
+          variant="outline"
+          color="red"
+          uppercase
+        >
+          R
+        </Button>
         <Button
           variant="outline"
           color="lime"
@@ -92,14 +102,7 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
             USE
           </Button>
         )}
-        <Button
-          onClick={() => deleteThis(item?.id)}
-          variant="outline"
-          color="red"
-          uppercase
-        >
-          Remove
-        </Button>
+
         <Button
           onClick={() => {
             setOpenItem(false);
