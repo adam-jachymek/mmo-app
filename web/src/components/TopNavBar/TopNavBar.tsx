@@ -4,6 +4,7 @@ import { User } from "/types";
 import { Button, RingProgress, Text } from "@mantine/core";
 import { removeToken } from "api/token";
 import { useState } from "react";
+import { Mobile, Default } from "../../utils/mediaQuery";
 
 import "./styles.sass";
 
@@ -34,19 +35,22 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
   return (
     <div className="header">
       <div className="header__info">1200</div>
-      {/* <Button
-        compact
-        color="green"
-        className="header__logout"
-        onClick={() => {
-          healMe();
-        }}
-      >
-        Heal Me
-      </Button>
-      <Button compact color="red" className="header__logout" onClick={LogOut}>
-        Log Out
-      </Button> */}
+      <img className="header__gold-icon" src="/media/items/gold.png" />
+      <Default>
+        <Button
+          compact
+          color="green"
+          className="header__logout"
+          onClick={() => {
+            healMe();
+          }}
+        >
+          Heal Me
+        </Button>
+        <Button compact color="red" className="header__logout" onClick={LogOut}>
+          Log Out
+        </Button>
+      </Default>
     </div>
   );
 };

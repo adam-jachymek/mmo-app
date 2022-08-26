@@ -1,3 +1,5 @@
+@import 'styles/base'
+
 .header
   width: 100%
   position: sticky
@@ -7,11 +9,28 @@
   background-color: #000
   display: flex
   justify-content: flex-end
+  align-items: center
 
   &__info
     display: flex
     justify-content: flex-end
     padding: 0 5px
 
+  &__gold-icon
+    width: 20px
+    height: 20px
+    margin-right: 10px
+
   &__logout
     margin-left: 10px
+
+
+@include media-breakpoint-up(md)
+
+  .header
+    height: 40px
+
+    &__gold-icon
+      width: 30px
+      height: 30px
+      margin-right: 0

@@ -1,4 +1,3 @@
-import React, { ReactNode } from "react";
 import { useMediaQuery } from "react-responsive";
 
 type Children = {
