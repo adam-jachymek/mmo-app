@@ -10,25 +10,21 @@ import {
   PlayerIdDto,
 } from './dto';
 import { GuildRole, User } from '@prisma/client';
+import { GuildModel } from "./guild.model";
 
 @Injectable()
 export class GuildService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private guild: GuildModel) {}
+
+  isUserModOrAdmin(user, guildId) {
+    return user.guildId === guildId &&
+        (user.guildRole === GuildRole.ADMIN ||
+        user.guildRole === GuildRole.MOD)
+  }
 
   async getGuilds() {
     const guilds =
-      await this.prisma.guild.findMany({
-        include: {
-          users: {
-            select: { id: true },
-            where: {
-              NOT: {
-                guildRole: GuildRole.PENDING,
-              },
-            },
-          },
-        },
-      });
+      await this.guild.getAllWithUsers();
 
     return guilds.map((guild) => ({
       id: guild.id,
@@ -38,92 +34,42 @@ export class GuildService {
     }));
   }
 
-  countGuildMembers(userGuildId: number) {
-    return this.prisma.user.count({
-      where: {
-        guildId: userGuildId,
-        NOT: {
-          guildRole: GuildRole.PENDING,
-        },
-      },
-    });
-  }
-
   async getGuildById(
     user: User,
     guildId: number,
   ) {
-    if (user.guildId === guildId) {
-      if (
-        user.guildRole === GuildRole.ADMIN ||
-        user.guildRole === GuildRole.MOD
-      ) {
-        const adminGuild =
-          await this.prisma.guild.findUnique({
-            where: {
-              id: guildId,
-            },
-            include: {
-              users: true,
-            },
-          });
-
-        return adminGuild;
-      }
-    }
-
-    const guild =
-      await this.prisma.guild.findUnique({
-        where: {
-          id: guildId,
-        },
-        include: {
-          users: {
-            where: {
-              NOT: {
-                guildRole: GuildRole.PENDING,
-              },
-            },
-          },
-        },
-      });
-
-    return guild;
+    const withPending = this.isUserModOrAdmin(user, guildId);
+    return await this.guild.getById({id: guildId, withPending})
   }
 
   async createGuild(
     user: User,
     dto: CreateGuildDto,
   ) {
-    if (!user.guildId) {
-      const guild =
-        await this.prisma.guild.create({
-          data: {
-            ...dto,
-          },
-        });
-
-      await this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          guildId: guild.id,
-          guildRole: GuildRole.ADMIN,
-        },
-      });
-
-      return guild;
+    if (user.guildId) {
+      throw new ForbiddenException('You are already in the guild');
     }
-    throw new ForbiddenException(
-      'You are already in the guild',
-    );
-  }
+
+    const guild = await this.guild.create(dto);
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        guildId: guild.id,
+        guildRole: GuildRole.ADMIN,
+      },
+    });
+
+    return guild;
+    }
 
   async editGuildById(
     user: User,
     dto: EditGuildDto,
   ) {
+    // TODO implement guildID
     if (
       user.guildRole === GuildRole.ADMIN ||
       user.guildRole === GuildRole.MOD
@@ -159,6 +105,7 @@ export class GuildService {
       },
     });
 
+    // TODO do we need to return the guild?
     const leavedGuild =
       await this.prisma.guild.update({
         where: {
