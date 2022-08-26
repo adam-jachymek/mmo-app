@@ -1,3 +1,5 @@
+@import 'styles/base'
+
 .inventory
 
   &__wrapper-list
@@ -55,3 +57,19 @@
   &__bag-icon
     width: 50px
     height: 50px
+
+
+@include media-breakpoint-up(md)
+
+  .inventory
+
+    &__wrapper-list
+      padding-top: 20px
+
+    &__bag-list
+      max-width: 500px
+      margin: 0 auto
+
+    &__items-list
+      max-width: 500px
+      margin: 0 auto

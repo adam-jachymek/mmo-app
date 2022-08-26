@@ -61,8 +61,8 @@ const AppRouter = () => {
     return (
       <>
         <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
-        {/* <SideNavBar />
-        <PartyNavBar /> */}
+        <SideNavBar />
+        <PartyNavBar />
         <Routes>
           <Route
             path="/"

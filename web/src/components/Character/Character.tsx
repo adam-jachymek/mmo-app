@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { getItems } from "api/endpoints";
-import { Button, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { EquipItem, User } from "/types";
 import ItemModal from "../ItemModal";
 import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";
 import CharacterProfile from "./CharacterProfile";
-import classNames from "classnames";
+import { Mobile, Default } from "../../utils/mediaQuery";
+import CharacterMenu from "./CharacterMenu";
 
 import "./styles.sass";
 
@@ -39,41 +40,45 @@ const Character = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="character">
-        <CharacterProfile
-          currentUser={currentUser}
-          itemsData={itemsData}
-          openItemModal={openItemModal}
-        />
-        <div className="character__menu">
-          <Button
-            className={classNames("character__button", { active: !showStats })}
-            onClick={() => {
-              setShowStats(false);
-            }}
-            variant="outline"
-            color="gray"
-          >
-            Inventory
-          </Button>
-          <Button
-            className={classNames("character__button", { active: showStats })}
-            onClick={() => {
-              setShowStats(true);
-            }}
-            variant="outline"
-            color="gray"
-          >
-            Stats
-          </Button>
-        </div>
-        {!showStats ? (
-          <CharacterInventory
+        <Default>
+          <div className="character__desktop-side-by-side">
+            <div className="character__desktop-character-wrapper">
+              <CharacterProfile
+                currentUser={currentUser}
+                itemsData={itemsData}
+                openItemModal={openItemModal}
+              />
+              <CharacterInventory
+                itemsData={itemsData}
+                openItemModal={openItemModal}
+              />
+            </div>
+            <CharacterStats
+              currentUser={currentUser}
+              refetchUser={refetchUser}
+            />
+          </div>
+        </Default>
+
+        <Mobile>
+          <CharacterProfile
+            currentUser={currentUser}
             itemsData={itemsData}
             openItemModal={openItemModal}
           />
-        ) : (
-          <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
-        )}
+          <CharacterMenu showStats={showStats} setShowStats={setShowStats} />
+          {!showStats ? (
+            <CharacterInventory
+              itemsData={itemsData}
+              openItemModal={openItemModal}
+            />
+          ) : (
+            <CharacterStats
+              currentUser={currentUser}
+              refetchUser={refetchUser}
+            />
+          )}
+        </Mobile>
       </div>
       <ItemModal
         item={item}

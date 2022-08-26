@@ -1,3 +1,5 @@
+@import 'styles/base'
+
 .stats
   min-height: 60vh
   width: 100%
@@ -20,3 +22,12 @@
     background-color: unset
     border-color: #FFD700
     color: #FFD700
+
+@include media-breakpoint-up(md)
+
+  .stats
+    width: 50%
+
+    &__wrapper
+      max-width: 500px
+      margin: 0 auto

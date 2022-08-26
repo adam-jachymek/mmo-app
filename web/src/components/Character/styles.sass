@@ -39,3 +39,15 @@
 .legendary
   border-color: #ff8000
   color: #ff8000
+
+
+@include media-breakpoint-up(md)
+
+  .character
+    display: grid
+
+    &__desktop-side-by-side
+      display: flex
+
+    &__desktop-character-wrapper
+      width: 50%
