@@ -4,12 +4,13 @@ import { getItems } from "api/endpoints";
 import { Loader } from "@mantine/core";
 import { EquipItem, User } from "/types";
 import ItemModal from "../ItemModal";
-import CharacterEq from "./CharacterEq";
 import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";
+import CharacterProfile from "./CharacterProfile";
+import { Mobile, Default } from "../../utils/mediaQuery";
+import CharacterMenu from "./CharacterMenu";
 
 import "./styles.sass";
-import CharacterProfile from "./CharacterProfile";
 
 type Props = {
   currentUser: User;
@@ -19,6 +20,7 @@ type Props = {
 const Character = ({ currentUser, refetchUser }: Props) => {
   const [openItem, setOpenItem] = useState(false);
   const [item, setItem] = useState<EquipItem>();
+  const [showStats, setShowStats] = useState(false);
 
   const {
     data: itemsData,
@@ -38,13 +40,45 @@ const Character = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="character">
-        <CharacterProfile currentUser={currentUser} />
-        <CharacterEq itemsData={itemsData} openItemModal={openItemModal} />
-        <CharacterStats currentUser={currentUser} refetchUser={refetchUser} />
-        <CharacterInventory
-          itemsData={itemsData}
-          openItemModal={openItemModal}
-        />
+        <Default>
+          <div className="character__desktop-side-by-side">
+            <div className="character__desktop-character-wrapper">
+              <CharacterProfile
+                currentUser={currentUser}
+                itemsData={itemsData}
+                openItemModal={openItemModal}
+              />
+              <CharacterInventory
+                itemsData={itemsData}
+                openItemModal={openItemModal}
+              />
+            </div>
+            <CharacterStats
+              currentUser={currentUser}
+              refetchUser={refetchUser}
+            />
+          </div>
+        </Default>
+
+        <Mobile>
+          <CharacterProfile
+            currentUser={currentUser}
+            itemsData={itemsData}
+            openItemModal={openItemModal}
+          />
+          <CharacterMenu showStats={showStats} setShowStats={setShowStats} />
+          {!showStats ? (
+            <CharacterInventory
+              itemsData={itemsData}
+              openItemModal={openItemModal}
+            />
+          ) : (
+            <CharacterStats
+              currentUser={currentUser}
+              refetchUser={refetchUser}
+            />
+          )}
+        </Mobile>
       </div>
       <ItemModal
         item={item}

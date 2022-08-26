@@ -15,11 +15,6 @@ const SideNavBar = () => {
 
   return (
     <div>
-      <div>
-        <Button className="navbar__close" onClick={showSidebar}>
-          Open
-        </Button>
-      </div>
       {sidebar ? (
         <div className="navbar">
           <ul className="navbar__ul">

@@ -1,26 +1,75 @@
+@import 'styles/base'
+
 .inventory
+
+  &__wrapper-list
+    min-height: 60vh
+    background-image: url('./backgrounds/back.png')
+    background-position: center
+    background-size: cover
+
+  &__bag-list
+    list-style-type: none
+    padding: 0
+    margin: 0
+    display: grid
+    grid-template-columns: auto auto auto auto auto
+    grid-row-gap: 10px
+    grid-column-gap: 10px
+    justify-items: center
+    padding: 10px 10px 20px 10px
 
   &__items-list
     list-style-type: none
     padding: 0
     margin: 0
     display: grid
-    grid-template-columns: repeat(13, 4fr)
-    grid-row-gap: 4px
-    grid-column-gap: 1px
+    grid-template-columns: auto auto auto auto auto
+    grid-row-gap: 10px
+    grid-column-gap: 10px
     justify-items: center
-    margin: 5px
+    padding: 10px
 
   &__item
     width: 60px
     height: 60px
-    background: #171717
-    border: 1px solid rgba(254, 254, 254, 0.8)
-    box-shadow: inset 0px 1px 20px -3px rgb(217 217 217 / 40%)
+    background: rgba(0, 0, 0, 0.3)
+    border: 2px solid #A7A7A7
     border-radius: 5px
-    text-align: center
-    padding: 4px
+    display: flex
+    justify-content: center
+    align-items: center
 
   &__item-icon
-    width: 60px
-    height: 60px
+    width: 50px
+    height: 50px
+
+  &__bag
+    width: 55px
+    height: 55px
+    background: rgba(0, 0, 0, 0.3)
+    border: 1px solid #A7A7A7
+    border-radius: 5px
+    disply: flex
+    justify-content: center
+    align-items: center
+
+  &__bag-icon
+    width: 50px
+    height: 50px
+
+
+@include media-breakpoint-up(md)
+
+  .inventory
+
+    &__wrapper-list
+      padding-top: 20px
+
+    &__bag-list
+      max-width: 500px
+      margin: 0 auto
+
+    &__items-list
+      max-width: 500px
+      margin: 0 auto

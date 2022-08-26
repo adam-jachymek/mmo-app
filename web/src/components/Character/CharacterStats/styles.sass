@@ -1,20 +1,20 @@
+@import 'styles/base'
+
 .stats
-  text-align: center
-  text-align: left
+  min-height: 60vh
+  width: 100%
+  background-image: url('./backgrounds/back.png')
+  background-size: cover
+  background-position: center
 
   &__text
-    padding: 5px 10px
-    background: #171717
+    padding: 20px 15px
     display: flex
     justify-content: space-between
-    width: 250px
     height: 25px
-    box-shadow: 0px 0px 10px 1px #1c1c1c
     border-radius: 10px
-    margin: 12px
 
   &__text-points
-    background-color: #171717
     color: #FFD700
 
   &__add-button
@@ -22,3 +22,12 @@
     background-color: unset
     border-color: #FFD700
     color: #FFD700
+
+@include media-breakpoint-up(md)
+
+  .stats
+    width: 50%
+
+    &__wrapper
+      max-width: 500px
+      margin: 0 auto

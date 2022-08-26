@@ -1,27 +1,36 @@
+@import 'styles/base'
+
 .header
-  position: fixed
-  top: 0
-  left: 0
   width: 100%
-  border-bottom: 1px solid
+  position: sticky
+  top: 0
   z-index: 9
+  height: 3vh
+  background-color: #000
+  display: flex
+  justify-content: flex-end
+  align-items: center
 
   &__info
-    background-color: #252525
-    height: 60px
     display: flex
-    align-items: center
-    padding: 0 30px
-    justify-content: center
+    justify-content: flex-end
+    padding: 0 5px
 
-  &__username
-    color: mediumspringgreen
-
-  &__user
-    display: flex
-    justify-content: space-between
-    align-items: center
-    width: 100px
+  &__gold-icon
+    width: 20px
+    height: 20px
+    margin-right: 10px
 
   &__logout
     margin-left: 10px
+
+
+@include media-breakpoint-up(md)
+
+  .header
+    height: 40px
+
+    &__gold-icon
+      width: 30px
+      height: 30px
+      margin-right: 0

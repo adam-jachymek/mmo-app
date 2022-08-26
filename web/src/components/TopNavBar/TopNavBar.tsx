@@ -3,9 +3,10 @@ import { healUser } from "api/endpoints";
 import { User } from "/types";
 import { Button, RingProgress, Text } from "@mantine/core";
 import { removeToken } from "api/token";
+import { useState } from "react";
+import { Mobile, Default } from "../../utils/mediaQuery";
 
 import "./styles.sass";
-import { useState } from "react";
 
 type Props = {
   currentUser: User;
@@ -33,27 +34,9 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
 
   return (
     <div className="header">
-      <div className="header__info">
-        <span>
-          <div className="header__user">
-            <span className="header__username">{currentUser?.username}</span>
-            <RingProgress
-              sections={[{ value: playerExpProgress(), color: "blue" }]}
-              size={50}
-              thickness={4}
-              label={
-                <Text color="blue" weight={700} align="center" size="xl">
-                  {currentUser?.level}
-                </Text>
-              }
-            />
-          </div>
-        </span>
-        <p style={{ marginLeft: "10px" }}>
-          {currentUser?.hp < 1
-            ? "0"
-            : currentUser?.hp + " / " + currentUser?.maxHp + " HP"}
-        </p>
+      <div className="header__info">1200</div>
+      <img className="header__gold-icon" src="/media/items/gold.png" />
+      <Default>
         <Button
           compact
           color="green"
@@ -67,7 +50,7 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
         <Button compact color="red" className="header__logout" onClick={LogOut}>
           Log Out
         </Button>
-      </div>
+      </Default>
     </div>
   );
 };
