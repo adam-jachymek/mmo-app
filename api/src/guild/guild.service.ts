@@ -2,12 +2,10 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   CreateGuildDto,
   EditGuildDto,
-  PlayerIdDto,
 } from './dto';
 import { GuildRole, User } from '@prisma/client';
 import { GuildModel } from "./guild.model";
@@ -16,9 +14,12 @@ import { GuildModel } from "./guild.model";
 export class GuildService {
   constructor(private prisma: PrismaService, private guild: GuildModel) {}
 
-  isUserModOrAdmin(user, guildId) {
-    return user.guildId === guildId &&
-        (user.guildRole === GuildRole.ADMIN ||
+  isUserInGuild(user, guildId): boolean {
+    return user.guildId === guildId
+  }
+
+  isUserModOrAdmin(user): boolean {
+    return (user.guildRole === GuildRole.ADMIN ||
         user.guildRole === GuildRole.MOD)
   }
 
@@ -38,8 +39,8 @@ export class GuildService {
     user: User,
     guildId: number,
   ) {
-    const withPending = this.isUserModOrAdmin(user, guildId);
-    return await this.guild.getById({id: guildId, withPending})
+    const withPending = this.isUserInGuild(user, guildId) && this.isUserModOrAdmin(user);
+    return await this.guild.getById({ id: guildId, withPending })
   }
 
   async createGuild(
@@ -63,39 +64,29 @@ export class GuildService {
     });
 
     return guild;
-    }
+  }
 
-  async editGuildById(
+  async editGuild(
+    guildId: number,
     user: User,
     dto: EditGuildDto,
   ) {
-    // TODO implement guildID
-    if (
-      user.guildRole === GuildRole.ADMIN ||
-      user.guildRole === GuildRole.MOD
-    ) {
-      const guild =
-        await this.prisma.guild.findUnique({
-          where: {
-            id: user.guildId,
-          },
-        });
-
-      return this.prisma.guild.update({
-        where: {
-          id: guild.id,
-        },
-        data: {
-          ...dto,
-        },
-      });
+    if (!this.isUserModOrAdmin(user) || !this.isUserInGuild(user, guildId)) {
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
     }
-    throw new ForbiddenException(
-      'Access to resources denied',
-    );
+
+    return this.guild.edit({id: guildId, data: dto})
   }
 
-  async leaveGuild(user: User) {
+  async leaveGuild(guildId: number, user: User) {
+    if (!this.isUserInGuild(user, guildId)) {
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
+    }
+
     await this.prisma.user.update({
       where: {
         id: user.id,
@@ -105,23 +96,10 @@ export class GuildService {
       },
     });
 
-    // TODO do we need to return the guild?
-    const leavedGuild =
-      await this.prisma.guild.update({
-        where: {
-          id: user.guildId,
-        },
-        data: {
-          users: {
-            disconnect: [{ id: user.id }],
-          },
-        },
-      });
-
-    return leavedGuild;
+    await this.guild.removeUser({ id: guildId, userId: user.id })
   }
 
-  async userRequest(user: User, guildId: number) {
+  async createRequest(guildId: number, user: User) {
     if (user.guildId) {
       throw new ForbiddenException(
         'You are already in the guild',
@@ -138,89 +116,63 @@ export class GuildService {
   }
 
   async acceptGuildPlayer(
+    guildId: number,
+    playerId: number,
     user: User,
-    dto: PlayerIdDto,
   ) {
-    if (
-      user.guildRole === GuildRole.ADMIN ||
-      user.guildRole === GuildRole.MOD
-    ) {
-      const player =
-        await this.prisma.user.findUnique({
-          where: {
-            id: dto.playerId,
-          },
-        });
+    if (!this.isUserInGuild(user, guildId) || !this.isUserModOrAdmin(user)) {
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
+    }
 
-      if (
-        player.guildRole === GuildRole.PENDING
-      ) {
-        return await this.prisma.user.update({
-          where: {
-            id: dto.playerId,
-          },
-          data: {
-            guildRole: GuildRole.MEMBER,
-          },
-        });
-      }
+    const player =
+      await this.prisma.user.findUnique({
+        where: {
+          id: playerId,
+        },
+      });
+
+    if (
+      player.guildRole === GuildRole.PENDING && player.guildId === guildId
+    ) {
+      return await this.prisma.user.update({
+        where: {
+          id: playerId,
+        },
+        data: {
+          guildRole: GuildRole.MEMBER,
+        },
+      });
     }
   }
 
   async kickGuildPlayer(
+    guildId: number,
+    playerId: number,
     user: User,
-    dto: PlayerIdDto,
   ) {
-    if (user.guildRole === GuildRole.ADMIN) {
-      if (dto.playerId === user.id) {
-        throw new ForbiddenException(
-          'You cannot kick yourself from the guild',
-        );
-      }
-
-      const guild =
-        await this.prisma.guild.findFirst({
-          where: {
-            id: user.guildId,
-          },
-        });
-
-      await this.prisma.guild.update({
-        where: {
-          id: guild.id,
-        },
-        data: {
-          users: {
-            disconnect: [{ id: dto.playerId }],
-          },
-        },
-      });
+    if (!this.isUserInGuild(user, guildId) || user.guildRole !== GuildRole.ADMIN) {
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
     }
-    throw new ForbiddenException(
-      'Access to resources denied',
-    );
+    if (user.id === playerId) {
+      throw new ForbiddenException(
+        'You cannot kick yourself from the guild',
+      );
+    }
+
+    await this.guild.removeUser({id: guildId, userId: playerId})
   }
 
-  async deleteGuildById(user: User) {
-    const guild =
-      await this.prisma.guild.findUnique({
-        where: {
-          id: user.guildId,
-        },
-      });
-
-    if (user.guildId === guild.id) {
-      if (user.guildRole === GuildRole.ADMIN) {
-        await this.prisma.guild.delete({
-          where: {
-            id: user.guildId,
-          },
-        });
-      }
+  async deleteGuildById(guildId: number, user: User) {
+    if (!this.isUserInGuild(user, guildId) || user.guildRole !== GuildRole.ADMIN) {
+      throw new ForbiddenException(
+        'Access to resources denied',
+      );
     }
 
-    throw new ForbiddenException(
-      'Access to resources denied',
-    );
+    await this.guild.delete({ id: guildId })
   }
 }

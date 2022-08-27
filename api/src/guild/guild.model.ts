@@ -23,7 +23,7 @@ export class GuildModel {
     });
   }
 
-  async getById({id, withPending}) {
+  async getById( {id, withPending }) {
     const usersQuery = withPending ? true : {
       where: {
         NOT: {
@@ -46,6 +46,36 @@ export class GuildModel {
     return await this.prisma.guild.create({
       data: {
         ...dto,
+      },
+    });
+  }
+
+  async edit({ id, data }) {
+    return this.prisma.guild.update({
+      where: {
+        id,
+      },
+      data
+    });
+  }
+
+  async delete({ id }) {
+    await this.prisma.guild.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async removeUser({ id, userId }) {
+    return await this.prisma.guild.update({
+      where: {
+        id,
+      },
+      data: {
+        users: {
+          disconnect: [{ id: userId }],
+        },
       },
     });
   }

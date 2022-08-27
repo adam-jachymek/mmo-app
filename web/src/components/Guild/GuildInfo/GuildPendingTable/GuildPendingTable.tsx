@@ -1,16 +1,18 @@
 import { Button } from "@mantine/core";
 import { useMutation } from "react-query";
-import { userGuildAccept } from "api/endpoints";
+import { userGuildAccept } from "api/Guild/Guilds";
 import { User } from "/types";
+import { GuildPlayerParam } from "api/Guild/GuildTypes";
 
 type Props = {
   guild: any;
   refetchGuild: () => void;
   isAdmin: boolean;
   isMod: boolean;
+  onRemovePlayer: (params: GuildPlayerParam) => any;
 };
 
-const GuildPendingTable = ({ guild, refetchGuild, isAdmin, isMod }: Props) => {
+const GuildPendingTable = ({ guild, refetchGuild, isAdmin, isMod, onRemovePlayer }: Props) => {
   const pendingPlayers = guild?.users.filter(
     (user: User) => user.guildRole === "PENDING"
   );
@@ -51,7 +53,7 @@ const GuildPendingTable = ({ guild, refetchGuild, isAdmin, isMod }: Props) => {
                       color="green"
                       size="xs"
                       onClick={() => {
-                        acceptGuildUser({ playerId: user.id });
+                        acceptGuildUser({ playerId: user.id, guildId: guild.id });
                       }}
                     >
                       Accept
@@ -60,6 +62,9 @@ const GuildPendingTable = ({ guild, refetchGuild, isAdmin, isMod }: Props) => {
                       className="players__action-button"
                       color="red"
                       size="xs"
+                      onClick={() => {
+                        onRemovePlayer({ guildId: guild.id, playerId: user.id });
+                      }}
                     >
                       Reject
                     </Button>

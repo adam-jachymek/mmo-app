@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { deleteGuildById, editGuildById, leaveGuild } from "api/endpoints";
+import { deleteGuildById, editGuildById, leaveGuild } from "api/Guild/Guilds";
 import ConfirmModal from "components/ConfirmModal";
 import { Guild, User } from "/types";
 
@@ -37,7 +37,7 @@ const GuildHeader = ({
     },
   });
 
-  const { mutate: guildValues } = useMutation(editGuildById, {
+  const { mutate: editGuild } = useMutation(editGuildById, {
     onSuccess: () => {
       setOpened(false);
       refetchGuild();
@@ -57,7 +57,7 @@ const GuildHeader = ({
       description: guild?.description,
     },
     onSubmit: (values) => {
-      guildValues(values);
+      editGuild({guildId: guild.id, values});
     },
   });
 
@@ -84,7 +84,7 @@ const GuildHeader = ({
           {isMod || (isAdmin && <Button color="green">Invite Player</Button>)}
           {isMod ||
             (isMember && (
-              <Button color="red" onClick={() => leaveThisGuild()}>
+              <Button color="red" onClick={() => leaveThisGuild(guild.id)}>
                 Leave Guild
               </Button>
             ))}

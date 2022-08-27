@@ -6,7 +6,7 @@ import {
   getGuildById,
   userRequest,
   leaveGuild,
-} from "api/endpoints";
+} from "api/Guild/Guilds";
 import { Button, Group, Modal, TextInput, Textarea } from "@mantine/core";
 import { Guild, User } from "/types";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +70,7 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
 
   return (
     <div>
-      {userGuildId && (
+      { userGuildId && (
         <div>
           <h3>
             <span>
@@ -87,12 +87,12 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
           >
             VIEW GUILD
           </Button>
-          {currentUser?.guildRole === "PENDING" && (
+          { currentUser?.guildRole === "PENDING" && (
             <Button
               style={{ marginLeft: "10px" }}
               color="red"
               onClick={() => {
-                leavePending();
+                leavePending(userGuildId as number);
               }}
             >
               CANCEL PENDING
