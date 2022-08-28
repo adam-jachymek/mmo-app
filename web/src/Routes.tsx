@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { getUser } from "./api/endpoints";
-import Login from "./Login";
+import Login from "./components/Login/Login";
 import Home from "./Home";
 import Admin from "components/Admin";
 import SideNavBar from "components/SideNavBar";

@@ -2,7 +2,9 @@ import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
 import { createUser, loginUser, getUser } from "api/endpoints";
 import { Button, Loader, TextInput } from "@mantine/core";
-import { User } from "./types";
+import { User } from "../../types";
+
+import "./styles.sass";
 
 type Props = {
   currentUser: User;
@@ -42,21 +44,21 @@ function Login({ currentUser, refetchUser }: Props) {
 
   return (
     <>
-      <div className="main__wrapper">
-        <h1 className="main__title">MMO-APP alpha</h1>
-        <div className="main__login">
+      <div className="login__wrapper">
+        <img className="login__logo" src="/media/logo150.png" />
+        <div className="login__login">
           <h3>Login</h3>
           <form onSubmit={login.handleSubmit}>
             <TextInput
               label="Email"
-              className="main__input"
+              className="login__input"
               name="email"
               onChange={login.handleChange}
               value={login.values.email}
             />
             <TextInput
               label="Password"
-              className="main__input"
+              className="login__input"
               type="password"
               name="password"
               onChange={login.handleChange}
@@ -67,31 +69,31 @@ function Login({ currentUser, refetchUser }: Props) {
             </Button>
           </form>
         </div>
-        <div className="main__register">
+        <div className="login__register">
           <h3>Create Account</h3>
           <form onSubmit={register.handleSubmit}>
             <TextInput
               label="Email"
-              className="main__input"
+              className="login__input"
               name="email"
               onChange={register.handleChange}
               value={register.values.email}
             />
             <TextInput
-              label="Password"
-              className="main__input"
-              type="password"
-              name="password"
-              onChange={register.handleChange}
-              value={register.values.password}
-            />
-            <TextInput
               label="Username"
-              className="main__input"
+              className="login__input"
               type="text"
               name="username"
               onChange={register.handleChange}
               value={register.values.username}
+            />
+            <TextInput
+              label="Password"
+              className="login__input"
+              type="password"
+              name="password"
+              onChange={register.handleChange}
+              value={register.values.password}
             />
             <Button type="submit">Create Account</Button>
           </form>

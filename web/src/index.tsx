@@ -36,6 +36,7 @@ root.render(
         <MantineProvider
           theme={{
             colorScheme: "dark",
+            fontFamily: "Chakra Petch, sans-serif",
           }}
         >
           <main className="main">

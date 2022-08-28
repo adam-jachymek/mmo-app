@@ -17,6 +17,7 @@ const SideNavBar = () => {
     <div>
       {sidebar ? (
         <div className="navbar">
+          <img src="/media/logo150.png" />
           <ul className="navbar__ul">
             <li onClick={() => navigate("/")} className="navbar__li">
               <TiHomeOutline /> Home

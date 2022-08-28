@@ -1,6 +1,5 @@
 import api from "api/axios";
-import {GuildPlayerParam} from "api/Guild/GuildTypes";
-
+import { GuildPlayerParam } from "api/Guild/GuildTypes";
 
 export const getGuilds = async () => {
   const response = await api.get("/guild");
@@ -23,12 +22,12 @@ export const getGuildById = async (guildId?: string) => {
   return response.data;
 };
 
-export const editGuildById = async ( data: {
-  guildId: number,
+export const editGuildById = async (data: {
+  guildId: number;
   values: {
     name?: string;
     description?: string;
-  },
+  };
 }) => {
   const response = await api.patch(`/guild/${data.guildId}`, data.values);
 
@@ -47,7 +46,10 @@ export const userRequest = async (guildId: number) => {
   return response.data;
 };
 
-export const userGuildAccept = async ({ guildId, playerId }: GuildPlayerParam) => {
+export const userGuildAccept = async ({
+  guildId,
+  playerId,
+}: GuildPlayerParam) => {
   const response = await api.get(`guild/${guildId}/users/${playerId}/accept`);
 
   return response.data;
@@ -59,7 +61,10 @@ export const leaveGuild = async (guildId: number) => {
   return response.data;
 };
 
-export const kickGuildPlayer = async ({ guildId, playerId }: GuildPlayerParam) => {
+export const kickGuildPlayer = async ({
+  guildId,
+  playerId,
+}: GuildPlayerParam) => {
   const response = await api.get(`guild/${guildId}/users/${playerId}/kick/`);
 
   return response.data;
