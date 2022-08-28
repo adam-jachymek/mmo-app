@@ -1,36 +1,27 @@
-import { kickGuildPlayer } from "api/endpoints";
 import { Button } from "@mantine/core";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "components/ConfirmModal";
 import { User } from "/types";
+import {GuildPlayerParam} from "api/Guild/GuildTypes";
 
 type Props = {
   currentUser: User;
-  refetchUser: () => void;
   guild: any;
-  refetchGuild: () => void;
   isAdmin: boolean;
   isMod: boolean;
+  onRemovePlayer: (params: GuildPlayerParam) => any
 };
 const GuildMemberTable = ({
   currentUser,
-  refetchUser,
   guild,
-  refetchGuild,
   isAdmin,
   isMod,
+  onRemovePlayer,
 }: Props) => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   let navigate = useNavigate();
-
-  const { mutate: kickPlayerGuild } = useMutation(kickGuildPlayer, {
-    onSuccess: (response) => {
-      refetchGuild();
-      refetchUser();
-    },
-  });
 
   const notPendingPlayers = guild?.users.filter(
     (user: User) => user.guildRole !== "PENDING"
@@ -72,7 +63,7 @@ const GuildMemberTable = ({
                           color="red"
                           size="xs"
                           onClick={() => {
-                            kickPlayerGuild({ playerId: user.id });
+                            onRemovePlayer({ guildId: guild.id, playerId: user.id });
                           }}
                           // onClick={() => {
                           //   setConfirmModalOpen(true);

@@ -7,7 +7,7 @@ import {GuildModel} from "./guild.model";
 @Module({
   controllers: [GuildController],
   providers: [GuildService, GuildModel],
-  exports: [GuildService],
+  exports: [],
   imports: [UserService],
 })
 export class GuildModule {}

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
-import { getGuildById } from "api/endpoints";
+import {useMutation, useQuery} from "react-query";
+import {getGuildById, kickGuildPlayer} from "api/Guild/Guilds";
 import GuildHeader from "./GuildHeader";
 import { User } from "/types";
 import GuildPendingTable from "./GuildPendingTable";
@@ -39,6 +39,13 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
     [id, currentUser]
   );
 
+  const { mutate: kickPlayerGuild } = useMutation(kickGuildPlayer, {
+    onSuccess: (response) => {
+      refetchGuild();
+      refetchUser();
+    },
+  });
+
   return (
     <div className="guild__info">
       <GuildHeader
@@ -52,17 +59,17 @@ const GuildInfo = ({ currentUser, refetchUser }: Props) => {
       />
       <GuildPendingTable
         guild={guild}
-        refetchGuild={refetchGuild}
         isAdmin={isAdmin}
         isMod={isMod}
+        onRemovePlayer={kickPlayerGuild}
+        refetchGuild={refetchGuild}
       />
       <GuildMember
         currentUser={currentUser}
-        refetchUser={refetchUser}
-        refetchGuild={refetchGuild}
         guild={guild}
         isAdmin={isAdmin}
         isMod={isMod}
+        onRemovePlayer={kickGuildPlayer}
       />
     </div>
   );

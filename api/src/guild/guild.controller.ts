@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -18,7 +17,6 @@ import { GuildService } from './guild.service';
 import {
   CreateGuildDto,
   EditGuildDto,
-  PlayerIdDto,
 } from './dto';
 import { User } from '@prisma/client';
 
@@ -45,17 +43,6 @@ export class GuildController {
     );
   }
 
-  @Post('/request/:id')
-  userRequest(
-    @GetUser() user: User,
-    @Param('id', ParseIntPipe) guildId: number,
-  ) {
-    return this.GuildService.userRequest(
-      user,
-      guildId,
-    );
-  }
-
   @Post()
   createGuild(
     @GetUser() user: User,
@@ -67,39 +54,15 @@ export class GuildController {
     );
   }
 
-  @Post('accept')
-  acceptGuildPlayer(
-    @GetUser() user: User,
-    @Body() dto: PlayerIdDto,
-  ) {
-    return this.GuildService.acceptGuildPlayer(
-      user,
-      dto,
-    );
-  }
-
-  @Post('leave')
-  leaveGuild(@GetUser() user: User) {
-    return this.GuildService.leaveGuild(user);
-  }
-
-  @Post('kick')
-  kickGuildPlayer(
-    @GetUser() user: User,
-    @Body() dto: PlayerIdDto,
-  ) {
-    return this.GuildService.kickGuildPlayer(
-      user,
-      dto,
-    );
-  }
-
-  @Patch()
+  @Patch(':id')
   editGuildById(
     @GetUser() user: User,
     @Body() dto: EditGuildDto,
+    @Param('id', ParseIntPipe) guildId: number,
   ) {
-    return this.GuildService.editGuildById(
+    return this.GuildService.editGuild
+    (
+      guildId,
       user,
       dto,
     );
@@ -112,7 +75,53 @@ export class GuildController {
     @Param('id', ParseIntPipe) guildId: number,
   ) {
     return this.GuildService.deleteGuildById(
+      guildId,
       user,
+    );
+  }
+
+  @Get(':id/request')
+  userRequest(
+    @GetUser() user: User,
+    @Param('id', ParseIntPipe) guildId: number,
+  ) {
+    return this.GuildService.createRequest(
+      guildId,
+      user,
+    );
+  }
+
+  @Get(':guildId/users/:playerId/accept')
+  acceptPlayer(
+    @GetUser() user: User,
+    @Param('guildId', ParseIntPipe) guildId: number,
+    @Param('playerId', ParseIntPipe) playerId: number,
+  ) {
+    return this.GuildService.acceptGuildPlayer(
+      guildId,
+      playerId,
+      user,
+    );
+  }
+
+  @Get(':guildId/leave')
+  leaveGuild(
+    @GetUser() user: User,
+    @Param('guildId', ParseIntPipe) guildId: number,
+  ) {
+    return this.GuildService.leaveGuild(guildId, user);
+  }
+
+  @Get(':guildId/users/:playerId/kick')
+  kickGuildPlayer(
+    @GetUser() user: User,
+    @Param('guildId', ParseIntPipe) guildId: number,
+    @Param('playerId', ParseIntPipe) playerId: number,
+  ) {
+    return this.GuildService.kickGuildPlayer(
+      guildId,
+      playerId,
+      user
     );
   }
 }
