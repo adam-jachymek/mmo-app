@@ -7,7 +7,7 @@ import "./styles.sass";
 type Props = {
   currentUser: User;
   itemsData: any;
-  openItemModal: (arg: boolean) => void;
+  openItemModal: (item: Item) => void;
 };
 
 const CharacterProfile = ({ currentUser, itemsData, openItemModal }: Props) => {
@@ -24,7 +24,6 @@ const CharacterProfile = ({ currentUser, itemsData, openItemModal }: Props) => {
     const offhand = itemsData.find(
       (item: Item) => item.type === "OFFHAND" && item.equip === true
     );
-
     const legs = itemsData.find(
       (item: Item) => item.type === "LEGS" && item.equip === true
     );

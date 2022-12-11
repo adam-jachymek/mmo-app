@@ -1,7 +1,10 @@
+import { useState } from "react";
 import classNames from "classnames";
 import { Button, Modal } from "@mantine/core";
+import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { deleteItem, equipItem, getItems } from "api/endpoints";
+import ConfirmModal from "../ConfirmModal";
 
 import "./styles.sass";
 
@@ -13,6 +16,7 @@ type Props = {
 };
 
 const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { mutate: equipThisItem } = useMutation(equipItem, {
     onSuccess: (response) => {
       refetchItems();
@@ -24,6 +28,15 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
       refetchItems();
     },
   });
+
+  const toggleDeleteModal = () => {
+    setOpenDeleteModal(!openDeleteModal);
+  };
+
+  const handleDeleteItem = () => {
+    deleteThis(item?.id);
+    setOpenItem(false);
+  };
 
   return (
     <Modal
@@ -38,6 +51,16 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
         setOpenItem(false);
       }}
     >
+      <div className="modal__delete">
+        <Button
+          onClick={toggleDeleteModal}
+          variant="outline"
+          color="red"
+          uppercase
+        >
+          <BiTrash />
+        </Button>
+      </div>
       <img src={`/media/items/${item?.sprite}.png`} className="modal__icon" />
       <div className="modal__info">
         <h3>{item?.name}</h3>
@@ -74,14 +97,6 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
       </div>
       <div className="modal__buttons">
         <Button
-          onClick={() => deleteThis(item?.id)}
-          variant="outline"
-          color="red"
-          uppercase
-        >
-          R
-        </Button>
-        <Button
           variant="outline"
           color="lime"
           onClick={() => {
@@ -113,6 +128,12 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
         >
           Close
         </Button>
+        <ConfirmModal
+          isVisible={openDeleteModal}
+          title="Do you want delete this item?"
+          onConfirmAction={handleDeleteItem}
+          onCancelAction={toggleDeleteModal}
+        />
       </div>
     </Modal>
   );

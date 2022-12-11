@@ -37,12 +37,12 @@ const SideNavBar = () => {
             <li onClick={() => navigate("/admin")} className="navbar__li">
               Admin
             </li>
-            <li onClick={() => navigate("/players")} className="navbar__li">
+            {/* <li onClick={() => navigate("/players")} className="navbar__li">
               Players
             </li>
             <li onClick={() => navigate("/guild")} className="navbar__li">
               Guild
-            </li>
+            </li> */}
           </ul>
         </div>
       ) : null}

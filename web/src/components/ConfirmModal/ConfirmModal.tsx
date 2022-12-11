@@ -4,7 +4,7 @@ type Props = {
   isVisible: boolean;
   title: string;
   onCancelAction: () => void;
-  onConfirmAction: any;
+  onConfirmAction: () => void;
 };
 
 const ConfirmModal = ({

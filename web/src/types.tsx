@@ -24,6 +24,7 @@ export type ItemPrototype = {
   maxStat: number;
   isEquipment: string;
   quality: string;
+  actionAmount: number;
 };
 
 export type Item = {

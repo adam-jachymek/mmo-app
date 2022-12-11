@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { getItems } from "api/endpoints";
 import { Loader } from "@mantine/core";
-import { EquipItem, User } from "/types";
+import { EquipItem, User, Item } from "/types";
 import ItemModal from "../ItemModal";
 import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";
@@ -28,7 +28,7 @@ const Character = ({ currentUser, refetchUser }: Props) => {
     isFetching,
   } = useQuery("getItems", getItems);
 
-  const openItemModal = (item: any) => {
+  const openItemModal = (item: Item) => {
     setItem(item);
     setOpenItem(true);
   };

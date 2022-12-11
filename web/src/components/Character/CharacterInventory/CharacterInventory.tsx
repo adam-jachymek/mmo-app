@@ -1,22 +1,23 @@
 import classNames from "classnames";
 import { useMemo } from "react";
+import { Item } from "/types";
 
 import "./styles.sass";
 
 type Props = {
-  itemsData: any;
-  openItemModal: (item: any) => void;
+  itemsData: Item[];
+  openItemModal: (item: Item) => void;
 };
 
 const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
-  const inventory = itemsData?.filter((item: any) => !item.equip);
+  const inventory = itemsData?.filter((item: Item) => !item.equip);
 
   const bags = itemsData?.filter(
-    (item: any) => item.type === "BAG" && item.equip
+    (item: Item) => item.type === "BAG" && item.equip
   );
 
   const addSlots = bags.reduce(
-    (n: number, item: any) => n + item.item.actionAmount,
+    (n: number, item: Item) => n + item.item.actionAmount,
     0
   );
 
