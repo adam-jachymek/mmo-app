@@ -12,7 +12,7 @@ import "./styles.sass";
 
 type Props = {
   currentUser: User;
-  refetchUser: any;
+  refetchUser: () => void;
 };
 
 const BattleScreen = ({ currentUser, refetchUser }: Props) => {

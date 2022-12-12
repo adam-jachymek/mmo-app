@@ -10,15 +10,15 @@ const BattleUsers = ({ user }: Props) => {
       <div className="fight__players-avatars">
         <img
           className="fight__player-img"
-          src={`/media/users/${user.avatar}.png`}
+          src={`/media/avatars/${user.avatar}.png`}
         />
         <img
           className="fight__players-img"
-          src={`/media/users/${user.avatar}.png`}
+          src={`/media/avatars/${user.avatar}.png`}
         />
         <img
           className="fight__players-img"
-          src={`/media/users/${user.avatar}.png`}
+          src={`/media/avatars/${user.avatar}.png`}
         />
       </div>
       <div className="fight__player-info">

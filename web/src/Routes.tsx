@@ -1,7 +1,6 @@
 import { useQuery } from "react-query";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { getUser } from "./api/endpoints";
-import Login from "./components/Login/Login";
 import Home from "./Home";
 import Admin from "components/Admin";
 import SideNavBar from "components/SideNavBar";
@@ -21,6 +20,7 @@ import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
 import MobileMenu from "./components/MobileMenu";
+import WelcomeScreen from "./components/WelcomeScreen";
 
 const AppRouter = () => {
   const token = getToken();
@@ -46,12 +46,7 @@ const AppRouter = () => {
   if (!currentUser || !token) {
     return (
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Login currentUser={currentUser} refetchUser={refetchUser} />
-          }
-        />
+        <Route path="/" element={<WelcomeScreen refetchUser={refetchUser} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );

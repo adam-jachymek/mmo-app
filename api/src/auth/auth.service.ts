@@ -27,6 +27,7 @@ export class AuthService {
           email: dto.email,
           username: dto.username,
           hash,
+          avatar: dto.avatar,
         },
       });
 

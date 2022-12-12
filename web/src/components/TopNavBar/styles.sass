@@ -10,6 +10,7 @@
   display: flex
   justify-content: flex-end
   align-items: center
+  padding: 0px 10px
 
   &__info
     display: flex
@@ -19,10 +20,11 @@
   &__gold-icon
     width: 20px
     height: 20px
-    margin-right: 10px
 
   &__logout
+    height: 18px
     margin-left: 10px
+
 
 
 @include media-breakpoint-up(md)
@@ -33,4 +35,7 @@
     &__gold-icon
       width: 30px
       height: 30px
-      margin-right: 0
+
+    &__logout
+      margin-left: 10px
+      height: 24px

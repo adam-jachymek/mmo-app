@@ -3,14 +3,9 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
-  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { BattleService } from 'src/battle/battle.service';
-import { GetUser } from 'src/auth/decorator';
-import { User } from '@prisma/client';
-import { NoInferType } from '@nestjs/config';
-import { stringify } from 'querystring';
 
 @WebSocketGateway({ cors: true })
 export class BattleSocketGateway {
