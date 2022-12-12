@@ -1,7 +1,8 @@
 import { Progress } from "@mantine/core";
+import { User } from "/types";
 
 type Props = {
-  user: any;
+  user: User;
 };
 
 const BattleUsers = ({ user }: Props) => {
