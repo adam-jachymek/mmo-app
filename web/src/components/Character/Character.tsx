@@ -26,7 +26,7 @@ const Character = ({ currentUser, refetchUser }: Props) => {
     data: itemsData,
     refetch: refetchItems,
     isFetching,
-  } = useQuery("getItems", getItems);
+  } = useQuery(["getItems", currentUser?.id], getItems);
 
   const openItemModal = (item: Item) => {
     setItem(item);

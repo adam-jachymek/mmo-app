@@ -1,11 +1,24 @@
+import { useEffect } from "react";
 import { Progress } from "@mantine/core";
 import { Mob } from "/types";
+import BattleAnimations from "../BattleAnimations";
+import useSound from "use-sound";
+import attackMob from "./audio/attack_mob.mp3";
 
 type Props = {
   mob: Mob;
+  activeAnimation: string;
 };
 
-const BattleMobs = ({ mob }: Props) => {
+const BattleMobs = ({ mob, activeAnimation }: Props) => {
+  const [attackSound] = useSound(attackMob);
+
+  useEffect(() => {
+    if (activeAnimation) {
+      attackSound();
+    }
+  }, [activeAnimation]);
+
   return (
     <div className="fight__mob">
       <div className="fight__mob-info">
@@ -25,30 +38,13 @@ const BattleMobs = ({ mob }: Props) => {
         </div>
       </div>
       <div className="fight__mob-sprite">
+        {activeAnimation && (
+          <BattleAnimations activeAnimation={activeAnimation} />
+        )}
         <img
           className="fight__mob-img"
           src={`/media/mobs/${mob?.sprite}.png`}
         />
-        <div>
-          {" "}
-          <img
-            className="fight__mobs-img"
-            src={`/media/mobs/${mob?.sprite}.png`}
-          />
-          <span>
-            <Progress color="red" value={(mob.hp / mob.maxHp) * 100} />
-          </span>
-        </div>
-
-        <div>
-          <img
-            className="fight__mobs-img"
-            src={`/media/mobs/${mob?.sprite}.png`}
-          />
-          <span>
-            <Progress color="red" value={(mob.hp / mob.maxHp) * 100} />
-          </span>
-        </div>
       </div>
     </div>
   );

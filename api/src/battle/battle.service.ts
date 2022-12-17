@@ -62,7 +62,11 @@ export class BattleService {
     return battle;
   }
 
-  async returnBattle(battleId: number) {
+  async returnBattle(
+    battleId: number,
+    mobAnimation?: string,
+    playerAnimation?: string,
+  ) {
     const getBattle =
       await this.prisma.battle.findUnique({
         where: {
@@ -84,27 +88,21 @@ export class BattleService {
         },
       });
 
-    const battle = {
-      id: getBattle.id,
-      userTurn: getBattle.userTurn,
-      activeUser: getBattle.activeUserId,
-      activeMob: getBattle.activeMobId,
-      battleEnded: getBattle.battleEnded,
-      youWin: getBattle.youWin,
-      youLost: getBattle.youLost,
-      users: getBattle.usersInBattle.map(
-        (user) => ({
-          id: user.user.id,
-          avatar: user.user.avatar,
-          username: user.user.username,
-          level: user.user.level,
-          exp: user.user.exp,
-          maxExp: user.user.maxExp,
-          hp: user.user.hp,
-          maxHp: user.user.maxHp,
-        }),
-      ),
-      mobs: getBattle.mobsInBattle.map((mob) => ({
+    const users = getBattle.usersInBattle.map(
+      (user) => ({
+        id: user.user.id,
+        avatar: user.user.avatar,
+        username: user.user.username,
+        level: user.user.level,
+        exp: user.user.exp,
+        maxExp: user.user.maxExp,
+        hp: user.user.hp,
+        maxHp: user.user.maxHp,
+      }),
+    );
+
+    const mobs = getBattle.mobsInBattle.map(
+      (mob) => ({
         id: mob.mob.id,
         name: mob.mob.name,
         level: mob.mob.level,
@@ -112,10 +110,22 @@ export class BattleService {
         maxHp: mob.mob.maxHp,
         sprite: mob.mob.sprite,
         giveExp: mob.mob.giveExp,
-      })),
-    };
+      }),
+    );
 
-    return battle;
+    return {
+      id: getBattle.id,
+      userTurn: getBattle.userTurn,
+      activeUser: getBattle.activeUserId,
+      activeMob: getBattle.activeMobId,
+      battleEnded: getBattle.battleEnded,
+      youWin: getBattle.youWin,
+      youLost: getBattle.youLost,
+      users: users,
+      mobs: mobs,
+      mobAnimation: mobAnimation,
+      playerAnimation: playerAnimation,
+    };
   }
 
   async getBattle(battleId: number) {

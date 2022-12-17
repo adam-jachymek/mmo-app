@@ -1,5 +1,6 @@
 import { GiConsoleController } from "react-icons/gi";
 import api from "./axios";
+import { User } from "/types";
 
 export const createUser = async (values: {
   email: string;
@@ -48,7 +49,7 @@ export const createItem = async (values: {
 };
 
 export const getItems = async () => {
-  const response = await api.get("/item/admin");
+  const response = await api.get("/item/");
 
   return response.data;
 };

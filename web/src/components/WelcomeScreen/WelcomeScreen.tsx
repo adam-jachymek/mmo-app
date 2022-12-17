@@ -29,7 +29,7 @@ const WelcomeScreen = ({ refetchUser }: Props) => {
           Create Account
         </Button>
       ) : (
-        <Button onClick={() => setRegister(false)} type="submit">
+        <Button type="button" onClick={() => setRegister(false)}>
           Back to login
         </Button>
       )}

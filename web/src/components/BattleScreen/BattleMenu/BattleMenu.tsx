@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "/types";
 
@@ -13,10 +13,11 @@ const BattleMenu = ({ battle, socket, battleId, currentUser }: Props) => {
   const [showFightMenu, setShowFightMenu] = useState(false);
   let navigate = useNavigate();
 
-  const userAttack = () => {
+  const userAttack = (animationName: string) => {
     socket.emit("userAttack", {
       battleId: battleId,
       userId: currentUser?.id,
+      mobAnimation: animationName,
     });
   };
 
@@ -24,8 +25,23 @@ const BattleMenu = ({ battle, socket, battleId, currentUser }: Props) => {
     return (
       <div className="fight__menu-2">
         {battle?.userTurn && battle?.activeUser === currentUser?.id && (
-          <button className="fight__button fight__attack" onClick={userAttack}>
-            ATTACK
+          <button
+            className="fight__button fight__attack"
+            onClick={() => {
+              userAttack("sword");
+            }}
+          >
+            WEAPON
+          </button>
+        )}
+        {battle?.userTurn && battle?.activeUser === currentUser?.id && (
+          <button
+            className="fight__button fight__attack"
+            onClick={() => {
+              userAttack("sword");
+            }}
+          >
+            FIREBALL
           </button>
         )}
       </div>

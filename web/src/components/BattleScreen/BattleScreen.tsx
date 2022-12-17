@@ -1,12 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
 import BattleMobs from "./BattleMobs";
 import BattleUsers from "./BattleUsers";
 import BattleMenu from "./BattleMenu";
+import useSound from "use-sound";
+import battleMusic from "./audio/battlemusic.mp3";
+import youwin from "./audio/youwin.mp3";
+import wasted from "./audio/wasted.mp3";
 
 import "./styles.sass";
 
@@ -16,15 +20,23 @@ type Props = {
 };
 
 const BattleScreen = ({ currentUser, refetchUser }: Props) => {
+  let navigate = useNavigate();
   const { id: battleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [lostModal, setLostModal] = useState(false);
   const [battle, setBattle] = useState<any>({});
-  let navigate = useNavigate();
+  const [music, { stop: stopMusic }] = useSound(battleMusic);
+  const [playWin] = useSound(youwin);
+  const [playWasted] = useSound(wasted);
+
+  // useEffect(() => {
+  //   music();
+  //   return () => stopMusic();
+  // }, [music]);
 
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
-  }, []);
+  }, [battleId]);
 
   useEffect(() => {
     battleId &&
@@ -32,16 +44,18 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
         console.log("Socket", response);
         setBattle(response);
       });
-  });
+  }, [battleId, socket]);
 
   useEffect(() => {
     if (battle?.youWin) {
       setOpenModal(true);
+      playWin();
       refetchUser();
     }
 
     if (battle?.youLost) {
       setLostModal(true);
+      playWasted();
       refetchUser();
     }
   }, [battle?.battleEnded, battle?.youLost, navigate, setOpenModal]);
@@ -54,10 +68,10 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     <>
       <div className="fight">
         {battle?.mobs?.map((mob: any) => (
-          <BattleMobs mob={mob} />
+          <BattleMobs mob={mob} activeAnimation={battle.mobAnimation} />
         ))}
         {battle?.users?.map((user: any) => (
-          <BattleUsers user={user} />
+          <BattleUsers user={user} activeAnimation={battle.playerAnimation} />
         ))}
         <div className="fight__menu-display">
           <BattleMenu

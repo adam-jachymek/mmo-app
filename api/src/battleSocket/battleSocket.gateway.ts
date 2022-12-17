@@ -55,6 +55,8 @@ export class BattleSocketGateway {
   async userAttack(
     @MessageBody('battleId') battleId: string,
     @MessageBody('userId') userId: number,
+    @MessageBody('mobAnimation')
+    mobAnimation: string,
   ) {
     const battleIdInt = Number(battleId);
 
@@ -71,7 +73,7 @@ export class BattleSocketGateway {
 
       this.sendUpdate(battleId);
 
-      await this.delay(1000);
+      await this.delay(500);
 
       const mobAfterAttack =
         await this.battleService.userAttack(
@@ -79,7 +81,7 @@ export class BattleSocketGateway {
           userId,
         );
 
-      this.sendUpdate(battleId);
+      this.sendUpdate(battleId, mobAnimation);
 
       if (mobAfterAttack.hp > 0) {
         await this.attackUser(battleId, userId);
@@ -95,20 +97,26 @@ export class BattleSocketGateway {
   ) {
     const battleIdInt = Number(battleId);
 
+    const playerAnimation = 'bite';
+
     const userAfterAttack =
       await this.battleService.attackUser(
         battleIdInt,
         userId,
       );
 
-    await this.delay(1000);
+    await this.delay(500);
 
     if (userAfterAttack.hp > 0) {
       await this.battleService.userTurnChanger(
         battleIdInt,
         true,
       );
-      this.sendUpdate(battleId);
+      this.sendUpdate(
+        battleId,
+        null,
+        playerAnimation,
+      );
     } else {
       this.youLost(battleId);
     }
@@ -134,12 +142,18 @@ export class BattleSocketGateway {
     );
   }
 
-  async sendUpdate(battleId: string) {
+  async sendUpdate(
+    battleId: string,
+    mobAnimation?: string,
+    playerAnimation?: string,
+  ) {
     const battleSocket = battleId.toString();
 
     const battle =
       await this.battleService.returnBattle(
         Number(battleId),
+        mobAnimation,
+        playerAnimation,
       );
 
     this.server

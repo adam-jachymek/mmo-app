@@ -16,9 +16,10 @@ const Home = ({ currentUser, refetchUser }) => {
 
   useEffect(() => {
     socket.on("message", (message) => {
+      console.log("chatSocket", message);
       setChat([...chat, message]);
     });
-  });
+  }, [socket]);
 
   const chatFormik = useFormik({
     initialValues: {
