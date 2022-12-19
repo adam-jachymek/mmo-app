@@ -20,19 +20,8 @@ const ExploreScreen = () => {
 
   console.log("user", user);
 
-  // const { data: exploreData, refetch: refetchExplore } = useQuery(
-  //   ["getExplore", id],
-  //   () => getExplore(id)
-  // );
-
-  // useEffect(() => {
-  //   if (exploreData?.mobId) {
-  //     navigate(`/battle/${exploreData.id}`);
-  //   }
-  // }, [exploreData]);
-
   const map = {
-    numeberofTiles: 60,
+    numeberofTiles: 100,
     tiles: [
       {
         id: 1,
@@ -45,7 +34,7 @@ const ExploreScreen = () => {
       {
         id: 2,
         name: "road",
-        sprite: "/media/maps/grass.jpg",
+        sprite: "/media/maps/tree.png",
         blocked: false,
         position: { x: 2, y: 1 },
       },
@@ -60,17 +49,23 @@ const ExploreScreen = () => {
         id: 3,
         name: "road",
         blocked: false,
+        sprite: "/media/maps/tree.png",
+
         position: { x: 4, y: 1 },
       },
       {
         id: 3,
         name: "road",
+        sprite: "/media/maps/tree.png",
+
         blocked: false,
         position: { x: 5, y: 1 },
       },
       {
         id: 3,
         name: "road",
+        sprite: "/media/maps/tree.png",
+
         blocked: false,
         position: { x: 6, y: 1 },
       },
@@ -132,9 +127,9 @@ const ExploreScreen = () => {
   };
 
   const renderMap = () => {
-    let items = [];
+    let tiles = [];
     for (let i = 0; i < map.numeberofTiles; i++) {
-      items.push(
+      tiles.push(
         <li
           style={{
             backgroundImage: `url(${map.tiles[i]?.sprite})`,
@@ -148,7 +143,7 @@ const ExploreScreen = () => {
         </li>
       );
     }
-    return items;
+    return tiles;
   };
 
   return (
