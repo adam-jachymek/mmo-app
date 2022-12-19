@@ -26,8 +26,8 @@ const SideNavBar = () => {
               <GiCharacter /> Character
             </li>
             {/* <li onClick={() => navigate("#")} className="navbar__li">
-          <AiOutlineQuestion /> Quest
-        </li> */}
+              <AiOutlineQuestion /> Quests
+            </li> */}
             <li onClick={() => navigate("/explore")} className="navbar__li">
               <AiOutlineQuestion /> Explore
             </li>
@@ -37,12 +37,12 @@ const SideNavBar = () => {
             <li onClick={() => navigate("/admin")} className="navbar__li">
               Admin
             </li>
-            {/* <li onClick={() => navigate("/players")} className="navbar__li">
+            <li onClick={() => navigate("/players")} className="navbar__li">
               Players
             </li>
             <li onClick={() => navigate("/guild")} className="navbar__li">
               Guild
-            </li> */}
+            </li>
           </ul>
         </div>
       ) : null}

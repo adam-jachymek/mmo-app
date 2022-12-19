@@ -8,8 +8,6 @@ type Props = {
 const BattleAnimations = ({ activeAnimation }: Props) => {
   const [animation, setAnimation] = useState(activeAnimation);
 
-  console.log("animation", animation);
-
   const options = {
     width: 64,
     height: 64,
@@ -29,6 +27,19 @@ const BattleAnimations = ({ activeAnimation }: Props) => {
     bite: useSprite({
       sprite: `/media/animations/bite.svg`,
       ...options,
+      fps: 50,
+      scale: 0.7,
+      startFrame: 0,
+      width: 128,
+      height: 128,
+    }),
+    fireball: useSprite({
+      sprite: `/media/animations/fireball.svg`,
+      ...options,
+      fps: 35,
+      scale: 0.8,
+      width: 128,
+      height: 128,
     }),
   };
 

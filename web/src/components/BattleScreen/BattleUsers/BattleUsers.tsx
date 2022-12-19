@@ -4,6 +4,7 @@ import BattleAnimations from "../BattleAnimations";
 import useSound from "use-sound";
 import damage from "./audio/damage.mp3";
 import monsterBite from "./audio/monster-bite.mp3";
+import bite from "./audio/bite.mp3";
 
 type Props = {
   user: any;
@@ -11,13 +12,13 @@ type Props = {
 };
 
 const BattleUsers = ({ user, activeAnimation }: Props) => {
-  const [playDamage] = useSound(damage);
+  const [playDamage] = useSound(bite);
 
-  useEffect(() => {
-    if (activeAnimation) {
-      playDamage();
-    }
-  }, [activeAnimation]);
+  // useEffect(() => {
+  //   if (activeAnimation) {
+  //     playDamage();
+  //   }
+  // }, [activeAnimation]);
 
   return (
     <div className="fight__player">

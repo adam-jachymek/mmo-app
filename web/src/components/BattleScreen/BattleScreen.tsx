@@ -11,6 +11,7 @@ import useSound from "use-sound";
 import battleMusic from "./audio/battlemusic.mp3";
 import youwin from "./audio/youwin.mp3";
 import wasted from "./audio/wasted.mp3";
+import useSounds from "../../hooks/useSounds";
 
 import "./styles.sass";
 
@@ -63,6 +64,8 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const closeModal = () => {
     navigate(-1);
   };
+
+  useSounds(battle.mobAnimation || battle.playerAnimation);
 
   return (
     <>

@@ -4,6 +4,7 @@ import { Mob } from "/types";
 import BattleAnimations from "../BattleAnimations";
 import useSound from "use-sound";
 import attackMob from "./audio/attack_mob.mp3";
+import fireball from "./audio/fireball.mp3";
 
 type Props = {
   mob: Mob;
@@ -13,11 +14,11 @@ type Props = {
 const BattleMobs = ({ mob, activeAnimation }: Props) => {
   const [attackSound] = useSound(attackMob);
 
-  useEffect(() => {
-    if (activeAnimation) {
-      attackSound();
-    }
-  }, [activeAnimation]);
+  // useEffect(() => {
+  //   if (activeAnimation) {
+  //     attackSound();
+  //   }
+  // }, [activeAnimation]);
 
   return (
     <div className="fight__mob">

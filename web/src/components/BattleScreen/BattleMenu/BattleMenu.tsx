@@ -38,7 +38,7 @@ const BattleMenu = ({ battle, socket, battleId, currentUser }: Props) => {
           <button
             className="fight__button fight__attack"
             onClick={() => {
-              userAttack("sword");
+              userAttack("fireball");
             }}
           >
             FIREBALL
