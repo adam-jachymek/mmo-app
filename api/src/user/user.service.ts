@@ -8,6 +8,17 @@ import { use } from 'passport';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async getUser(userId: number) {
+    return await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        guild: true,
+      },
+    });
+  }
+
   async getUsers() {
     return await this.prisma.user.findMany({
       include: {
@@ -60,7 +71,17 @@ export class UserService {
     return user;
   }
 
-  async healUser(user: User) {
+  async healUser(userId: number) {
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          guild: true,
+        },
+      });
+
     return this.prisma.user.update({
       where: {
         id: user.id,

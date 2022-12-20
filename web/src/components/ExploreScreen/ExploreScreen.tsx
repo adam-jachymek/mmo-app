@@ -1,197 +1,136 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { getExplore } from "api/endpoints";
+import { editTileById, getExplore, getMapById } from "api/endpoints";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineQuestion } from "react-icons/ai";
+import ExploreButtons from "./ExploreButtons";
 import { useState, useEffect, useMemo } from "react";
-import { isEqual } from "lodash";
+import TileEditModal from "./TileEditModal";
 
 import "./styles.sass";
 
 const ExploreScreen = () => {
   const { id } = useParams();
   let navigate = useNavigate();
+  const [activeTile, setActiveTile] = useState({
+    text: "",
+    sprite: "",
+    id: 0,
+    x: 0,
+    y: 0,
+  });
+  const [clickedTile, setClickedTile] = useState();
+  const [openEditModal, setOpenEditModal] = useState(false);
+
   const [user, setUser] = useState({
     name: "Detro",
     avatar: "/media/avatars/male.png",
-    position: { x: 1, y: 1 },
+    mapId: 1,
+    x: 0,
+    y: 0,
   });
 
-  const [text, setText] = useState("");
+  const mapId = 1;
 
-  console.log("user", user);
+  const { data: mapData, refetch: refetchTiles } = useQuery(
+    ["getMapById", mapId],
+    () => getMapById(mapId.toString())
+  );
 
-  const map = {
-    numeberofTiles: 100,
-    tiles: [
-      {
-        id: 1,
-        name: "house",
-        sprite: "/media/maps/grass.jpg",
-        blocked: false,
-        position: { x: 1, y: 1 },
-        boss: "sdad",
-      },
-      {
-        id: 2,
-        name: "road",
-        sprite: "/media/maps/tree.png",
-        blocked: false,
-        position: { x: 2, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        sprite: "/media/maps/grass.jpg",
-        blocked: false,
-        position: { x: 3, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        sprite: "/media/maps/tree.png",
+  useEffect(() => {
+    setActiveTile(
+      mapData?.tiles?.find(
+        (tile: any) => tile.x === user.x && tile.y === user.y
+      )
+    );
+  }, [user]);
 
-        position: { x: 4, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        sprite: "/media/maps/tree.png",
-
-        blocked: false,
-        position: { x: 5, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        sprite: "/media/maps/tree.png",
-
-        blocked: false,
-        position: { x: 6, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 7, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 8, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 9, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 10, y: 1 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 1, y: 2 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 2, y: 2 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 3, y: 2 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 4, y: 2 },
-      },
-      {
-        id: 3,
-        name: "road",
-        blocked: false,
-        position: { x: 5, y: 2 },
-      },
-    ],
-  };
-
-  const renderMap = () => {
+  const renderMap = useMemo(() => {
     let tiles = [];
-    for (let i = 0; i < map.numeberofTiles; i++) {
+    for (let i = 0; i < mapData?.tiles?.length; i++) {
       tiles.push(
         <li
           style={{
-            backgroundImage: `url(${map.tiles[i]?.sprite})`,
+            backgroundImage: `url(${mapData?.tiles[i]?.sprite})`,
             backgroundSize: "cover",
           }}
           className="explore__tile"
+          onClick={() => {
+            setClickedTile(mapData?.tiles[i]);
+            setOpenEditModal(!openEditModal);
+          }}
         >
-          {isEqual(map.tiles[i]?.position, user.position) && (
+          {mapData?.tiles[i].x === user.x && mapData?.tiles[i].y === user.y && (
             <img className="explore__avatar" src={user.avatar} />
+          )}
+          {mapData?.tiles[i].text.length > 2 && (
+            <div className="explore__icon">
+              <img
+                style={{ height: 35 }}
+                src="/media/explore/beka-pytajnik.svg"
+              />
+            </div>
           )}
         </li>
       );
     }
     return tiles;
+  }, [mapData, user]);
+
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.code === "ArrowUp") {
+      setUser({
+        ...user,
+        y: user.y - 1,
+      });
+    }
+
+    if (event.code === "ArrowDown") {
+      setUser({
+        ...user,
+        y: user.y + 1,
+      });
+    }
+
+    if (event.code === "ArrowLeft") {
+      setUser({
+        ...user,
+        x: user.x - 1,
+      });
+    }
+
+    if (event.code === "ArrowRight") {
+      setUser({
+        ...user,
+        x: user.x + 1,
+      });
+    }
   };
 
   return (
-    <div className="explore">
-      <div className="explore__wrapper">
-        <ul className="explore__tiles">{renderMap()}</ul>
+    <>
+      <div className="explore" tabIndex={0} onKeyDown={keyDownHandler}>
+        <div className="explore__wrapper">
+          <ul className="explore__tiles">
+            {renderMap}
+            {activeTile?.text?.length > 2 && (
+              <div className="explore__text">
+                <h2>{activeTile?.text}</h2>
+              </div>
+            )}
+          </ul>
+        </div>
+        <ExploreButtons user={user} setUser={setUser} />
       </div>
-      <button
-        onClick={() => {
-          setUser({
-            ...user,
-            position: { x: user.position.x - 1, y: user.position.y },
-          });
-        }}
-      >
-        left
-      </button>
-      <button
-        onClick={() => {
-          setUser({
-            ...user,
-            position: { x: user.position.x + 1, y: user.position.y },
-          });
-        }}
-      >
-        right
-      </button>
-      <button
-        onClick={() => {
-          setUser({
-            ...user,
-            position: { x: user.position.x, y: user.position.y + 1 },
-          });
-        }}
-      >
-        down
-      </button>
-      <button
-        onClick={() => {
-          setUser({
-            ...user,
-            position: { x: user.position.x, y: user.position.y - 1 },
-          });
-        }}
-      >
-        up
-      </button>
-    </div>
+      {clickedTile && (
+        <TileEditModal
+          openEditModal={openEditModal}
+          setOpenEditModal={setOpenEditModal}
+          editTile={clickedTile}
+          refetchTiles={refetchTiles}
+        />
+      )}
+    </>
   );
 };
 

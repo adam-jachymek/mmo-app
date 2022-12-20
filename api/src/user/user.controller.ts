@@ -29,11 +29,6 @@ export class UserController {
     return user;
   }
 
-  @Post('heal')
-  healUser(@GetUser() user: User) {
-    return this.userService.healUser(user);
-  }
-
   @Patch()
   editUser(
     @GetUser('id') userId: number,

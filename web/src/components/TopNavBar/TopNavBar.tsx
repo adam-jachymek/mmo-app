@@ -1,5 +1,6 @@
 import { useMutation } from "react-query";
 import { healUser } from "api/endpoints";
+import { socket } from "api/socket";
 import { User } from "/types";
 import { Button, RingProgress, Text } from "@mantine/core";
 import { removeToken } from "api/token";
@@ -9,11 +10,12 @@ import { Mobile, Default } from "../../utils/mediaQuery";
 import "./styles.sass";
 
 type Props = {
+  user: User;
   currentUser: User;
   refetchUser: () => void;
 };
 
-const TopNavBar = ({ currentUser, refetchUser }: Props) => {
+const TopNavBar = ({ user, currentUser, refetchUser }: Props) => {
   const LogOut = () => {
     removeToken();
     window.location.reload();
@@ -22,11 +24,11 @@ const TopNavBar = ({ currentUser, refetchUser }: Props) => {
 
   const showSiderbar = () => setSidebar(!sidebar);
 
-  const { mutate: healMe } = useMutation(healUser, {
-    onSuccess: (response) => {
-      refetchUser();
-    },
-  });
+  const healMe = () => {
+    socket.emit("healUser", {
+      userId: user.id,
+    });
+  };
 
   const playerExpProgress = () => {
     return (currentUser?.exp / currentUser?.maxExp) * 100;

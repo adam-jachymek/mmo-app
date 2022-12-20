@@ -17,4 +17,8 @@ export class CreateMapDto {
   @IsNumber()
   @IsOptional()
   maxLevel: number;
+
+  @IsNumber()
+  @IsOptional()
+  numberOfTiles: number;
 }

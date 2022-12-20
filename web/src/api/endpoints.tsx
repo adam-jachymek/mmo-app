@@ -1,6 +1,4 @@
-import { GiConsoleController } from "react-icons/gi";
 import api from "./axios";
-import { User } from "/types";
 
 export const createUser = async (values: {
   email: string;
@@ -135,12 +133,34 @@ export const getMap = async () => {
   return response.data;
 };
 
+export const getMapById = async (mapId?: string) => {
+  const response = await api.get(`/map/${mapId}`);
+
+  return response.data;
+};
+
 export const createMap = async (values: {
   name: string;
   minLevel?: number;
   maxLevel?: number;
 }) => {
   const response = await api.post("/map/", values);
+
+  return response.data;
+};
+
+export const createTiles = async (values: { mapId: number }) => {
+  const response = await api.post("/map_tiles/", values);
+
+  return response.data;
+};
+
+export const editTileById = async (values: {
+  tileId: number;
+  sprite?: string;
+  blocked?: boolean;
+}) => {
+  const response = await api.patch(`/map_tiles/${values.tileId}`, values);
 
   return response.data;
 };

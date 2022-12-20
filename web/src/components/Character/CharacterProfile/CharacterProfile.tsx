@@ -5,12 +5,18 @@ import { Item, User } from "/types";
 import "./styles.sass";
 
 type Props = {
+  user: User;
   currentUser: User;
   itemsData: any;
   openItemModal: (item: Item) => void;
 };
 
-const CharacterProfile = ({ currentUser, itemsData, openItemModal }: Props) => {
+const CharacterProfile = ({
+  user,
+  currentUser,
+  itemsData,
+  openItemModal,
+}: Props) => {
   const equippedItems = useMemo(() => {
     const head = itemsData.find(
       (item: Item) => item.type === "HEAD" && item.equip === true
@@ -174,20 +180,20 @@ const CharacterProfile = ({ currentUser, itemsData, openItemModal }: Props) => {
           <Progress
             classNames={{ root: "profile__bar", bar: "profile__bar-bar" }}
             color="#851010"
-            value={(currentUser?.hp / currentUser?.maxHp) * 100}
+            value={(user?.hp / user?.maxHp) * 100}
           />
           <span className="profile__progress-amount">
-            {currentUser?.hp} / {currentUser?.maxHp}
+            {user?.hp} / {user?.maxHp}
           </span>
         </div>
         <div className="profile__progress">
           <Progress
             classNames={{ root: "profile__bar", bar: "profile__bar-bar" }}
             color="#121085"
-            value={(currentUser?.exp / currentUser?.maxExp) * 100}
+            value={(user?.exp / user?.maxExp) * 100}
           />
           <span className="profile__progress-amount">
-            {currentUser?.exp} / {currentUser?.maxExp}
+            {user?.exp} / {user?.maxExp}
           </span>
         </div>
       </div>

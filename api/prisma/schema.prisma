@@ -65,6 +65,10 @@ model User {
   eqStamina Int? @default(0)
   eqDefence Int? @default(0)
 
+  mapId Int? @default(1)
+  x Int?
+  y Int?
+
   items Item[]
   inBattle UsersInBattle[]
   activeInBattle Battle[]
@@ -181,10 +185,29 @@ model Map {
   minLevel Int?
   maxLevel Int?
   sprite String?
+  numberOfTiles Int?
 
+  tiles MapTiles[]
   mobs Mob[]
 
   @@map("maps")
+}
+
+model MapTiles {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sprite String?
+  text String? @default("")
+  blocked Boolean? @default(false)
+  x Int
+  y Int
+
+  map Map? @relation(fields: [mapId], references: [id])
+  mapId Int
+
+  @@map("mapTiles")
 }
 
 model Battle {

@@ -13,11 +13,12 @@ import CharacterMenu from "./CharacterMenu";
 import "./styles.sass";
 
 type Props = {
+  user: User;
   currentUser: User;
   refetchUser: () => void;
 };
 
-const Character = ({ currentUser, refetchUser }: Props) => {
+const Character = ({ user, currentUser, refetchUser }: Props) => {
   const [openItem, setOpenItem] = useState(false);
   const [item, setItem] = useState<EquipItem>();
   const [showStats, setShowStats] = useState(false);
@@ -44,6 +45,7 @@ const Character = ({ currentUser, refetchUser }: Props) => {
           <div className="character__desktop-side-by-side">
             <div className="character__desktop-character-wrapper">
               <CharacterProfile
+                user={user}
                 currentUser={currentUser}
                 itemsData={itemsData}
                 openItemModal={openItemModal}
@@ -62,6 +64,7 @@ const Character = ({ currentUser, refetchUser }: Props) => {
 
         <Mobile>
           <CharacterProfile
+            user={user}
             currentUser={currentUser}
             itemsData={itemsData}
             openItemModal={openItemModal}

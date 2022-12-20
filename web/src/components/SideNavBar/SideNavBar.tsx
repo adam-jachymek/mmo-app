@@ -3,7 +3,6 @@ import { TiHomeOutline } from "react-icons/ti";
 import { AiOutlineQuestion } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Button } from "@mantine/core";
 
 import "./styles.sass";
 

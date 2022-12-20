@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { socket } from "api/socket";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { getUser } from "./api/endpoints";
 import Home from "./Home";
@@ -21,8 +23,10 @@ import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
 import MobileMenu from "./components/MobileMenu";
 import WelcomeScreen from "./components/WelcomeScreen";
+import { User } from "./types";
 
 const AppRouter = () => {
+  const [user, setUser] = useState<User>();
   const token = getToken();
 
   const {
@@ -34,6 +38,18 @@ const AppRouter = () => {
     enabled: Boolean(token),
     retry: 1,
   });
+
+  useEffect(() => {
+    currentUser?.id && socket.emit("connectUser", currentUser?.id.toString());
+  }, [currentUser?.id]);
+
+  useEffect(() => {
+    currentUser?.id &&
+      socket.on(`user-${currentUser?.id}`, (response: any) => {
+        setUser(response);
+        console.log("UserSocket", response);
+      });
+  }, [currentUser?.id, socket]);
 
   if (isLoading) {
     return <Loader />;
@@ -52,10 +68,14 @@ const AppRouter = () => {
     );
   }
 
-  if (currentUser) {
+  if (currentUser && user) {
     return (
       <>
-        <TopNavBar currentUser={currentUser} refetchUser={refetchUser} />
+        <TopNavBar
+          user={user}
+          currentUser={currentUser}
+          refetchUser={refetchUser}
+        />
         <SideNavBar />
         {/* <PartyNavBar /> */}
         <Routes>
@@ -68,7 +88,11 @@ const AppRouter = () => {
           <Route
             path="/character"
             element={
-              <Character currentUser={currentUser} refetchUser={refetchUser} />
+              <Character
+                user={user}
+                currentUser={currentUser}
+                refetchUser={refetchUser}
+              />
             }
           />
           <Route path="/admin" element={<Admin />} />

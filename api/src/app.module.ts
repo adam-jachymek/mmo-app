@@ -14,6 +14,8 @@ import { ExploreModule } from './explore/explore.module';
 import { GuildModule } from './guild/guild.module';
 import { MessagesModule } from './messages/messages.module';
 import { BattleSocketModule } from './battleSocket/battleSocket.module';
+import { MapTilesModule } from './mapTiles/mapTiles.module';
+import { UserSocketModule } from './userSocket/userSocket.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { BattleSocketModule } from './battleSocket/battleSocket.module';
     GuildModule,
     MessagesModule,
     BattleSocketModule,
+    MapTilesModule,
+    UserSocketModule,
   ],
 })
 export class AppModule {}

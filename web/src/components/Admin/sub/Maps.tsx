@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { getMap, createMap, deleteMap } from "api/endpoints";
+import { getMap, createMap, deleteMap, createTiles } from "api/endpoints";
 import { useFormik } from "formik";
 import { Button, NumberInputProps } from "@mantine/core";
 import { Map } from "/types";
@@ -7,7 +7,15 @@ import { Map } from "/types";
 const Maps = () => {
   const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
 
+  console.log("mapData", mapData);
+
   const { mutate: addMap } = useMutation(createMap, {
+    onSuccess: (response) => {
+      refetchMaps();
+    },
+  });
+
+  const { mutate: addTiles } = useMutation(createTiles, {
     onSuccess: (response) => {
       refetchMaps();
     },
@@ -75,6 +83,16 @@ const Maps = () => {
             <td>{map.minLevel}</td>
             <td>{map.maxLevel}</td>
             <td>
+              <Button
+                m="5px"
+                color="green"
+                size="xs"
+                onClick={() => {
+                  addTiles({ mapId: map.id });
+                }}
+              >
+                Create Tiles
+              </Button>
               <Button
                 m="5px"
                 color="red"

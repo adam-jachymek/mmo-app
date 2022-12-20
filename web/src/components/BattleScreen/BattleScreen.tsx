@@ -51,13 +51,13 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
     if (battle?.youWin) {
       setOpenModal(true);
       playWin();
-      refetchUser();
+      socket.emit("updateUser", { userId: currentUser.id });
     }
 
     if (battle?.youLost) {
       setLostModal(true);
       playWasted();
-      refetchUser();
+      socket.emit("updateUser", { userId: currentUser.id });
     }
   }, [battle?.battleEnded, battle?.youLost, navigate, setOpenModal]);
 
