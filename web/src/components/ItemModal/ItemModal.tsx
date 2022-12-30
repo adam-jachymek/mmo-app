@@ -3,19 +3,25 @@ import classNames from "classnames";
 import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
-import { deleteItem, equipItem, getItems } from "api/endpoints";
+import { deleteItem, equipItem } from "api/endpoints";
 import ConfirmModal from "../ConfirmModal";
 
 import "./styles.sass";
+import { EquipItem } from "/types";
 
 type Props = {
-  item: any;
-  openItem: boolean;
-  setOpenItem: (arg: boolean) => void;
+  handleCloseModal: () => void;
+  isVisible: boolean;
+  item: EquipItem | undefined;
   refetchItems: () => void;
 };
 
-const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
+const ItemModal = ({
+  handleCloseModal,
+  isVisible,
+  item,
+  refetchItems,
+}: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { mutate: equipThisItem } = useMutation(equipItem, {
     onSuccess: (response) => {
@@ -35,7 +41,7 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
 
   const handleDeleteItem = () => {
     deleteThis(item?.id);
-    setOpenItem(false);
+    handleCloseModal();
   };
 
   return (
@@ -43,13 +49,11 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
       classNames={{ modal: "modal" }}
       centered
       withCloseButton={false}
-      opened={openItem}
+      opened={isVisible}
       overlayOpacity={0.55}
       overlayBlur={3}
       closeOnClickOutside={false}
-      onClose={() => {
-        setOpenItem(false);
-      }}
+      onClose={handleCloseModal}
     >
       <div className="modal__delete">
         <Button
@@ -66,6 +70,7 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
         <h3>{item?.name}</h3>
         <h4>{item?.level} lvl</h4>
         <h4
+          // tolowercase
           className={classNames(
             {
               uncommon: item?.quality === "UNCOMMON",
@@ -101,27 +106,19 @@ const ItemModal = ({ item, openItem, setOpenItem, refetchItems }: Props) => {
           color="lime"
           onClick={() => {
             equipThisItem(item?.id);
-            setOpenItem(false);
+            handleCloseModal();
           }}
         >
           {item?.equip ? "UNEQUIP" : "EQUIP"}
         </Button>
         {item?.type === "potion" && (
-          <Button
-            variant="outline"
-            color="lime"
-            onClick={() => {
-              setOpenItem(false);
-            }}
-          >
+          <Button variant="outline" color="lime" onClick={handleCloseModal}>
             USE
           </Button>
         )}
 
         <Button
-          onClick={() => {
-            setOpenItem(false);
-          }}
+          onClick={handleCloseModal}
           variant="outline"
           color="gray"
           uppercase

@@ -6,21 +6,49 @@ import "./styles.sass";
 
 type Props = {
   user: User;
-  currentUser: User;
   itemsData: any;
   openItemModal: (item: Item) => void;
 };
 
-const CharacterProfile = ({
-  user,
-  currentUser,
-  itemsData,
+const findEquipedItem = (itemsData: any, itemType: string) => {
+  return itemsData.find(
+    (item: Item) => item.equip === true && item.type === itemType
+  );
+};
+
+// TODO move to separate file
+const EquippedItemSlot = ({
+  equippedItem,
   openItemModal,
-}: Props) => {
+}: {
+  equippedItem: any;
+  openItemModal: (equippedItem: any) => void;
+}) => {
+  return (
+    <div
+      className={`profile__slot ${
+        equippedItem && equippedItem.quality?.toLowerCase()
+      }`}
+    >
+      {equippedItem && (
+        <div
+          onClick={() => {
+            openItemModal(equippedItem);
+          }}
+        >
+          <img
+            src={`/media/items/${equippedItem.sprite}.png`}
+            className="profile__item-icon"
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
   const equippedItems = useMemo(() => {
-    const head = itemsData.find(
-      (item: Item) => item.type === "HEAD" && item.equip === true
-    );
+    const head = findEquipedItem(itemsData, "HEAD");
     const chest = itemsData.find(
       (item: Item) => item.type === "CHEST" && item.equip === true
     );
@@ -35,11 +63,11 @@ const CharacterProfile = ({
     );
 
     return {
-      head: head,
-      weapon: weapon,
-      chest: chest,
-      offhand: offhand,
-      legs: legs,
+      head,
+      weapon,
+      chest,
+      offhand,
+      legs,
     };
   }, [itemsData]);
 
@@ -47,132 +75,46 @@ const CharacterProfile = ({
     <div className="profile">
       <div className="profile__wrapper">
         <div className="profile__eq-slots">
-          <div
-            className={`profile__slot ${
-              equippedItems?.head && equippedItems.head.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.head && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.head);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.head.sprite}.png`}
-                  className="profile__item-icon"
-                />
-              </div>
-            )}
-          </div>
-          <div
-            className={`profile__slot ${
-              equippedItems?.offhand &&
-              equippedItems.offhand.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.offhand && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.offhand);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.offhand.sprite}.png`}
-                  className="profile__item-icon"
-                />
-              </div>
-            )}
-          </div>
-          <div
-            className={`profile__slot ${
-              equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.legs && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.legs);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.legs.sprite}.png`}
-                  className="eq__item-icon"
-                />
-              </div>
-            )}
-          </div>
+          <EquippedItemSlot
+            equippedItem={equippedItems.head}
+            openItemModal={openItemModal}
+          />
+          <EquippedItemSlot
+            equippedItem={equippedItems.offhand}
+            openItemModal={openItemModal}
+          />
+          <EquippedItemSlot
+            equippedItem={equippedItems.legs}
+            openItemModal={openItemModal}
+          />
         </div>
         <div className="profile__center">
           <div className="profile__info">
             <span className="profile__guild">Avengers</span>
             <img
               className="profile__avatar"
-              src={`/media/avatars/${currentUser?.avatar}.png`}
+              src={`/media/avatars/${user?.avatar}.png`}
             />
-            <span>{currentUser?.username}</span>
+            <span>{user?.username}</span>
             <span>
-              {currentUser?.level}
+              {user?.level}
               <span className="profile__lvl"> LVL</span>
             </span>
           </div>
         </div>
         <div className="profile__eq-slots">
-          <div
-            className={`profile__slot ${
-              equippedItems?.chest && equippedItems.chest.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.chest && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.chest);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.chest.sprite}.png`}
-                  className="profile__item-icon"
-                />
-              </div>
-            )}
-          </div>
-          <div
-            className={`profile__slot ${
-              equippedItems?.weapon &&
-              equippedItems.weapon.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.weapon && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.weapon);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.weapon.sprite}.png`}
-                  className="profile__item-icon"
-                />
-              </div>
-            )}
-          </div>
-          <div
-            className={`profile__slot ${
-              equippedItems?.legs && equippedItems.legs.quality.toLowerCase()
-            }`}
-          >
-            {equippedItems.legs && (
-              <div
-                onClick={() => {
-                  openItemModal(equippedItems.legs);
-                }}
-              >
-                <img
-                  src={`/media/items/${equippedItems.legs.sprite}.png`}
-                  className="profile__item-icon"
-                />
-              </div>
-            )}
-          </div>
+          <EquippedItemSlot
+            equippedItem={equippedItems.chest}
+            openItemModal={openItemModal}
+          />
+          <EquippedItemSlot
+            equippedItem={equippedItems.weapon}
+            openItemModal={openItemModal}
+          />
+          <EquippedItemSlot
+            equippedItem={equippedItems.legs}
+            openItemModal={openItemModal}
+          />
         </div>
       </div>
       <div className="profile__bars">
@@ -180,6 +122,7 @@ const CharacterProfile = ({
           <Progress
             classNames={{ root: "profile__bar", bar: "profile__bar-bar" }}
             color="#851010"
+            // migrate to function getUserHpBar(user)
             value={(user?.hp / user?.maxHp) * 100}
           />
           <span className="profile__progress-amount">

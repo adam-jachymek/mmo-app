@@ -19,8 +19,7 @@ type Props = {
 };
 
 const Character = ({ user, currentUser, refetchUser }: Props) => {
-  const [openItem, setOpenItem] = useState(false);
-  const [item, setItem] = useState<EquipItem>();
+  const [activeItem, setActiveItem] = useState<EquipItem>();
   const [showStats, setShowStats] = useState(false);
 
   const {
@@ -28,11 +27,6 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
     refetch: refetchItems,
     isFetching,
   } = useQuery(["getItems", currentUser?.id], getItems);
-
-  const openItemModal = (item: Item) => {
-    setItem(item);
-    setOpenItem(true);
-  };
 
   if (isFetching) {
     return <Loader />;
@@ -46,13 +40,13 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
             <div className="character__desktop-character-wrapper">
               <CharacterProfile
                 user={user}
-                currentUser={currentUser}
-                itemsData={itemsData}
-                openItemModal={openItemModal}
+                itemsData={itemsData} //userItems
+                // handleItemModalOpen
+                openItemModal={setActiveItem}
               />
               <CharacterInventory
                 itemsData={itemsData}
-                openItemModal={openItemModal}
+                openItemModal={setActiveItem}
               />
             </div>
             <CharacterStats
@@ -65,15 +59,14 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
         <Mobile>
           <CharacterProfile
             user={user}
-            currentUser={currentUser}
             itemsData={itemsData}
-            openItemModal={openItemModal}
+            openItemModal={setActiveItem}
           />
           <CharacterMenu showStats={showStats} setShowStats={setShowStats} />
           {!showStats ? (
             <CharacterInventory
               itemsData={itemsData}
-              openItemModal={openItemModal}
+              openItemModal={setActiveItem}
             />
           ) : (
             <CharacterStats
@@ -84,9 +77,9 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
         </Mobile>
       </div>
       <ItemModal
-        item={item}
-        openItem={openItem}
-        setOpenItem={setOpenItem}
+        item={activeItem}
+        isVisible={Boolean(activeItem)}
+        handleCloseModal={() => setActiveItem(undefined)}
         refetchItems={refetchItems}
       />
     </>

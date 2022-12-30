@@ -42,7 +42,6 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   useEffect(() => {
     battleId &&
       socket.on(battleId.toString(), (response) => {
-        console.log("Socket", response);
         setBattle(response);
       });
   }, [battleId, socket]);

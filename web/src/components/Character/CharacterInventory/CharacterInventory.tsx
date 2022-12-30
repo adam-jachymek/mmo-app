@@ -4,6 +4,9 @@ import { Item } from "/types";
 
 import "./styles.sass";
 
+const NUMBER_OF_BAG_SLOTS = 5;
+const DEFAULT_NUMBER_OF_SLOTS = 10;
+
 type Props = {
   itemsData: Item[];
   openItemModal: (item: Item) => void;
@@ -16,32 +19,26 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
     (item: Item) => item.type === "BAG" && item.equip
   );
 
-  const addSlots = bags.reduce(
+  const numberOfExtraSlots = bags.reduce(
     (n: number, item: Item) => n + item.item.actionAmount,
     0
   );
 
+  // migrate to component
   const renderBags = useMemo(() => {
     let items = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < NUMBER_OF_BAG_SLOTS; i++) {
+      const bag = bags[i];
       items.push(
         <li
           onClick={() => {
-            bags[i] && openItemModal(bags[i]);
+            bag && openItemModal(bag);
           }}
-          className={classNames(
-            "inventory__bag",
-            { uncommon: bags[i]?.quality === "UNCOMMON" },
-            {
-              epic: bags[i]?.quality === "EPIC",
-            },
-            { rare: bags[i]?.quality === "RARE" },
-            { legendary: bags[i]?.quality === "LEGENDARY" }
-          )}
+          className={classNames("inventory__bag", bag?.quality?.toLowerCase())}
         >
-          {bags[i] && (
+          {bag && (
             <img
-              src={`/media/items/${bags[i].item.sprite}.png`}
+              src={`/media/items/${bag.item.sprite}.png`}
               className="inventory__bag-icon"
             />
           )}
@@ -51,29 +48,26 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
     return items;
   }, [inventory]);
 
-  const numberOfSlots = 10 + addSlots;
+  const numberOfSlots = DEFAULT_NUMBER_OF_SLOTS + numberOfExtraSlots;
 
+  // migrate to component
   const renderSlots = useMemo(() => {
     let items = [];
     for (let i = 0; i < numberOfSlots; i++) {
+      const inventoryItem = inventory[i];
       items.push(
         <li
           onClick={() => {
-            inventory[i] && openItemModal(inventory[i]);
+            inventoryItem && openItemModal(inventoryItem);
           }}
           className={classNames(
             "inventory__item",
-            { uncommon: inventory[i]?.quality === "UNCOMMON" },
-            {
-              epic: inventory[i]?.quality === "EPIC",
-            },
-            { rare: inventory[i]?.quality === "RARE" },
-            { legendary: inventory[i]?.quality === "LEGENDARY" }
+            inventoryItem?.quality?.toLowerCase()
           )}
         >
-          {inventory[i] && (
+          {inventoryItem && (
             <img
-              src={`/media/items/${inventory[i].item.sprite}.png`}
+              src={`/media/items/${inventoryItem.item.sprite}.png`}
               className="inventory__item-icon"
             />
           )}

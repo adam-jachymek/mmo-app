@@ -1,17 +1,13 @@
-import { useMutation, useQuery } from "react-query";
-import { useParams } from "react-router-dom";
-import { editTileById, getExplore, getMapById } from "api/endpoints";
-import { useNavigate } from "react-router-dom";
-import { AiOutlineQuestion } from "react-icons/ai";
-import ExploreButtons from "./ExploreButtons";
 import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "react-query";
+import { getMapById } from "api/endpoints";
+import ExploreButtons from "./ExploreButtons";
 import TileEditModal from "./TileEditModal";
 
 import "./styles.sass";
+import { Loader } from "@mantine/core";
 
 const ExploreScreen = () => {
-  const { id } = useParams();
-  let navigate = useNavigate();
   const [activeTile, setActiveTile] = useState({
     text: "",
     sprite: "",
@@ -32,10 +28,11 @@ const ExploreScreen = () => {
 
   const mapId = 1;
 
-  const { data: mapData, refetch: refetchTiles } = useQuery(
-    ["getMapById", mapId],
-    () => getMapById(mapId.toString())
-  );
+  const {
+    data: mapData,
+    refetch: refetchTiles,
+    isFetching,
+  } = useQuery(["getMapById", mapId], () => getMapById(mapId.toString()));
 
   useEffect(() => {
     setActiveTile(
@@ -43,27 +40,29 @@ const ExploreScreen = () => {
         (tile: any) => tile.x === user.x && tile.y === user.y
       )
     );
-  }, [user]);
+  }, [user.x, user.y]);
 
   const renderMap = useMemo(() => {
     let tiles = [];
     for (let i = 0; i < mapData?.tiles?.length; i++) {
+      const tile = mapData?.tiles[i];
       tiles.push(
         <li
+          key={tile.id}
           style={{
-            backgroundImage: `url(${mapData?.tiles[i]?.sprite})`,
+            backgroundImage: `url(${tile.sprite})`,
             backgroundSize: "cover",
           }}
           className="explore__tile"
           onClick={() => {
-            setClickedTile(mapData?.tiles[i]);
+            setClickedTile(tile);
             setOpenEditModal(!openEditModal);
           }}
         >
-          {mapData?.tiles[i].x === user.x && mapData?.tiles[i].y === user.y && (
+          {tile.x === user.x && tile.y === user.y && (
             <img className="explore__avatar" src={user.avatar} />
           )}
-          {mapData?.tiles[i].text.length > 2 && (
+          {tile.text.length > 2 && (
             <div className="explore__icon">
               <img
                 style={{ height: 35 }}
@@ -75,7 +74,7 @@ const ExploreScreen = () => {
       );
     }
     return tiles;
-  }, [mapData, user]);
+  }, [mapData, user.x, user.y]);
 
   const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.code === "ArrowUp") {
@@ -106,6 +105,10 @@ const ExploreScreen = () => {
       });
     }
   };
+
+  if (isFetching) {
+    return <Loader />;
+  }
 
   return (
     <>
