@@ -13,9 +13,20 @@ const MobileMenu = () => {
           src="/media/ui/inventory.png"
         />
         <img src="/media/ui/skills.png" />
-        <img className="mobile-menu__home" src="/media/ui/menu.png" />
+        <img
+          className="mobile-menu__home"
+          onClick={() => {
+            navigate("/");
+          }}
+          src="/media/ui/menu.png"
+        />
         <img src="/media/ui/inventory.png" />
-        <img src="/media/ui/skills.png" />
+        <img
+          src="/media/ui/skills.png"
+          onClick={() => {
+            navigate("/admin");
+          }}
+        />
       </div>
     </div>
   );
