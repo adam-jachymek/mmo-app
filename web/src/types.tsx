@@ -54,7 +54,6 @@ export type Mob = {
   hp: number;
   maxHp: number;
   id: number;
-  mapId: number;
   maxLevel: number;
   minLevel: number;
   name: string;
@@ -67,7 +66,6 @@ export type Map = {
   id: number;
   maxLevel: number;
   minLevel: number;
-  mobs: Mob;
   name: string;
   sprite?: string;
   updateAt: string;
