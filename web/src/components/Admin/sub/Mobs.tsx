@@ -121,7 +121,6 @@ const Mobs = () => {
           <th>Attack</th>
           <th>Defence</th>
           <th>Exp</th>
-          <th>Map</th>
           <th>Action</th>
         </tr>
         {mobsData?.map((mob: any) => (
@@ -133,7 +132,6 @@ const Mobs = () => {
             <td>{mob.attack}</td>
             <td>{mob.defence}</td>
             <td>{mob.giveExp}</td>
-            <td>{mob.map.name}</td>
             <td>
               <Button
                 color="red"

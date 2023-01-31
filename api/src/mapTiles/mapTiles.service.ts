@@ -37,11 +37,11 @@ export class MapTilesService {
   }
 
   getMap() {
-    return this.prisma.map.findMany({});
+    return this.prisma.map.findMany();
   }
 
   getMapAdmin() {
-    return this.prisma.map.findMany({});
+    return this.prisma.map.findMany();
   }
 
   getMapById(mapId: number) {

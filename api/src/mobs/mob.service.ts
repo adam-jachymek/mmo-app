@@ -9,16 +9,16 @@ import { CreateMobDto, EditMobDto } from './dto';
 export class MobService {
   constructor(private prisma: PrismaService) {}
 
-  getMobsByMapId(mapId: number) {
-    return this.prisma.mob.findMany({});
-  }
-
   getMobs() {
-    return this.prisma.mob.findMany({});
+    return this.prisma.mob.findMany();
   }
 
   getMobById(mobId: number) {
-    return this.prisma.mob.findFirst({});
+    return this.prisma.mob.findFirst({
+      where: {
+        id: mobId,
+      },
+    });
   }
 
   async createMob(dto: CreateMobDto) {
