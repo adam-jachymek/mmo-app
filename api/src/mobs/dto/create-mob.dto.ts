@@ -32,10 +32,6 @@ export class CreateMobDto {
 
   @IsNumber()
   @IsNotEmpty()
-  mapId: number;
-
-  @IsNumber()
-  @IsNotEmpty()
   giveExp: number;
 
   @IsString()

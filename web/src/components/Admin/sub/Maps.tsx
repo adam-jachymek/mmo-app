@@ -3,6 +3,7 @@ import { getMap, createMap, deleteMap, createTiles } from "api/endpoints";
 import { useFormik } from "formik";
 import { Button, NumberInputProps } from "@mantine/core";
 import { Map } from "/types";
+import { isEmpty } from "lodash";
 
 const Maps = () => {
   const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
@@ -83,16 +84,18 @@ const Maps = () => {
             <td>{map.minLevel}</td>
             <td>{map.maxLevel}</td>
             <td>
-              <Button
-                m="5px"
-                color="green"
-                size="xs"
-                onClick={() => {
-                  addTiles({ mapId: map.id });
-                }}
-              >
-                Create Tiles
-              </Button>
+              {isEmpty(map?.tiles) && (
+                <Button
+                  m="5px"
+                  color="green"
+                  size="xs"
+                  onClick={() => {
+                    addTiles({ mapId: map.id });
+                  }}
+                >
+                  Create Tiles
+                </Button>
+              )}
               <Button
                 m="5px"
                 color="red"

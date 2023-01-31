@@ -66,8 +66,8 @@ model User {
   eqDefence Int? @default(0)
 
   mapId Int? @default(1)
-  x Int?
-  y Int?
+  x Int? @default(4)
+  y Int? @default(4)
 
   items Item[]
   inBattle UsersInBattle[]
@@ -145,9 +145,6 @@ model Mob {
   defence Int?
   giveExp Int?
 
-  map Map? @relation(fields: [mapId], references: [id])
-  mapId Int
-
   mobSpawn MobSpawn[]
 
   @@map("mobs")
@@ -188,7 +185,6 @@ model Map {
   numberOfTiles Int?
 
   tiles MapTiles[]
-  mobs Mob[]
 
   @@map("maps")
 }

@@ -71,6 +71,7 @@ export type Map = {
   name: string;
   sprite?: string;
   updateAt: string;
+  tiles: any;
 };
 
 export type Guild = {

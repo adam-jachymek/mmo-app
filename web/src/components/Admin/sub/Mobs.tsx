@@ -107,16 +107,6 @@ const Mobs = () => {
           onChange={mobsForm.handleChange}
           value={mobsForm.values.giveExp}
         />
-        <label className="admin__main-label">Map</label>
-        <Select
-          name="type"
-          size="sm"
-          required
-          placeholder="Pick one"
-          data={maps || []}
-          onChange={(value) => mobsForm.setFieldValue("mapId", Number(value))}
-          value={mobsForm.values.mapId.toString()}
-        />
 
         <Button type="submit" color="green" size="md" m="10px">
           Add Mob

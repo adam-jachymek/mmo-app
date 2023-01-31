@@ -56,6 +56,17 @@ export class UserSocketGateway {
     this.returnUser(userIdNumber);
   }
 
+  @SubscribeMessage('explore')
+  async explore(
+    @MessageBody('userId') userId: number,
+  ) {
+    const userIdNumber = Number(userId);
+
+    await this.userService.moveUser(userIdNumber);
+
+    this.returnUser(userIdNumber);
+  }
+
   async returnUser(userId: number) {
     const user = await this.userService.getUser(
       userId,

@@ -1,8 +1,19 @@
-import { Avatar, Button, Group, Modal, Select, Text } from "@mantine/core";
+import {
+  Avatar,
+  Button,
+  Group,
+  Modal,
+  Select,
+  Text,
+  Slider,
+  Textarea,
+  Switch,
+} from "@mantine/core";
 import { useFormik } from "formik";
-import { forwardRef, useState } from "react";
-import { useMutation } from "react-query";
-import { editTileById } from "api/endpoints";
+import { forwardRef, useMemo, useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { editTileById, getMobs } from "api/endpoints";
+import { Mob } from "/types";
 
 type Props = {
   editTile: {
@@ -130,6 +141,18 @@ const TileEditModal = ({
     },
   });
 
+  const { data: mobsData } = useQuery("getMobs", getMobs);
+
+  console.log("editTile", editTile);
+
+  const mobsSelect = useMemo(() => {
+    return mobsData?.map((mob: Mob) => ({
+      image: `/media/mobs/${mob?.sprite}.png`,
+      label: `${mob?.name}, lvl: ${mob?.minLevel} - ${mob?.maxLevel}`,
+      value: mob?.id,
+    }));
+  }, [mobsData]);
+
   const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     ({ image, label, description, ...others }: ItemProps, ref) => (
       <div ref={ref} {...others}>
@@ -150,6 +173,8 @@ const TileEditModal = ({
       sprite: editTile?.sprite,
       text: editTile?.text,
       blocked: editTile?.blocked,
+      mob: "",
+      spawnProcent: 0,
     },
     onSubmit: (values, { resetForm }) => {
       postEdit(values);
@@ -171,7 +196,7 @@ const TileEditModal = ({
       }}
     >
       <form className="admin__form-items" onSubmit={tileForm.handleSubmit}>
-        {editTile.id}
+        id: {editTile.id}
         <label className="admin__main-label">Sprite</label>
         <img style={{ height: 100 }} src={tileForm.values.sprite} />
         <Select
@@ -183,15 +208,54 @@ const TileEditModal = ({
           value={tileForm.values.sprite}
           searchable
           maxDropdownHeight={400}
-          nothingFound="Nobody here"
+          nothingFound="No sprites available"
         />
-        <label className="admin__main-label">Text</label>
-        <textarea
-          className="admin__main-input"
-          name="text"
-          onChange={tileForm.handleChange}
-          value={tileForm.values.text}
+        <Switch
+          label="Blocked"
+          checked={tileForm.values.blocked}
+          onChange={(event) =>
+            tileForm.setFieldValue("blocked", event.currentTarget.checked)
+          }
         />
+        {!tileForm.values.blocked && (
+          <>
+            <label className="admin__main-label">Text</label>
+            <Textarea
+              className="admin__main-input"
+              name="text"
+              onChange={tileForm.handleChange}
+              value={tileForm.values.text}
+            />
+            <label className="admin__main-label">Mob Spawn</label>
+            <Select
+              placeholder="Pick one"
+              name="mob"
+              allowDeselect
+              clearable
+              itemComponent={SelectItem}
+              data={mobsSelect}
+              onChange={(value) => tileForm.setFieldValue("mob", value)}
+              value={tileForm.values.mob}
+              searchable
+              maxDropdownHeight={400}
+              nothingFound="No mobs available"
+            />
+            <Slider
+              labelAlwaysOn
+              radius="xs"
+              styles={{ root: { width: "100%", marginTop: 40 } }}
+              marks={[
+                { value: 20, label: "20%" },
+                { value: 50, label: "50%" },
+                { value: 80, label: "80%" },
+              ]}
+              value={tileForm.values.spawnProcent}
+              onChange={(value) =>
+                tileForm.setFieldValue("spawnProcent", value)
+              }
+            />
+          </>
+        )}
         <Button m="30px" type="submit" color="green" size="md">
           Save
         </Button>

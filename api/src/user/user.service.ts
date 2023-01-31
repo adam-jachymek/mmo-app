@@ -77,8 +77,23 @@ export class UserService {
         where: {
           id: userId,
         },
-        include: {
-          guild: true,
+      });
+
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        hp: user.maxHp,
+      },
+    });
+  }
+
+  async moveUser(userId: number) {
+    const user =
+      await this.prisma.user.findUnique({
+        where: {
+          id: userId,
         },
       });
 

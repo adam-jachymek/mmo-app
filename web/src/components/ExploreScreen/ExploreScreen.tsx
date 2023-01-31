@@ -14,6 +14,7 @@ const ExploreScreen = () => {
     id: 0,
     x: 0,
     y: 0,
+    blocked: false,
   });
   const [clickedTile, setClickedTile] = useState();
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -27,6 +28,8 @@ const ExploreScreen = () => {
   });
 
   const mapId = 1;
+
+  console.log("activeTile", activeTile);
 
   const {
     data: mapData,
@@ -59,15 +62,23 @@ const ExploreScreen = () => {
             setOpenEditModal(!openEditModal);
           }}
         >
-          {tile.x === user.x && tile.y === user.y && (
-            <img className="explore__avatar" src={user.avatar} />
-          )}
           {tile.text.length > 2 && (
             <div className="explore__icon">
               <img
                 style={{ height: 35 }}
                 src="/media/explore/beka-pytajnik.svg"
               />
+            </div>
+          )}
+          {tile.blocked && (
+            <div className="explore__icon">
+              <img style={{ height: 20 }} src="/media/explore/lock.png" />
+            </div>
+          )}
+          {tile.x === user.x && tile.y === user.y && (
+            <div>
+              <div className="explore__username">{user.name}</div>
+              <img className="explore__avatar" src={user.avatar} />
             </div>
           )}
         </li>
@@ -96,6 +107,12 @@ const ExploreScreen = () => {
         ...user,
         x: user.x - 1,
       });
+      // if (activeTile?.blocked) {
+      //   setUser({
+      //     ...user,
+      //     x: user.x + 1,
+      //   });
+      // }
     }
 
     if (event.code === "ArrowRight") {
