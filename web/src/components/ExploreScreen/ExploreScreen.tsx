@@ -3,9 +3,9 @@ import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
 import ExploreButtons from "./ExploreButtons";
 import TileEditModal from "./TileEditModal";
+import { Loader } from "@mantine/core";
 
 import "./styles.sass";
-import { Loader } from "@mantine/core";
 
 const ExploreScreen = () => {
   const [activeTile, setActiveTile] = useState({

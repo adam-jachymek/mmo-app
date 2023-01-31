@@ -38,7 +38,7 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
   );
 
   const { mutate: joinMe } = useMutation(userRequest, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       refetchGuild();
       refetchUser();
     },
@@ -52,7 +52,7 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
   });
 
   const { mutate: leavePending } = useMutation(leaveGuild, {
-    onSuccess: (response) => {
+    onSuccess: () => {
       refetchUser();
       refetchGuild();
     },
@@ -70,7 +70,7 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
 
   return (
     <div>
-      { userGuildId && (
+      {userGuildId && (
         <div>
           <h3>
             <span>
@@ -87,7 +87,7 @@ const GuildHome = ({ currentUser, refetchUser }: Props) => {
           >
             VIEW GUILD
           </Button>
-          { currentUser?.guildRole === "PENDING" && (
+          {currentUser?.guildRole === "PENDING" && (
             <Button
               style={{ marginLeft: "10px" }}
               color="red"

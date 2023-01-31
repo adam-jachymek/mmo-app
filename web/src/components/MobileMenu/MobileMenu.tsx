@@ -1,5 +1,5 @@
-import "./styles.sass";
 import { useNavigate } from "react-router-dom";
+import "./styles.sass";
 
 const MobileMenu = () => {
   let navigate = useNavigate();

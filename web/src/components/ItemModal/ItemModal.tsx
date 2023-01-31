@@ -1,13 +1,12 @@
 import { useState } from "react";
-import classNames from "classnames";
 import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { deleteItem, equipItem } from "api/endpoints";
+import { EquipItem } from "/types";
 import ConfirmModal from "../ConfirmModal";
 
 import "./styles.sass";
-import { EquipItem } from "/types";
 
 type Props = {
   handleCloseModal: () => void;
@@ -69,25 +68,7 @@ const ItemModal = ({
       <div className="modal__info">
         <h3>{item?.name}</h3>
         <h4>{item?.level} lvl</h4>
-        <h4
-          // tolowercase
-          className={classNames(
-            {
-              uncommon: item?.quality === "UNCOMMON",
-            },
-            {
-              rare: item?.quality === "RARE",
-            },
-            {
-              epic: item?.quality === "EPIC",
-            },
-            {
-              legendary: item?.quality === "LEGENDARY",
-            }
-          )}
-        >
-          {item?.quality}
-        </h4>
+        <h4 className={item?.quality?.toLowerCase()}>{item?.quality}</h4>
         {item?.type === "WEAPON" && (
           <p>
             Attack: {item?.minAttack} - {item?.maxAttack}
@@ -111,12 +92,11 @@ const ItemModal = ({
         >
           {item?.equip ? "UNEQUIP" : "EQUIP"}
         </Button>
-        {item?.type === "potion" && (
+        {item?.type === "POTION" && (
           <Button variant="outline" color="lime" onClick={handleCloseModal}>
             USE
           </Button>
         )}
-
         <Button
           onClick={handleCloseModal}
           variant="outline"

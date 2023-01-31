@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Progress } from "@mantine/core";
 import { Item, User } from "/types";
+import EquippedItemSlot from "./EquippedItemSlot";
+import calculateProgress from "utils/calculateProgress";
 
 import "./styles.sass";
 
@@ -11,38 +13,10 @@ type Props = {
 };
 
 const findEquipedItem = (itemsData: any, itemType: string) => {
+  console.log("itemsData", itemsData);
+
   return itemsData.find(
     (item: Item) => item.equip === true && item.type === itemType
-  );
-};
-
-// TODO move to separate file
-const EquippedItemSlot = ({
-  equippedItem,
-  openItemModal,
-}: {
-  equippedItem: any;
-  openItemModal: (equippedItem: any) => void;
-}) => {
-  return (
-    <div
-      className={`profile__slot ${
-        equippedItem && equippedItem.quality?.toLowerCase()
-      }`}
-    >
-      {equippedItem && (
-        <div
-          onClick={() => {
-            openItemModal(equippedItem);
-          }}
-        >
-          <img
-            src={`/media/items/${equippedItem.sprite}.png`}
-            className="profile__item-icon"
-          />
-        </div>
-      )}
-    </div>
   );
 };
 
@@ -122,8 +96,7 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
           <Progress
             classNames={{ root: "profile__bar", bar: "profile__bar-bar" }}
             color="#851010"
-            // migrate to function getUserHpBar(user)
-            value={(user?.hp / user?.maxHp) * 100}
+            value={calculateProgress(user?.hp, user?.maxHp)}
           />
           <span className="profile__progress-amount">
             {user?.hp} / {user?.maxHp}
@@ -133,10 +106,10 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
           <Progress
             classNames={{ root: "profile__bar", bar: "profile__bar-bar" }}
             color="#121085"
-            value={(user?.exp / user?.maxExp) * 100}
+            value={calculateProgress(user?.exp, user?.maxExp)}
           />
           <span className="profile__progress-amount">
-            {user?.exp} / {user?.maxExp}
+            {calculateProgress(user?.exp, user?.maxExp)}
           </span>
         </div>
       </div>
