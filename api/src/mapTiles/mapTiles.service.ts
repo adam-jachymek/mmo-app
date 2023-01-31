@@ -37,9 +37,7 @@ export class MapTilesService {
   }
 
   getMap() {
-    return this.prisma.map.findMany({
-      include: { mobs: true },
-    });
+    return this.prisma.map.findMany({});
   }
 
   getMapAdmin() {
@@ -50,9 +48,6 @@ export class MapTilesService {
     return this.prisma.map.findFirst({
       where: {
         id: mapId,
-      },
-      include: {
-        mobs: true,
       },
     });
   }

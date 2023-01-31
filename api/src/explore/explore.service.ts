@@ -30,17 +30,6 @@ export class ExploreService {
         skip: skip,
       });
 
-    if (whatFound.title === 'mob') {
-      const map =
-        await this.MapService.getMapById(mapId);
-
-      const mob = map.mobs[0];
-
-      return await this.MobSpawnService.createMobSpawn(
-        { mobId: Number(mob.id) },
-      );
-    }
-
     return whatFound;
   }
 }

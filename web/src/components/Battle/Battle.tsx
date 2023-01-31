@@ -36,7 +36,6 @@ const Battle = ({ currentUser }: Props) => {
           <th>Name</th>
           <th>Min Level</th>
           <th>Max Level</th>
-          <th>Map</th>
           <th>Action</th>
         </tr>
         {mobsData?.map((mob: any) => (
@@ -44,7 +43,6 @@ const Battle = ({ currentUser }: Props) => {
             <td>{mob.name}</td>
             <td>{mob.minLevel}</td>
             <td>{mob.maxLevel}</td>
-            <td>{mob.map.name}</td>
             <td>
               <Button
                 color="red"

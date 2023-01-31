@@ -11,7 +11,7 @@ export class MapService {
 
   getMap() {
     return this.prisma.map.findMany({
-      include: { mobs: true, tiles: true },
+      include: { tiles: true },
     });
   }
 
@@ -25,7 +25,6 @@ export class MapService {
         id: mapId,
       },
       include: {
-        mobs: true,
         tiles: {
           orderBy: {
             id: 'asc',

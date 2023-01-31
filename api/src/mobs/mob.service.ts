@@ -10,27 +10,15 @@ export class MobService {
   constructor(private prisma: PrismaService) {}
 
   getMobsByMapId(mapId: number) {
-    return this.prisma.mob.findMany({
-      where: {
-        mapId: mapId,
-      },
-    });
+    return this.prisma.mob.findMany({});
   }
 
   getMobs() {
-    return this.prisma.mob.findMany({
-      include: {
-        map: true,
-      },
-    });
+    return this.prisma.mob.findMany({});
   }
 
   getMobById(mobId: number) {
-    return this.prisma.mob.findFirst({
-      where: {
-        id: mobId,
-      },
-    });
+    return this.prisma.mob.findFirst({});
   }
 
   async createMob(dto: CreateMobDto) {
