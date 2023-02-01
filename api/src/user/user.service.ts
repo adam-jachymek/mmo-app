@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
-import { MobSpawn, User } from '@prisma/client';
+import {
+  MobSpawn,
+  Prisma,
+  User,
+} from '@prisma/client';
 import { use } from 'passport';
 
 @Injectable()
@@ -89,7 +93,11 @@ export class UserService {
     });
   }
 
-  async moveUser(userId: number) {
+  async moveUser(
+    userId: number,
+    axis: string,
+    direction: number,
+  ) {
     const user =
       await this.prisma.user.findUnique({
         where: {
@@ -97,14 +105,57 @@ export class UserService {
         },
       });
 
-    return this.prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        hp: user.maxHp,
-      },
-    });
+    const getNewAxis = () => {
+      if (axis === 'x') {
+        return {
+          x: user.x + direction,
+          y: user.y,
+        };
+      } else {
+        return {
+          y: user.y + direction,
+          x: user.x,
+        };
+      }
+    };
+
+    const tile =
+      await this.prisma.mapTiles.findFirst({
+        where: {
+          mapId: user.mapId,
+          ...getNewAxis(),
+        },
+      });
+
+    if (tile.action_name === 'TELEPORT') {
+      const action =
+        tile?.action as Prisma.JsonObject;
+
+      const teleport =
+        action.teleport as Prisma.JsonObject;
+
+      return this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          mapId: Number(teleport.mapId),
+          x: Number(teleport.newMapX),
+          y: Number(teleport.newMapY),
+        },
+      });
+    }
+
+    if (!tile.blocked) {
+      return this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          [axis]: user[axis] + direction,
+        },
+      });
+    }
   }
 
   async giveExp(user: User, amountOfExp: number) {

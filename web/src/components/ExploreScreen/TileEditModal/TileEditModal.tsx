@@ -8,11 +8,13 @@ import {
   Slider,
   Textarea,
   Switch,
+  Input,
+  Loader,
 } from "@mantine/core";
 import { useFormik } from "formik";
 import { forwardRef, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { editTileById, getMobs } from "api/endpoints";
+import { editTileById, getMap, getMobs } from "api/endpoints";
 import { Mob } from "/types";
 
 type Props = {
@@ -21,8 +23,13 @@ type Props = {
     id: number;
     sprite: string;
     text: string;
+    action_name?: string;
     x: number;
     y: number;
+    action?: {
+      teleport?: { mapId: string; newMapX: number; newMapY: number };
+      mobSpawn?: { mobId: string; procent: number };
+    };
   };
   openEditModal: boolean;
   setOpenEditModal: (open: boolean) => void;
@@ -141,9 +148,15 @@ const TileEditModal = ({
     },
   });
 
-  const { data: mobsData } = useQuery("getMobs", getMobs);
+  const { data: mobsData, isFetching: fetchingMobs } = useQuery(
+    "getMobs",
+    getMobs
+  );
 
-  console.log("editTile", editTile);
+  const { data: mapData, isFetching: fetchingMaps } = useQuery(
+    "getMap",
+    getMap
+  );
 
   const mobsSelect = useMemo(() => {
     return mobsData?.map((mob: Mob) => ({
@@ -153,12 +166,18 @@ const TileEditModal = ({
     }));
   }, [mobsData]);
 
+  const mapsSelect = useMemo(() => {
+    return mapData?.map((map: any) => ({
+      value: map?.id,
+      label: map?.name,
+    }));
+  }, [mapData]);
+
   const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     ({ image, label, description, ...others }: ItemProps, ref) => (
       <div ref={ref} {...others}>
         <Group noWrap>
           <Avatar src={image} />
-
           <div>
             <Text size="sm">{label}</Text>
           </div>
@@ -173,8 +192,11 @@ const TileEditModal = ({
       sprite: editTile?.sprite,
       text: editTile?.text,
       blocked: editTile?.blocked,
-      mob: "",
-      spawnProcent: 0,
+      action_name: editTile?.action_name,
+      action: {
+        teleport: editTile.action?.teleport,
+        mobSpawn: editTile.action?.mobSpawn,
+      },
     },
     onSubmit: (values, { resetForm }) => {
       postEdit(values);
@@ -182,6 +204,10 @@ const TileEditModal = ({
     },
     enableReinitialize: true,
   });
+
+  if (fetchingMobs && fetchingMaps) {
+    <Loader />;
+  }
 
   return (
     <Modal
@@ -196,9 +222,15 @@ const TileEditModal = ({
       }}
     >
       <form className="admin__form-items" onSubmit={tileForm.handleSubmit}>
-        id: {editTile.id}
+        <p>id: {editTile.id}</p>
+        <p>
+          x: {editTile.x} y: {editTile.y}
+        </p>
         <label className="admin__main-label">Sprite</label>
-        <img style={{ height: 100 }} src={tileForm.values.sprite} />
+        <img
+          style={{ height: 100, marginBottom: 10 }}
+          src={tileForm.values.sprite}
+        />
         <Select
           placeholder="Pick one"
           name="sprite"
@@ -212,6 +244,7 @@ const TileEditModal = ({
         />
         <Switch
           label="Blocked"
+          style={{ marginTop: 10 }}
           checked={tileForm.values.blocked}
           onChange={(event) =>
             tileForm.setFieldValue("blocked", event.currentTarget.checked)
@@ -226,34 +259,91 @@ const TileEditModal = ({
               onChange={tileForm.handleChange}
               value={tileForm.values.text}
             />
-            <label className="admin__main-label">Mob Spawn</label>
             <Select
+              label="Action"
               placeholder="Pick one"
-              name="mob"
-              allowDeselect
+              style={{ marginTop: 20 }}
               clearable
-              itemComponent={SelectItem}
-              data={mobsSelect}
-              onChange={(value) => tileForm.setFieldValue("mob", value)}
-              value={tileForm.values.mob}
-              searchable
-              maxDropdownHeight={400}
-              nothingFound="No mobs available"
-            />
-            <Slider
-              labelAlwaysOn
-              radius="xs"
-              styles={{ root: { width: "100%", marginTop: 40 } }}
-              marks={[
-                { value: 20, label: "20%" },
-                { value: 50, label: "50%" },
-                { value: 80, label: "80%" },
+              data={[
+                { value: "TELEPORT", label: "Teleport" },
+                { value: "MOB", label: "Mob Spawn" },
               ]}
-              value={tileForm.values.spawnProcent}
-              onChange={(value) =>
-                tileForm.setFieldValue("spawnProcent", value)
-              }
+              value={tileForm.values.action_name}
+              onChange={(value) => tileForm.setFieldValue("action_name", value)}
             />
+            {tileForm.values.action_name === "TELEPORT" && (
+              <>
+                <Select
+                  label="Map"
+                  placeholder="Pick one"
+                  clearable
+                  data={mapsSelect}
+                  style={{ marginTop: 20 }}
+                  value={tileForm.values.action.teleport?.mapId}
+                  onChange={(value) => {
+                    console.log("value", value);
+                    tileForm.setFieldValue("action.teleport.mapId", value);
+                  }}
+                />
+                x:{" "}
+                <Input
+                  value={tileForm.values.action.teleport?.newMapX}
+                  type="number"
+                  onChange={(e: any) =>
+                    tileForm.setFieldValue(
+                      "action.teleport.newMapX",
+                      e.target.value
+                    )
+                  }
+                />
+                y:{" "}
+                <Input
+                  value={tileForm.values.action.teleport?.newMapY}
+                  type="number"
+                  onChange={(e: any) =>
+                    tileForm.setFieldValue(
+                      "action.teleport.newMapY",
+                      e.target.value
+                    )
+                  }
+                />
+              </>
+            )}
+            {tileForm.values.action_name === "MOB" && (
+              <div>
+                <Select
+                  placeholder="Pick one"
+                  name="mob"
+                  allowDeselect
+                  label="Mob"
+                  clearable
+                  style={{ marginTop: 20 }}
+                  itemComponent={SelectItem}
+                  data={mobsSelect}
+                  value={tileForm.values.action.mobSpawn?.mobId}
+                  onChange={(value) =>
+                    tileForm.setFieldValue("action.mobSpawn.mobId", value)
+                  }
+                  searchable
+                  maxDropdownHeight={400}
+                  nothingFound="No mobs available"
+                />
+                <Slider
+                  labelAlwaysOn
+                  radius="xs"
+                  styles={{ root: { width: "100%", marginTop: 40 } }}
+                  marks={[
+                    { value: 20, label: "20%" },
+                    { value: 50, label: "50%" },
+                    { value: 80, label: "80%" },
+                  ]}
+                  value={tileForm.values.action.mobSpawn?.procent}
+                  onChange={(value) =>
+                    tileForm.setFieldValue("action.mobSpawn.procent", value)
+                  }
+                />
+              </div>
+            )}
           </>
         )}
         <Button m="30px" type="submit" color="green" size="md">

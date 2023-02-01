@@ -91,6 +91,7 @@ const Maps = () => {
                   size="xs"
                   onClick={() => {
                     addTiles({ mapId: map.id });
+                    refetchMaps();
                   }}
                 >
                   Create Tiles
@@ -102,6 +103,7 @@ const Maps = () => {
                 size="xs"
                 onClick={() => {
                   deleteThisMap(map.id);
+                  refetchMaps();
                 }}
               >
                 Delete

@@ -66,8 +66,8 @@ model User {
   eqDefence Int? @default(0)
 
   mapId Int? @default(1)
-  x Int? @default(4)
-  y Int? @default(4)
+  x Int? @default(2)
+  y Int? @default(2)
 
   items Item[]
   inBattle UsersInBattle[]
@@ -199,6 +199,8 @@ model MapTiles {
   blocked Boolean? @default(false)
   x Int
   y Int
+  action_name String?
+  action Json?
 
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int

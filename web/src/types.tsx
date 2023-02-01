@@ -12,6 +12,9 @@ export type User = {
   guildId: number;
   guildRole: GuildRoles;
   avatar: string;
+  mapId: number;
+  x: number;
+  y: number;
 };
 
 export type ItemPrototype = {

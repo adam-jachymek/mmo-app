@@ -159,6 +159,11 @@ export const editTileById = async (values: {
   tileId: number;
   sprite?: string;
   blocked?: boolean;
+  action_name?: string;
+  action?: {
+    teleport?: { mapId: string; newMapX: number; newMapY: number };
+    mobSpawn?: { mobId: string; procent: number };
+  };
 }) => {
   const response = await api.patch(`/map_tiles/${values.tileId}`, values);
 

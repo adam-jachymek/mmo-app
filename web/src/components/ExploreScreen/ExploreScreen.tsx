@@ -6,8 +6,13 @@ import TileEditModal from "./TileEditModal";
 import { Loader } from "@mantine/core";
 
 import "./styles.sass";
+import { User } from "/types";
 
-const ExploreScreen = () => {
+type Props = {
+  user: User;
+};
+
+const ExploreScreen = ({ user }: Props) => {
   const [activeTile, setActiveTile] = useState({
     text: "",
     sprite: "",
@@ -19,17 +24,7 @@ const ExploreScreen = () => {
   const [clickedTile, setClickedTile] = useState();
   const [openEditModal, setOpenEditModal] = useState(false);
 
-  const [user, setUser] = useState({
-    name: "Detro",
-    avatar: "/media/avatars/male.png",
-    mapId: 1,
-    x: 0,
-    y: 0,
-  });
-
-  const mapId = 1;
-
-  console.log("activeTile", activeTile);
+  const mapId = user.mapId;
 
   const {
     data: mapData,
@@ -77,8 +72,11 @@ const ExploreScreen = () => {
           )}
           {tile.x === user.x && tile.y === user.y && (
             <div>
-              <div className="explore__username">{user.name}</div>
-              <img className="explore__avatar" src={user.avatar} />
+              <div className="explore__username">{user.username}</div>
+              <img
+                className="explore__avatar"
+                src={`/media/avatars/${user?.avatar}.png`}
+              />
             </div>
           )}
         </li>
@@ -87,49 +85,13 @@ const ExploreScreen = () => {
     return tiles;
   }, [mapData, user.x, user.y]);
 
-  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.code === "ArrowUp") {
-      setUser({
-        ...user,
-        y: user.y - 1,
-      });
-    }
-
-    if (event.code === "ArrowDown") {
-      setUser({
-        ...user,
-        y: user.y + 1,
-      });
-    }
-
-    if (event.code === "ArrowLeft") {
-      setUser({
-        ...user,
-        x: user.x - 1,
-      });
-      // if (activeTile?.blocked) {
-      //   setUser({
-      //     ...user,
-      //     x: user.x + 1,
-      //   });
-      // }
-    }
-
-    if (event.code === "ArrowRight") {
-      setUser({
-        ...user,
-        x: user.x + 1,
-      });
-    }
-  };
-
   if (isFetching) {
     return <Loader />;
   }
 
   return (
     <>
-      <div className="explore" tabIndex={0} onKeyDown={keyDownHandler}>
+      <div className="explore" tabIndex={0}>
         <div className="explore__wrapper">
           <ul className="explore__tiles">
             {renderMap}
@@ -140,7 +102,7 @@ const ExploreScreen = () => {
             )}
           </ul>
         </div>
-        <ExploreButtons user={user} setUser={setUser} />
+        <ExploreButtons user={user} />
       </div>
       {clickedTile && (
         <TileEditModal

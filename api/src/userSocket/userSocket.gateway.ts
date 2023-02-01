@@ -40,8 +40,6 @@ export class UserSocketGateway {
   ) {
     const userIdNumber = Number(userId);
 
-    console.log('userIdNumber', userIdNumber);
-
     await this.userService.healUser(userIdNumber);
 
     this.returnUser(userIdNumber);
@@ -56,13 +54,19 @@ export class UserSocketGateway {
     this.returnUser(userIdNumber);
   }
 
-  @SubscribeMessage('explore')
+  @SubscribeMessage('moveUser')
   async explore(
     @MessageBody('userId') userId: number,
+    @MessageBody('axis') axis: string,
+    @MessageBody('direction') direction: number,
   ) {
     const userIdNumber = Number(userId);
 
-    await this.userService.moveUser(userIdNumber);
+    await this.userService.moveUser(
+      userIdNumber,
+      axis,
+      direction,
+    );
 
     this.returnUser(userIdNumber);
   }

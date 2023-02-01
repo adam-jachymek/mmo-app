@@ -129,7 +129,7 @@ const AppRouter = () => {
               />
             }
           />
-          <Route path="/explore/:id" element={<ExploreScreen />} />
+          <Route path="/explore/:id" element={<ExploreScreen user={user} />} />
         </Routes>
         <MobileMenu />
       </>

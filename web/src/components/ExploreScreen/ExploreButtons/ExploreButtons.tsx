@@ -1,20 +1,22 @@
+import { socket } from "api/socket";
+
 import "./styles.sass";
 
 type Props = {
   user: any;
-  setUser: any;
 };
 
-const ExploreButtons = ({ user, setUser }: Props) => {
+const ExploreButtons = ({ user }: Props) => {
   return (
     <div className="explore-buttons">
       <div className="explore-buttons__wrapper">
         <button
           className="explore-buttons__left"
           onClick={() => {
-            setUser({
-              ...user,
-              x: user.x - 1,
+            socket.emit("moveUser", {
+              userId: user.id,
+              axis: "x",
+              direction: -1,
             });
           }}
         >
@@ -23,9 +25,10 @@ const ExploreButtons = ({ user, setUser }: Props) => {
         <button
           className="explore-buttons__right"
           onClick={() => {
-            setUser({
-              ...user,
-              x: user.x + 1,
+            socket.emit("moveUser", {
+              userId: user.id,
+              axis: "x",
+              direction: 1,
             });
           }}
         >
@@ -34,9 +37,10 @@ const ExploreButtons = ({ user, setUser }: Props) => {
         <button
           className="explore-buttons__down"
           onClick={() => {
-            setUser({
-              ...user,
-              y: user.y + 1,
+            socket.emit("moveUser", {
+              userId: user.id,
+              axis: "y",
+              direction: 1,
             });
           }}
         >
@@ -45,9 +49,10 @@ const ExploreButtons = ({ user, setUser }: Props) => {
         <button
           className="explore-buttons__up"
           onClick={() => {
-            setUser({
-              ...user,
-              y: user.y - 1,
+            socket.emit("moveUser", {
+              userId: user.id,
+              axis: "y",
+              direction: -1,
             });
           }}
         >
