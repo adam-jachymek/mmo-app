@@ -112,10 +112,7 @@ const AppRouter = () => {
               <GuildInfo currentUser={currentUser} refetchUser={refetchUser} />
             }
           />
-          <Route
-            path="/explore"
-            element={<Explore currentUser={currentUser} />}
-          />
+          <Route path="/explore" element={<ExploreScreen user={user} />} />
           <Route
             path="/battle"
             element={<Battle currentUser={currentUser} />}
@@ -129,7 +126,6 @@ const AppRouter = () => {
               />
             }
           />
-          <Route path="/explore/:id" element={<ExploreScreen user={user} />} />
         </Routes>
         <MobileMenu />
       </>
