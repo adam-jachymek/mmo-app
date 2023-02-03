@@ -4,9 +4,9 @@ import { getMapById } from "api/endpoints";
 import ExploreButtons from "./ExploreButtons";
 import TileEditModal from "./TileEditModal";
 import { Loader } from "@mantine/core";
+import { User } from "/types";
 
 import "./styles.sass";
-import { User } from "/types";
 
 type Props = {
   user: User;

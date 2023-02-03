@@ -281,7 +281,6 @@ const TileEditModal = ({
                   style={{ marginTop: 20 }}
                   value={tileForm.values.action.teleport?.mapId}
                   onChange={(value) => {
-                    console.log("value", value);
                     tileForm.setFieldValue("action.teleport.mapId", value);
                   }}
                 />
