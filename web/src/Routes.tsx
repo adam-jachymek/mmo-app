@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { socket } from "api/socket";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, redirect } from "react-router-dom";
 import { getUser } from "./api/endpoints";
 import Home from "./Home";
 import Admin from "components/Admin";
@@ -68,6 +68,31 @@ const AppRouter = () => {
     );
   }
 
+  if (user?.battleId) {
+    return (
+      <>
+        <TopNavBar
+          user={user}
+          currentUser={currentUser}
+          refetchUser={refetchUser}
+        />
+        <Routes>
+          <Route
+            path={`/explore`}
+            element={
+              <BattleScreen
+                propsBattleId={user?.battleId}
+                currentUser={currentUser}
+                refetchUser={refetchUser}
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to={`/explore`} replace />} />
+        </Routes>
+      </>
+    );
+  }
+
   if (currentUser && user) {
     return (
       <>
@@ -116,15 +141,6 @@ const AppRouter = () => {
           <Route
             path="/battle"
             element={<Battle currentUser={currentUser} />}
-          />
-          <Route
-            path="/battle/:id"
-            element={
-              <BattleScreen
-                currentUser={currentUser}
-                refetchUser={refetchUser}
-              />
-            }
           />
         </Routes>
         <MobileMenu />

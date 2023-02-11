@@ -8,8 +8,6 @@ import { isEmpty } from "lodash";
 const Maps = () => {
   const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
 
-  console.log("mapData", mapData);
-
   const { mutate: addMap } = useMutation(createMap, {
     onSuccess: (response) => {
       refetchMaps();

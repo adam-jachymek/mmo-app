@@ -33,12 +33,12 @@ export class BattleController {
 
   @Post()
   createBattle(
-    @GetUser() user: User,
-    @Body() dto: CreateBattleDto,
+    @GetUser('id') userId: number,
+    @Body() values: { mobId: number },
   ) {
     return this.BattleService.createBattle(
-      user,
-      dto,
+      userId,
+      values,
     );
   }
 

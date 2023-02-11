@@ -148,6 +148,8 @@ const TileEditModal = ({
     },
   });
 
+  console.log("editTile", editTile);
+
   const { data: mobsData, isFetching: fetchingMobs } = useQuery(
     "getMobs",
     getMobs
@@ -205,8 +207,8 @@ const TileEditModal = ({
     enableReinitialize: true,
   });
 
-  if (fetchingMobs && fetchingMaps) {
-    <Loader />;
+  if (fetchingMobs || fetchingMaps) {
+    return <Loader />;
   }
 
   return (

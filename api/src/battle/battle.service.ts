@@ -1,15 +1,10 @@
 import {
-  ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
 } from '@nestjs/common';
-import { MobSpawn, User } from '@prisma/client';
-import { Mob } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { MobSpawnService } from 'src/mobSpawn/mobSpawn.service';
-import {
-  CreateBattleDto,
-  EditBattleDto,
-} from './dto';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -21,12 +16,12 @@ export class BattleService {
   ) {}
 
   async createBattle(
-    user: User,
-    dto: CreateBattleDto,
+    userId: number,
+    values: { mobId: number },
   ) {
     const mobSpawned =
       await this.mobSpawnService.createMobSpawn({
-        mobId: dto.mobId,
+        mobId: values.mobId,
       });
 
     const battle =
@@ -39,7 +34,7 @@ export class BattleService {
               {
                 user: {
                   connect: {
-                    id: user.id,
+                    id: userId,
                   },
                 },
               },
@@ -58,6 +53,15 @@ export class BattleService {
           },
         },
       });
+
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        battleId: battle.id,
+      },
+    });
 
     return battle;
   }
@@ -259,6 +263,7 @@ export class BattleService {
           },
         });
       }
+
       return activeMob;
     }
   }
@@ -381,5 +386,23 @@ export class BattleService {
       });
 
     return battle;
+  }
+
+  async endBattle(
+    battleId: number,
+    userId: number,
+  ) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        battleId: null,
+      },
+    });
+
+    await this.prisma.battle.delete({
+      where: { id: battleId },
+    });
   }
 }

@@ -1,3 +1,5 @@
+import { BattleService } from 'src/battle/battle.service';
+import { ExploreService } from './../explore/explore.service';
 import {
   WebSocketGateway,
   SubscribeMessage,
@@ -14,6 +16,8 @@ export class UserSocketGateway {
 
   constructor(
     private readonly userService: UserService,
+    private readonly exploreService: ExploreService,
+    private readonly battleService: BattleService,
   ) {}
 
   @SubscribeMessage('connectUser')
@@ -62,7 +66,7 @@ export class UserSocketGateway {
   ) {
     const userIdNumber = Number(userId);
 
-    await this.userService.moveUser(
+    await this.exploreService.moveUser(
       userIdNumber,
       axis,
       direction,
@@ -79,5 +83,25 @@ export class UserSocketGateway {
     this.server
       .to(`user-${userId}`)
       .emit(`user-${userId}`, user);
+  }
+
+  @SubscribeMessage('startBattle')
+  async startBattle(
+    @MessageBody('userId') userId: number,
+  ) {
+    this.returnUser(Number(userId));
+  }
+
+  @SubscribeMessage('endBattle')
+  async endBattle(
+    @MessageBody('battleId') battleId: string,
+    @MessageBody('userId') userId: number,
+  ) {
+    await this.battleService.endBattle(
+      Number(battleId),
+      Number(userId),
+    );
+
+    this.returnUser(Number(userId));
   }
 }

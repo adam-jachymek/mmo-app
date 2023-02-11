@@ -14,10 +14,7 @@ import {
 
 @Injectable()
 export class MobSpawnService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   getMobSpawns() {
     return this.prisma.mobSpawn.findMany({

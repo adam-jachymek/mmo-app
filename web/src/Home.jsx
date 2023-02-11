@@ -14,11 +14,8 @@ const Home = ({ currentUser, refetchUser }) => {
     }
   }, []);
 
-  console.log("chat", chat);
-
   useEffect(() => {
     socket.on("message", (message) => {
-      console.log("chatSocket", message);
       setChat([...chat, message]);
     });
   }, [socket]);

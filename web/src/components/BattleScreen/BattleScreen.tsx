@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
@@ -18,11 +18,12 @@ import "./styles.sass";
 type Props = {
   currentUser: User;
   refetchUser: () => void;
+  propsBattleId?: number;
 };
 
-const BattleScreen = ({ currentUser, refetchUser }: Props) => {
+const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   let navigate = useNavigate();
-  const { id: battleId } = useParams();
+  const { id: paramsBattleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [lostModal, setLostModal] = useState(false);
   const [battle, setBattle] = useState<any>({});
@@ -30,10 +31,12 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   const [playWin] = useSound(youwin);
   const [playWasted] = useSound(wasted);
 
-  // useEffect(() => {
-  //   music();
-  //   return () => stopMusic();
-  // }, [music]);
+  useEffect(() => {
+    music();
+    return () => stopMusic();
+  }, [music]);
+
+  const battleId = Number(paramsBattleId) || propsBattleId;
 
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
@@ -61,7 +64,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   }, [battle?.battleEnded, battle?.youLost, navigate, setOpenModal]);
 
   const closeModal = () => {
-    navigate(-1);
+    socket.emit("endBattle", { battleId: battleId, userId: currentUser.id });
   };
 
   useSounds(battle.mobAnimation || battle.playerAnimation);
@@ -69,6 +72,7 @@ const BattleScreen = ({ currentUser, refetchUser }: Props) => {
   return (
     <>
       <div className="fight">
+        <button onClick={closeModal}>Delete Battle</button>
         {battle?.mobs?.map((mob: any) => (
           <BattleMobs mob={mob} activeAnimation={battle.mobAnimation} />
         ))}

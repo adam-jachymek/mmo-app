@@ -1,3 +1,4 @@
+import { UserSocketGateway } from 'src/userSocket/userSocket.gateway';
 import {
   WebSocketGateway,
   SubscribeMessage,
@@ -14,6 +15,7 @@ export class BattleSocketGateway {
 
   constructor(
     private readonly battleService: BattleService,
+    private readonly userSocket: UserSocketGateway,
   ) {}
 
   @SubscribeMessage('joinBattle')

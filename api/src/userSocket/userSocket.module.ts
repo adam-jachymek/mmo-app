@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import { BattleModule } from 'src/battle/battle.module';
+import { ExploreModule } from './../explore/explore.module';
+import {
+  forwardRef,
+  Module,
+} from '@nestjs/common';
 import { UserSocketService } from './userSocket.service';
 import { UserSocketGateway } from './userSocket.gateway';
 import { UserModule } from 'src/user/user.module';
@@ -8,6 +13,11 @@ import { UserModule } from 'src/user/user.module';
     UserSocketGateway,
     UserSocketService,
   ],
-  imports: [UserModule],
+  imports: [
+    UserModule,
+    ExploreModule,
+    BattleModule,
+  ],
+  exports: [UserSocketGateway],
 })
 export class UserSocketModule {}

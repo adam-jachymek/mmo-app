@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { User } from "/types";
 import "./styles.sass";
 import { Button } from "@mantine/core";
+import { socket } from "api/socket";
 
 type Props = {
   currentUser: User;
@@ -17,14 +18,14 @@ const Battle = ({ currentUser }: Props) => {
 
   const { mutate: generateMob } = useMutation(spawnMob, {
     onSuccess: (response, variables) => {
-      navigate(`/battle/${response.id}`);
+      // navigate(`/battle`);
     },
   });
 
   const { mutate: createNewBattle } = useMutation(createBattle, {
     onSuccess: (response, variables) => {
-      console.log(response);
-      navigate(`/battle/${response.id}`);
+      socket.emit("startBattle", { userId: currentUser?.id });
+      // navigate(`/battle`);
     },
   });
 

@@ -5,7 +5,7 @@ import { User } from "/types";
 type Props = {
   battle: any;
   socket: any;
-  battleId?: string;
+  battleId?: number;
   currentUser: User;
 };
 

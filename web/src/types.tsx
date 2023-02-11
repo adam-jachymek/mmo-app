@@ -12,6 +12,7 @@ export type User = {
   guildId: number;
   guildRole: GuildRoles;
   avatar: string;
+  battleId?: number;
   mapId: number;
   x: number;
   y: number;

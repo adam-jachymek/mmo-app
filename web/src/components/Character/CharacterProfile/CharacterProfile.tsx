@@ -13,8 +13,6 @@ type Props = {
 };
 
 const findEquipedItem = (itemsData: any, itemType: string) => {
-  console.log("itemsData", itemsData);
-
   return itemsData.find(
     (item: Item) => item.equip === true && item.type === itemType
   );
