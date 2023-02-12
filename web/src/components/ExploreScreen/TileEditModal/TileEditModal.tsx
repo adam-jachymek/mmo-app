@@ -118,14 +118,74 @@ const sprites = [
     value: "/media/maps/road-horizontal-up.svg",
   },
   {
-    image: "/media/maps/road-left.svg",
-    label: "road-left",
-    value: "/media/maps/road-left.svg",
+    image: "/media/maps/cave/cave-hole.svg",
+    label: "cave-hole",
+    value: "/media/maps/cave/cave-hole.svg",
   },
   {
-    image: "/media/maps/road-right.svg",
-    label: "road-right",
-    value: "/media/maps/road-right.svg",
+    image: "/media/maps/cave/cave-rocks-flor.svg",
+    label: "cave-rocks-flor",
+    value: "/media/maps/cave/cave-rocks-flor.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-corner-down-leftt.svg",
+    label: "cave-wall-corner-down-leftt",
+    value: "/media/maps/cave/cave-wall-corner-down-leftt.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-corner-down-right.svg",
+    label: "cave-wall-corner-down-right",
+    value: "/media/maps/cave/cave-wall-corner-down-right.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-corner-up-leftt.svg",
+    label: "cave-wall-corner-up-leftt",
+    value: "/media/maps/cave/cave-wall-corner-up-leftt.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-corner-up-right.svg",
+    label: "cave-wall-corner-up-right",
+    value: "/media/maps/cave/cave-wall-corner-up-right.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-down.svg",
+    label: "cave-wall-down",
+    value: "/media/maps/cave/cave-wall-down.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-left.svg",
+    label: "cave-wall-left",
+    value: "/media/maps/cave/cave-wall-left.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-right.svg",
+    label: "cave-wall-right",
+    value: "/media/maps/cave/cave-wall-right.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-turn-down-left.svg",
+    label: "cave-wall-turn-down-left",
+    value: "/media/maps/cave/cave-wall-turn-down-left.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-turn-down-right.svg",
+    label: "cave-wall-turn-down-right",
+    value: "/media/maps/cave/cave-wall-turn-down-right.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-turn-left.svg",
+    label: "cave-wall-turn-left",
+    value: "/media/maps/cave/cave-wall-turn-left.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall-turn-right.svg",
+    label: "cave-wall-turn-right",
+    value: "/media/maps/cave/cave-wall-turn-right.svg",
+  },
+  {
+    image: "/media/maps/cave/cave-wall.svg",
+    label: "cave-wall",
+    value: "/media/maps/cave/cave-wall.svg",
   },
 ];
 
