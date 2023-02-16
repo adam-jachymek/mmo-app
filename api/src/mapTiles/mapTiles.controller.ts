@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,8 +10,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { GetUser } from '../auth/decorator';
-import { Header } from 'src/auth/decorator/request-header';
 import { JwtGuard } from '../auth/guard';
 import { MapTilesService } from './mapTiles.service';
 import { CreateMapDto, EditMapDto } from './dto';
@@ -32,24 +28,6 @@ export class MapTilesController {
     );
   }
 
-  @Get()
-  getMap() {
-    return this.MapTilesService.getMap();
-  }
-
-  @Get('admin')
-  getMapAdmin() {
-    return this.MapTilesService.getMapAdmin();
-  }
-
-  @Get(':id')
-  getMapById(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) mapId: number,
-  ) {
-    return this.MapTilesService.getMapById(mapId);
-  }
-
   @Patch(':id')
   editTileById(
     @Param('id', ParseIntPipe) tileId: number,
@@ -61,15 +39,24 @@ export class MapTilesController {
     );
   }
 
+  @Post('many')
+  updateMany(
+    @Body()
+    data: {
+      ids: number[];
+      values: EditMapDto;
+    },
+  ) {
+    return this.MapTilesService.updateMany(data);
+  }
+
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteItemById(
-    @GetUser('id') userId: number,
-    @Param('id', ParseIntPipe) mapId: number,
+    @Param('id', ParseIntPipe) tileId: number,
   ) {
     return this.MapTilesService.deleteMapById(
-      userId,
-      mapId,
+      tileId,
     );
   }
 }

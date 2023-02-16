@@ -36,41 +36,22 @@ export class MapTilesService {
     });
   }
 
-  getMap() {
-    return this.prisma.map.findMany();
-  }
-
-  getMapAdmin() {
-    return this.prisma.map.findMany();
-  }
-
-  getMapById(mapId: number) {
-    return this.prisma.map.findFirst({
+  async updateMany(data: {
+    ids: number[];
+    values: EditMapDto;
+  }) {
+    return await this.prisma.mapTiles.updateMany({
       where: {
-        id: mapId,
+        id: { in: data.ids },
       },
+      data: { ...data.values },
     });
   }
 
-  async deleteMapById(
-    userId: number,
-    mapId: number,
-  ) {
-    const map = await this.prisma.map.findUnique({
+  async deleteMapById(tileId: number) {
+    return this.prisma.mapTiles.delete({
       where: {
-        id: mapId,
-      },
-    });
-
-    // check if user owns the map
-    // if (!map || item.id !== userId)
-    //   throw new ForbiddenException(
-    //     'Access to resources denied',
-    //   );
-
-    await this.prisma.map.delete({
-      where: {
-        id: mapId,
+        id: tileId,
       },
     });
   }

@@ -102,6 +102,7 @@ export type Tile = {
   blocked: boolean;
   id: number;
   sprite: string;
+  object: string;
   text: string;
   action_name?: string;
   x: number;

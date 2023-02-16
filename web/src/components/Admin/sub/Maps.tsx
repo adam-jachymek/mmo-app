@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "react-query";
-import { getMap, createMap, deleteMap, createTiles } from "api/endpoints";
+import { getMap, createMap, deleteMap } from "api/endpoints";
+import { createTiles } from "api/endpoints/tiles";
 import { useFormik } from "formik";
 import { Button, Input, NumberInputProps } from "@mantine/core";
 import { Map } from "/types";

@@ -2,7 +2,6 @@ import {
   Avatar,
   Button,
   Group,
-  Modal,
   Select,
   Text,
   Slider,
@@ -14,14 +13,18 @@ import {
 import { useFormik } from "formik";
 import { forwardRef, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { editTileById, getMap, getMobs } from "api/endpoints";
+import { getMap, getMobs } from "api/endpoints";
+import { editTileById, updateManyTiles } from "api/endpoints/tiles";
 import { Mob, Tile } from "/types";
 import { getAllSprites } from "api/endpoints/sprites";
 import { assets_url } from "config";
+import { isEmpty } from "lodash";
 
 type Props = {
-  editTile: Tile;
+  editTile?: Tile;
   refetchTiles: () => void;
+  multiSelect: boolean;
+  multiSelectTiles: number[];
 };
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
@@ -30,7 +33,12 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   description: string;
 }
 
-const TileEdit = ({ editTile, refetchTiles }: Props) => {
+const TileEdit = ({
+  editTile,
+  refetchTiles,
+  multiSelect,
+  multiSelectTiles,
+}: Props) => {
   const [categories, setCategories] = useState([
     { value: "", label: "All" },
     { value: "Forest", label: "Forest" },
@@ -40,6 +48,12 @@ const TileEdit = ({ editTile, refetchTiles }: Props) => {
   const [filterCategory, setFilterCategory] = useState<string | null>("");
 
   const { mutate: postEdit } = useMutation(editTileById, {
+    onSuccess: (response) => {
+      refetchTiles();
+    },
+  });
+
+  const { mutate: updateMany } = useMutation(updateManyTiles, {
     onSuccess: (response) => {
       refetchTiles();
     },
@@ -105,15 +119,38 @@ const TileEdit = ({ editTile, refetchTiles }: Props) => {
     initialValues: {
       tileId: editTile?.id,
       sprite: editTile?.sprite,
+      object: editTile?.object,
       text: editTile?.text,
       blocked: editTile?.blocked,
       action_name: editTile?.action_name,
       action: {
-        teleport: editTile.action?.teleport,
-        mobSpawn: editTile.action?.mobSpawn,
+        teleport: editTile?.action?.teleport,
+        mobSpawn: editTile?.action?.mobSpawn,
       },
     },
     onSubmit: (values, { resetForm }) => {
+      const deleteEmptyValues = (values: any) => {
+        for (const propName in values) {
+          if (values[propName] === undefined) {
+            delete values[propName];
+          }
+          if (values.action_name === undefined) {
+            delete values.action;
+          }
+        }
+        return values;
+      };
+
+      const nonEmptyValues = deleteEmptyValues(values);
+
+      if (multiSelect) {
+        updateMany({
+          ids: multiSelectTiles,
+          values: nonEmptyValues,
+        });
+        return;
+      }
+
       postEdit(values);
       resetForm();
     },
@@ -131,9 +168,9 @@ const TileEdit = ({ editTile, refetchTiles }: Props) => {
         className="admin__form-items"
         onSubmit={tileForm.handleSubmit}
       >
-        <p>id: {editTile.id}</p>
+        <p>id: {editTile?.id}</p>
         <p>
-          x: {editTile.x} y: {editTile.y}
+          x: {editTile?.x} y: {editTile?.y}
         </p>
         <label className="admin__main-label">Sprite</label>
         <Select

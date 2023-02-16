@@ -12,6 +12,10 @@ export class EditMapDto {
   @IsOptional()
   sprite?: string;
 
+  @IsString()
+  @IsOptional()
+  object?: string;
+
   @IsBoolean()
   @IsOptional()
   blocked?: boolean;

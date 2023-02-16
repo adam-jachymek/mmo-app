@@ -197,6 +197,7 @@ model MapTiles {
   updatedAt DateTime @updatedAt
 
   sprite String?
+  object String?
   text String? @default("")
   blocked Boolean? @default(false)
   x Int

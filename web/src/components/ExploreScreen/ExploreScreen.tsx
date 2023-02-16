@@ -4,7 +4,7 @@ import { getMapById } from "api/endpoints";
 import classNames from "classnames";
 import ExploreButtons from "./ExploreButtons";
 import TileEdit from "./TileEdit";
-import { Loader } from "@mantine/core";
+import { Button, Loader, Switch } from "@mantine/core";
 import { Tile, User } from "/types";
 
 import "./styles.sass";
@@ -23,6 +23,8 @@ const ExploreScreen = ({ user }: Props) => {
     blocked: false,
   });
   const [clickedTile, setClickedTile] = useState<Tile>();
+  const [multiSelect, setMultiSelect] = useState(false);
+  const [multiSelectTiles, setMultiSelectTiles] = useState<number[]>([]);
 
   const mapId = user.mapId;
 
@@ -40,6 +42,11 @@ const ExploreScreen = ({ user }: Props) => {
     );
   }, [user.x, user.y]);
 
+  useEffect(() => {
+    setMultiSelectTiles([]);
+    setClickedTile(undefined);
+  }, [multiSelect]);
+
   const renderMap = useMemo(() => {
     let tiles = [];
     for (let i = 0; i < mapData?.tiles?.length; i++) {
@@ -52,9 +59,21 @@ const ExploreScreen = ({ user }: Props) => {
             backgroundSize: "cover",
           }}
           className={classNames("explore__tile", {
-            active: tile.id === clickedTile?.id,
+            active:
+              tile.id === clickedTile?.id || multiSelectTiles.includes(tile.id),
           })}
           onClick={() => {
+            if (multiSelect) {
+              if (!multiSelectTiles.includes(tile.id)) {
+                setMultiSelectTiles([...multiSelectTiles, tile.id]);
+                return;
+              } else {
+                setMultiSelectTiles(
+                  multiSelectTiles.filter((item) => item !== tile.id)
+                );
+                return;
+              }
+            }
             setClickedTile(tile);
           }}
         >
@@ -84,7 +103,7 @@ const ExploreScreen = ({ user }: Props) => {
       );
     }
     return tiles;
-  }, [mapData, user.x, user.y, clickedTile]);
+  }, [mapData, user.x, user.y, clickedTile, multiSelectTiles, multiSelect]);
 
   if (isFetching) {
     return <Loader />;
@@ -94,6 +113,19 @@ const ExploreScreen = ({ user }: Props) => {
     <>
       <div className="explore" tabIndex={0}>
         <div className="explore__wrapper">
+          <div className="explore__top-bar">
+            <Switch
+              label="Multi Select"
+              style={{ marginTop: 10 }}
+              checked={multiSelect}
+              onChange={(event) => setMultiSelect(event.currentTarget.checked)}
+            />
+            {multiSelect && (
+              <Button compact onClick={() => setMultiSelectTiles([])}>
+                Clear
+              </Button>
+            )}
+          </div>
           <ul className="explore__tiles">
             {renderMap}
             {activeTile?.text?.length > 2 && (
@@ -104,9 +136,12 @@ const ExploreScreen = ({ user }: Props) => {
           </ul>
           <ExploreButtons user={user} />
         </div>
-        {clickedTile && (
-          <TileEdit editTile={clickedTile} refetchTiles={refetchTiles} />
-        )}
+        <TileEdit
+          editTile={clickedTile}
+          refetchTiles={refetchTiles}
+          multiSelect={multiSelect}
+          multiSelectTiles={multiSelectTiles}
+        />
       </div>
     </>
   );
