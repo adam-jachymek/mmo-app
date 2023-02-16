@@ -18,7 +18,6 @@ import { editTileById, updateManyTiles } from "api/endpoints/tiles";
 import { Mob, Tile } from "/types";
 import { getAllSprites } from "api/endpoints/sprites";
 import { assets_url } from "config";
-import { isEmpty } from "lodash";
 
 type Props = {
   editTile?: Tile;
@@ -43,7 +42,6 @@ const TileEdit = ({
     { value: "", label: "All" },
     { value: "Forest", label: "Forest" },
     { value: "Cave", label: "Cave" },
-    { value: "Objects", label: "Objects" },
   ]);
   const [filterCategory, setFilterCategory] = useState<string | null>("");
 
@@ -59,10 +57,11 @@ const TileEdit = ({
     },
   });
 
-  const { data: allSprites, refetch: refetchSprites } = useQuery(
-    "getAllSprites",
-    getAllSprites
-  );
+  const {
+    data: allSprites,
+    refetch: refetchSprites,
+    isFetching: fetchingSprites,
+  } = useQuery("getAllSprites", getAllSprites);
 
   const { data: mobsData, isFetching: fetchingMobs } = useQuery(
     "getMobs",
@@ -78,35 +77,53 @@ const TileEdit = ({
     filterCategory !== "" ? sprite.category === filterCategory : sprite
   );
 
-  const allSpritesSelect = useMemo(() => {
-    return filteredSprites?.map((sprite: any) => ({
-      image: `${assets_url}/${sprite?.sprite}`,
-      label: sprite?.name,
-      value: `${assets_url}/${sprite?.sprite}`,
-      group: sprite.category,
-    }));
-  }, [filteredSprites]);
+  const allSpritesSelect = useMemo(
+    () =>
+      filteredSprites?.map((sprite: any) => ({
+        image: sprite?.sprite,
+        label: sprite?.name,
+        value: sprite?.sprite,
+        group: sprite.category,
+      })),
+    [filteredSprites]
+  );
 
-  const mobsSelect = useMemo(() => {
-    return mobsData?.map((mob: Mob) => ({
-      image: `/media/mobs/${mob?.sprite}.png`,
-      label: `${mob?.name}, lvl: ${mob?.minLevel} - ${mob?.maxLevel}`,
-      value: mob?.id,
-    }));
-  }, [mobsData]);
+  const objectSelect = useMemo(
+    () =>
+      allSprites
+        ?.filter((sprite: any) => sprite.category === "Objects")
+        .map((sprite: any) => ({
+          image: sprite?.sprite,
+          label: sprite?.name,
+          value: sprite?.sprite,
+        })),
+    [allSprites]
+  );
 
-  const mapsSelect = useMemo(() => {
-    return mapData?.map((map: any) => ({
-      value: map?.id,
-      label: map?.name,
-    }));
-  }, [mapData]);
+  const mobsSelect = useMemo(
+    () =>
+      mobsData?.map((mob: Mob) => ({
+        image: `/media/mobs/${mob?.sprite}.png`,
+        label: `${mob?.name}, lvl: ${mob?.minLevel} - ${mob?.maxLevel}`,
+        value: mob?.id,
+      })),
+    [mobsData]
+  );
+
+  const mapsSelect = useMemo(
+    () =>
+      mapData?.map((map: any) => ({
+        value: map?.id,
+        label: map?.name,
+      })),
+    [mapData]
+  );
 
   const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     ({ image, label, description, ...others }: ItemProps, ref) => (
       <div ref={ref} {...others}>
         <Group noWrap>
-          <Avatar src={image} />
+          <Avatar src={`${assets_url}/${image}`} />
           <div>
             <Text size="sm">{label}</Text>
           </div>
@@ -157,7 +174,7 @@ const TileEdit = ({
     enableReinitialize: true,
   });
 
-  if (fetchingMobs || fetchingMaps) {
+  if (fetchingMobs || fetchingMaps || fetchingSprites) {
     return <Loader />;
   }
 
@@ -172,140 +189,169 @@ const TileEdit = ({
         <p>
           x: {editTile?.x} y: {editTile?.y}
         </p>
-        <label className="admin__main-label">Sprite</label>
-        <Select
-          placeholder="Pick one"
-          name="Category"
-          label="Category"
-          data={categories}
-          style={{ marginBottom: 10 }}
-          onChange={(value) => {
-            setFilterCategory(value);
-          }}
-          value={filterCategory}
-          searchable
-          maxDropdownHeight={400}
-          nothingFound="No sprites available"
-        />
-        <Select
-          placeholder="Pick one"
-          name="sprite"
-          itemComponent={SelectItem}
-          style={{ marginBottom: 10 }}
-          data={allSpritesSelect}
-          onChange={(value) => tileForm.setFieldValue("sprite", value)}
-          value={tileForm.values.sprite}
-          searchable
-          maxDropdownHeight={400}
-          nothingFound="No sprites available"
-        />
-        <img
-          style={{ height: 100, marginBottom: 10 }}
-          src={tileForm.values.sprite}
-        />
-        <Switch
-          label="Blocked"
-          style={{ marginTop: 10 }}
-          checked={tileForm.values.blocked}
-          onChange={(event) =>
-            tileForm.setFieldValue("blocked", event.currentTarget.checked)
-          }
-        />
-        {!tileForm.values.blocked && (
-          <>
-            <label className="admin__main-label">Text</label>
-            <Textarea
-              className="admin__main-input"
-              name="text"
-              onChange={tileForm.handleChange}
-              value={tileForm.values.text}
+        <div className="settings__form">
+          <div className="settings__panel">
+            <label className="admin__main-label">Sprite</label>
+            <Select
+              placeholder="Pick one"
+              name="Category"
+              label="Category"
+              data={categories}
+              style={{ marginBottom: 10 }}
+              onChange={(value) => {
+                setFilterCategory(value);
+              }}
+              value={filterCategory}
+              searchable
+              maxDropdownHeight={400}
+              nothingFound="No sprites available"
             />
             <Select
-              label="Action"
               placeholder="Pick one"
-              style={{ marginTop: 20 }}
-              clearable
-              data={[
-                { value: "TELEPORT", label: "Teleport" },
-                { value: "MOB", label: "Mob Spawn" },
-              ]}
-              value={tileForm.values.action_name}
-              onChange={(value) => tileForm.setFieldValue("action_name", value)}
+              name="sprite"
+              itemComponent={SelectItem}
+              style={{ marginBottom: 10 }}
+              data={allSpritesSelect}
+              onChange={(value) => tileForm.setFieldValue("sprite", value)}
+              value={tileForm.values.sprite}
+              searchable
+              maxDropdownHeight={400}
+              nothingFound="No sprites available"
             />
-            {tileForm.values.action_name === "TELEPORT" && (
-              <>
-                <Select
-                  label="Map"
-                  placeholder="Pick one"
-                  clearable
-                  data={mapsSelect}
-                  style={{ marginTop: 20 }}
-                  value={tileForm.values.action.teleport?.mapId}
-                  onChange={(value) => {
-                    tileForm.setFieldValue("action.teleport.mapId", value);
-                  }}
-                />
-                x:{" "}
-                <Input
-                  value={tileForm.values.action.teleport?.newMapX}
-                  type="number"
-                  onChange={(e: any) =>
-                    tileForm.setFieldValue(
-                      "action.teleport.newMapX",
-                      e.target.value
-                    )
-                  }
-                />
-                y:{" "}
-                <Input
-                  value={tileForm.values.action.teleport?.newMapY}
-                  type="number"
-                  onChange={(e: any) =>
-                    tileForm.setFieldValue(
-                      "action.teleport.newMapY",
-                      e.target.value
-                    )
-                  }
-                />
-              </>
+            {tileForm.values.sprite && (
+              <img
+                style={{ height: 100, marginBottom: 10 }}
+                src={`${assets_url}/${tileForm.values.sprite}`}
+              />
             )}
-            {tileForm.values.action_name === "MOB" && (
-              <div>
-                <Select
-                  placeholder="Pick one"
-                  name="mob"
-                  allowDeselect
-                  label="Mob"
-                  clearable
-                  style={{ marginTop: 20 }}
-                  itemComponent={SelectItem}
-                  data={mobsSelect}
-                  value={tileForm.values.action.mobSpawn?.mobId}
-                  onChange={(value) =>
-                    tileForm.setFieldValue("action.mobSpawn.mobId", value)
-                  }
-                  searchable
-                  maxDropdownHeight={400}
-                  nothingFound="No mobs available"
-                />
-                <Slider
-                  labelAlwaysOn
-                  radius="xs"
-                  styles={{ root: { width: "100%", marginTop: 40 } }}
-                  marks={[
-                    { value: 20, label: "20%" },
-                    { value: 50, label: "50%" },
-                    { value: 80, label: "80%" },
-                  ]}
-                  value={tileForm.values.action.mobSpawn?.procent}
-                  onChange={(value) =>
-                    tileForm.setFieldValue("action.mobSpawn.procent", value)
-                  }
-                />
-              </div>
+            <label className="admin__main-label">Object</label>
+
+            <Select
+              placeholder="Pick one"
+              name="object"
+              itemComponent={SelectItem}
+              style={{ margin: 10 }}
+              clearable
+              data={objectSelect}
+              onChange={(value) => tileForm.setFieldValue("object", value)}
+              value={tileForm.values.object}
+              searchable
+              maxDropdownHeight={400}
+              nothingFound="No objects available"
+            />
+            {tileForm.values.object && (
+              <img
+                style={{ height: 100, marginBottom: 10 }}
+                src={`${assets_url}/${tileForm.values.object}`}
+              />
             )}
-          </>
-        )}
+            <Switch
+              label="Blocked"
+              style={{ marginTop: 10 }}
+              checked={tileForm.values.blocked}
+              onChange={(event) =>
+                tileForm.setFieldValue("blocked", event.currentTarget.checked)
+              }
+            />
+          </div>
+          {!tileForm.values.blocked && (
+            <div className="settings__panel">
+              <label className="admin__main-label">Text</label>
+              <Textarea
+                className="admin__main-input"
+                name="text"
+                onChange={tileForm.handleChange}
+                value={tileForm.values.text}
+              />
+              <Select
+                label="Action"
+                placeholder="Pick one"
+                style={{ marginTop: 20 }}
+                clearable
+                data={[
+                  { value: "TELEPORT", label: "Teleport" },
+                  { value: "MOB", label: "Mob Spawn" },
+                ]}
+                value={tileForm.values.action_name}
+                onChange={(value) =>
+                  tileForm.setFieldValue("action_name", value)
+                }
+              />
+              {tileForm.values.action_name === "TELEPORT" && (
+                <>
+                  <Select
+                    label="Map"
+                    placeholder="Pick one"
+                    clearable
+                    data={mapsSelect}
+                    style={{ marginTop: 20 }}
+                    value={tileForm.values.action.teleport?.mapId}
+                    onChange={(value) => {
+                      tileForm.setFieldValue("action.teleport.mapId", value);
+                    }}
+                  />
+                  x:{" "}
+                  <Input
+                    value={tileForm.values.action.teleport?.newMapX}
+                    type="number"
+                    onChange={(e: any) =>
+                      tileForm.setFieldValue(
+                        "action.teleport.newMapX",
+                        e.target.value
+                      )
+                    }
+                  />
+                  y:{" "}
+                  <Input
+                    value={tileForm.values.action.teleport?.newMapY}
+                    type="number"
+                    onChange={(e: any) =>
+                      tileForm.setFieldValue(
+                        "action.teleport.newMapY",
+                        e.target.value
+                      )
+                    }
+                  />
+                </>
+              )}
+              {tileForm.values.action_name === "MOB" && (
+                <div>
+                  <Select
+                    placeholder="Pick one"
+                    name="mob"
+                    allowDeselect
+                    label="Mob"
+                    clearable
+                    style={{ marginTop: 20 }}
+                    itemComponent={SelectItem}
+                    data={mobsSelect}
+                    value={tileForm.values.action.mobSpawn?.mobId}
+                    onChange={(value) =>
+                      tileForm.setFieldValue("action.mobSpawn.mobId", value)
+                    }
+                    searchable
+                    maxDropdownHeight={400}
+                    nothingFound="No mobs available"
+                  />
+                  <Slider
+                    labelAlwaysOn
+                    radius="xs"
+                    styles={{ root: { width: "100%", marginTop: 40 } }}
+                    marks={[
+                      { value: 20, label: "20%" },
+                      { value: 50, label: "50%" },
+                      { value: 80, label: "80%" },
+                    ]}
+                    value={tileForm.values.action.mobSpawn?.procent}
+                    onChange={(value) =>
+                      tileForm.setFieldValue("action.mobSpawn.procent", value)
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         <Button m="30px" type="submit" color="green" size="md">
           Save
         </Button>

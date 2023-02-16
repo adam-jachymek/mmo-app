@@ -7,14 +7,14 @@
     background-image: url('./backgrounds/back.png')
     background-position: center
     background-size: cover
-    padding: 0 200px
+    padding-left: 200px
 
   &__tiles
     list-style-type: none
     padding: 0
     margin: 0
     display: grid
-    grid-template-columns: auto auto auto auto auto auto auto auto auto auto
+    grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto
     grid-row-gap: 0px
     grid-column-gap: 0px
     justify-items: center
@@ -24,9 +24,12 @@
   &__icon
     position: absolute
 
+  &__object
+    position: absolute
+
   &__tile
-    width: 80px
-    height: 80px
+    width: 42px
+    height: 42px
     background: rgba(0, 0, 0, 0.3)
     display: flex
     justify-content: center
@@ -37,12 +40,12 @@
     color: #fff
     background-color: #000
     text-align: center
-    font-size: 12px
+    font-size: 8px
     font-weight: bold
 
   &__avatar
-    width: 54px
-    height: 54px
+    width: 28px
+    height: 28px
     opacity: 0.8
     border-radius: 100%
     border: 2px solid #000
@@ -76,3 +79,14 @@
 
 
 .settings
+  margin-top: 20px
+
+  // &__form
+  //   display: flex
+  //   justify-content: space-between
+
+  &__panel
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center

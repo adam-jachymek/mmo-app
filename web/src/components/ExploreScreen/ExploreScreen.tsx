@@ -6,6 +6,7 @@ import ExploreButtons from "./ExploreButtons";
 import TileEdit from "./TileEdit";
 import { Button, Loader, Switch } from "@mantine/core";
 import { Tile, User } from "/types";
+import { assets_url } from "config";
 
 import "./styles.sass";
 
@@ -47,6 +48,12 @@ const ExploreScreen = ({ user }: Props) => {
     setClickedTile(undefined);
   }, [multiSelect]);
 
+  const selectAllSprites = () => {
+    const allTilesId = mapData?.tiles?.map((tile: Tile) => tile.id);
+
+    setMultiSelectTiles(allTilesId);
+  };
+
   const renderMap = useMemo(() => {
     let tiles = [];
     for (let i = 0; i < mapData?.tiles?.length; i++) {
@@ -55,7 +62,7 @@ const ExploreScreen = ({ user }: Props) => {
         <li
           key={tile.id}
           style={{
-            backgroundImage: `url(${tile.sprite})`,
+            backgroundImage: `url(${assets_url}/${tile.sprite})`,
             backgroundSize: "cover",
           }}
           className={classNames("explore__tile", {
@@ -77,19 +84,28 @@ const ExploreScreen = ({ user }: Props) => {
             setClickedTile(tile);
           }}
         >
+          {tile.object && (
+            <div className="explore__icon">
+              <img
+                style={{ width: 42, height: 42 }}
+                src={`${assets_url}/${tile.object}`}
+              />
+            </div>
+          )}
           {tile.text.length > 2 && (
             <div className="explore__icon">
               <img
-                style={{ height: 35 }}
+                style={{ height: 15 }}
                 src="/media/explore/beka-pytajnik.svg"
               />
             </div>
           )}
           {tile.blocked && (
             <div className="explore__icon">
-              <img style={{ height: 20 }} src="/media/explore/lock.png" />
+              <img style={{ height: 10 }} src="/media/explore/lock.png" />
             </div>
           )}
+
           {tile.x === user.x && tile.y === user.y && (
             <div>
               <div className="explore__username">{user.username}</div>
@@ -121,9 +137,18 @@ const ExploreScreen = ({ user }: Props) => {
               onChange={(event) => setMultiSelect(event.currentTarget.checked)}
             />
             {multiSelect && (
-              <Button compact onClick={() => setMultiSelectTiles([])}>
-                Clear
-              </Button>
+              <>
+                <Button compact onClick={() => selectAllSprites()}>
+                  Select All
+                </Button>
+                <Button
+                  color="green"
+                  compact
+                  onClick={() => setMultiSelectTiles([])}
+                >
+                  Clear
+                </Button>
+              </>
             )}
           </div>
           <ul className="explore__tiles">

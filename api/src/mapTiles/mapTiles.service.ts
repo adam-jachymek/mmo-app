@@ -7,8 +7,8 @@ export class MapTilesService {
   constructor(private prisma: PrismaService) {}
 
   async createMapTiles(dto: CreateMapDto) {
-    const xAxisCount = 10;
-    const yAxisCount = 10;
+    const xAxisCount = 20;
+    const yAxisCount = 20;
     for (let y = 0; y < yAxisCount; y++) {
       for (let x = 0; x < xAxisCount; x++) {
         await this.prisma.mapTiles.create({

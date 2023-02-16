@@ -9,6 +9,7 @@ export const createTiles = async (values: { mapId: number }) => {
 export const editTileById = async (values: {
   tileId?: number;
   sprite?: string;
+  object?: string;
   blocked?: boolean;
   action_name?: string;
   action?: {
