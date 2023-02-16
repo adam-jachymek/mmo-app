@@ -24,6 +24,7 @@ import { Loader } from "@mantine/core";
 import MobileMenu from "./components/MobileMenu";
 import WelcomeScreen from "./components/WelcomeScreen";
 import { User } from "./types";
+import Spirtes from "./components/Admin/sub/Sprites";
 
 const AppRouter = () => {
   const [user, setUser] = useState<User>();
@@ -47,7 +48,6 @@ const AppRouter = () => {
     currentUser?.id &&
       socket.on(`user-${currentUser?.id}`, (response: any) => {
         setUser(response);
-        console.log("UserSocket", response);
       });
   }, [currentUser?.id, socket]);
 
@@ -124,6 +124,7 @@ const AppRouter = () => {
           <Route path="/admin/items" element={<Items />} />
           <Route path="/admin/maps" element={<Maps />} />
           <Route path="/admin/mobs" element={<Mobs />} />
+          <Route path="/admin/sprites" element={<Spirtes />} />
           <Route path="/players" element={<Players />} />
           <Route
             path="/guild"

@@ -15,179 +15,14 @@ import { useFormik } from "formik";
 import { forwardRef, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { editTileById, getMap, getMobs } from "api/endpoints";
-import { Mob } from "/types";
+import { Mob, Tile } from "/types";
+import { getAllSprites } from "api/endpoints/sprites";
+import { assets_url } from "config";
 
 type Props = {
-  editTile: {
-    blocked: boolean;
-    id: number;
-    sprite: string;
-    text: string;
-    action_name?: string;
-    x: number;
-    y: number;
-    action?: {
-      teleport?: { mapId: string; newMapX: number; newMapY: number };
-      mobSpawn?: { mobId: string; procent: number };
-    };
-  };
-  openEditModal: boolean;
-  setOpenEditModal: (open: boolean) => void;
+  editTile: Tile;
   refetchTiles: () => void;
 };
-
-const sprites = [
-  {
-    image: "",
-    label: "Empty",
-    value: "",
-  },
-  {
-    image: "/media/maps/grass.svg",
-    label: "Grass",
-    value: "/media/maps/grass.svg",
-  },
-  {
-    image: "/media/maps/grass+flowers.svg",
-    label: "Grass + Flowers",
-    value: "/media/maps/grass+flowers.svg",
-  },
-  {
-    image: "/media/maps/grass+flowers+trees.svg",
-    label: "Grass + Flowers + Trees",
-    value: "/media/maps/grass+flowers+trees.svg",
-  },
-  {
-    image: "/media/maps/tree.png",
-    label: "Tree v01",
-    value: "/media/maps/tree.png",
-  },
-  {
-    image: "/media/maps/cave-left.svg",
-    label: "Cave-left",
-    value: "/media/maps/cave-left.svg",
-  },
-  {
-    image: "/media/maps/cave-right.svg",
-    label: "Cave-right",
-    value: "/media/maps/cave-right.svg",
-  },
-  {
-    image: "/media/maps/cave.svg",
-    label: "Cave",
-    value: "/media/maps/cave.svg",
-  },
-  {
-    image: "/media/maps/road_horizontal.svg",
-    label: "road horizontal",
-    value: "/media/maps/road_horizontal.svg",
-  },
-  {
-    image: "/media/maps/road_left-down.svg",
-    label: "road left-down",
-    value: "/media/maps/road_left-down.svg",
-  },
-  {
-    image: "/media/maps/road_right-down.svg",
-    label: "road right-down",
-    value: "/media/maps/road_right-down.svg",
-  },
-  {
-    image: "/media/maps/road_up-right.svg",
-    label: "road up-right",
-    value: "/media/maps/road_up-right.svg",
-  },
-  {
-    image: "/media/maps/road_left-up.svg",
-    label: "road_left-up",
-    value: "/media/maps/road_left-up.svg",
-  },
-  {
-    image: "/media/maps/road.svg",
-    label: "road",
-    value: "/media/maps/road.svg",
-  },
-  {
-    image: "/media/maps/road-horizontal-down.svg",
-    label: "road-horizontal-down",
-    value: "/media/maps/road-horizontal-down.svg",
-  },
-  {
-    image: "/media/maps/road-horizontal-up.svg",
-    label: "road-horizontal-up",
-    value: "/media/maps/road-horizontal-up.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-hole.svg",
-    label: "cave-hole",
-    value: "/media/maps/cave/cave-hole.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-rocks-flor.svg",
-    label: "cave-rocks-flor",
-    value: "/media/maps/cave/cave-rocks-flor.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-corner-down-leftt.svg",
-    label: "cave-wall-corner-down-leftt",
-    value: "/media/maps/cave/cave-wall-corner-down-leftt.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-corner-down-right.svg",
-    label: "cave-wall-corner-down-right",
-    value: "/media/maps/cave/cave-wall-corner-down-right.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-corner-up-leftt.svg",
-    label: "cave-wall-corner-up-leftt",
-    value: "/media/maps/cave/cave-wall-corner-up-leftt.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-corner-up-right.svg",
-    label: "cave-wall-corner-up-right",
-    value: "/media/maps/cave/cave-wall-corner-up-right.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-down.svg",
-    label: "cave-wall-down",
-    value: "/media/maps/cave/cave-wall-down.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-left.svg",
-    label: "cave-wall-left",
-    value: "/media/maps/cave/cave-wall-left.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-right.svg",
-    label: "cave-wall-right",
-    value: "/media/maps/cave/cave-wall-right.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-turn-down-left.svg",
-    label: "cave-wall-turn-down-left",
-    value: "/media/maps/cave/cave-wall-turn-down-left.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-turn-down-right.svg",
-    label: "cave-wall-turn-down-right",
-    value: "/media/maps/cave/cave-wall-turn-down-right.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-turn-left.svg",
-    label: "cave-wall-turn-left",
-    value: "/media/maps/cave/cave-wall-turn-left.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall-turn-right.svg",
-    label: "cave-wall-turn-right",
-    value: "/media/maps/cave/cave-wall-turn-right.svg",
-  },
-  {
-    image: "/media/maps/cave/cave-wall.svg",
-    label: "cave-wall",
-    value: "/media/maps/cave/cave-wall.svg",
-  },
-];
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   image: string;
@@ -195,20 +30,25 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   description: string;
 }
 
-const TileEditModal = ({
-  editTile,
-  openEditModal,
-  setOpenEditModal,
-  refetchTiles,
-}: Props) => {
+const TileEdit = ({ editTile, refetchTiles }: Props) => {
+  const [categories, setCategories] = useState([
+    { value: "", label: "All" },
+    { value: "Forest", label: "Forest" },
+    { value: "Cave", label: "Cave" },
+    { value: "Objects", label: "Objects" },
+  ]);
+  const [filterCategory, setFilterCategory] = useState<string | null>("");
+
   const { mutate: postEdit } = useMutation(editTileById, {
     onSuccess: (response) => {
-      setOpenEditModal(false);
       refetchTiles();
     },
   });
 
-  console.log("editTile", editTile);
+  const { data: allSprites, refetch: refetchSprites } = useQuery(
+    "getAllSprites",
+    getAllSprites
+  );
 
   const { data: mobsData, isFetching: fetchingMobs } = useQuery(
     "getMobs",
@@ -219,6 +59,19 @@ const TileEditModal = ({
     "getMap",
     getMap
   );
+
+  const filteredSprites = allSprites?.filter((sprite: any) =>
+    filterCategory !== "" ? sprite.category === filterCategory : sprite
+  );
+
+  const allSpritesSelect = useMemo(() => {
+    return filteredSprites?.map((sprite: any) => ({
+      image: `${assets_url}/${sprite?.sprite}`,
+      label: sprite?.name,
+      value: `${assets_url}/${sprite?.sprite}`,
+      group: sprite.category,
+    }));
+  }, [filteredSprites]);
 
   const mobsSelect = useMemo(() => {
     return mobsData?.map((mob: Mob) => ({
@@ -272,37 +125,46 @@ const TileEditModal = ({
   }
 
   return (
-    <Modal
-      classNames={{ modal: "modal" }}
-      centered
-      withCloseButton={false}
-      opened={openEditModal}
-      overlayOpacity={0.55}
-      overlayBlur={3}
-      onClose={() => {
-        setOpenEditModal(false);
-      }}
-    >
-      <form className="admin__form-items" onSubmit={tileForm.handleSubmit}>
+    <div className="settings">
+      <form
+        style={{ width: "300px" }}
+        className="admin__form-items"
+        onSubmit={tileForm.handleSubmit}
+      >
         <p>id: {editTile.id}</p>
         <p>
           x: {editTile.x} y: {editTile.y}
         </p>
         <label className="admin__main-label">Sprite</label>
-        <img
-          style={{ height: 100, marginBottom: 10 }}
-          src={tileForm.values.sprite}
+        <Select
+          placeholder="Pick one"
+          name="Category"
+          label="Category"
+          data={categories}
+          style={{ marginBottom: 10 }}
+          onChange={(value) => {
+            setFilterCategory(value);
+          }}
+          value={filterCategory}
+          searchable
+          maxDropdownHeight={400}
+          nothingFound="No sprites available"
         />
         <Select
           placeholder="Pick one"
           name="sprite"
           itemComponent={SelectItem}
-          data={sprites}
+          style={{ marginBottom: 10 }}
+          data={allSpritesSelect}
           onChange={(value) => tileForm.setFieldValue("sprite", value)}
           value={tileForm.values.sprite}
           searchable
           maxDropdownHeight={400}
           nothingFound="No sprites available"
+        />
+        <img
+          style={{ height: 100, marginBottom: 10 }}
+          src={tileForm.values.sprite}
         />
         <Switch
           label="Blocked"
@@ -411,8 +273,8 @@ const TileEditModal = ({
           Save
         </Button>
       </form>
-    </Modal>
+    </div>
   );
 };
 
-export default TileEditModal;
+export default TileEdit;

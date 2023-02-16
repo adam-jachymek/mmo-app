@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import { getMobs, deleteMob, createMob, getMap } from "api/endpoints";
 import { useFormik } from "formik";
 
-import { Button, Select } from "@mantine/core";
+import { Button, Input, Select } from "@mantine/core";
 import { useMemo } from "react";
 
 const Mobs = () => {
@@ -53,14 +53,14 @@ const Mobs = () => {
       <h2 className="admin__title-items">Mobs</h2>
       <form className="admin__form-items" onSubmit={mobsForm.handleSubmit}>
         <label className="admin__main-label">Name</label>
-        <input
+        <Input
           className="admin__main-input"
           name="name"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.name}
         />
         <label className="admin__main-label">Min Level</label>
-        <input
+        <Input
           className="admin__main-input"
           name="minLevel"
           type="number"
@@ -68,7 +68,7 @@ const Mobs = () => {
           value={mobsForm.values.minLevel}
         />
         <label className="admin__main-label">Max Level</label>
-        <input
+        <Input
           className="admin__main-input"
           name="maxLevel"
           type="number"
@@ -76,7 +76,7 @@ const Mobs = () => {
           value={mobsForm.values.maxLevel}
         />
         <label className="admin__main-label">HP</label>
-        <input
+        <Input
           className="admin__main-input"
           name="hp"
           type="number"
@@ -84,7 +84,7 @@ const Mobs = () => {
           value={mobsForm.values.hp}
         />
         <label className="admin__main-label">Attack</label>
-        <input
+        <Input
           className="admin__main-input"
           name="attack"
           type="number"
@@ -92,7 +92,7 @@ const Mobs = () => {
           value={mobsForm.values.attack}
         />
         <label className="admin__main-label">Defence</label>
-        <input
+        <Input
           className="admin__main-input"
           name="defence"
           type="number"
@@ -100,7 +100,7 @@ const Mobs = () => {
           value={mobsForm.values.defence}
         />
         <label className="admin__main-label">Give Exp</label>
-        <input
+        <Input
           className="admin__main-input"
           name="giveExp"
           type="number"

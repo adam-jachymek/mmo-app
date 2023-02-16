@@ -278,3 +278,10 @@ model Guild {
 
   @@map("guild")
 }
+
+model MapSprites {
+  id    Int   @id @default(autoincrement())
+  name String
+  category String
+  sprite String
+}

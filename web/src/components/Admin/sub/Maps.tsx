@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { getMap, createMap, deleteMap, createTiles } from "api/endpoints";
 import { useFormik } from "formik";
-import { Button, NumberInputProps } from "@mantine/core";
+import { Button, Input, NumberInputProps } from "@mantine/core";
 import { Map } from "/types";
 import { isEmpty } from "lodash";
 
@@ -43,14 +43,14 @@ const Maps = () => {
       <h2 className="admin__title-items">Maps</h2>
       <form className="admin__form-items" onSubmit={mapForm.handleSubmit}>
         <label className="admin__main-label">Name</label>
-        <input
+        <Input
           className="admin__main-input"
           name="name"
           onChange={mapForm.handleChange}
           value={mapForm.values.name}
         />
         <label className="admin__main-label">Min Level</label>
-        <input
+        <Input
           className="admin__main-input"
           name="minLevel"
           type="number"
@@ -58,7 +58,7 @@ const Maps = () => {
           value={mapForm.values.minLevel}
         />
         <label className="admin__main-label">Max Level</label>
-        <input
+        <Input
           className="admin__main-input"
           name="maxLevel"
           type="number"

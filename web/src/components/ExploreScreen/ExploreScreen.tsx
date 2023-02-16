@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
+import classNames from "classnames";
 import ExploreButtons from "./ExploreButtons";
-import TileEditModal from "./TileEditModal";
+import TileEdit from "./TileEdit";
 import { Loader } from "@mantine/core";
-import { User } from "/types";
+import { Tile, User } from "/types";
 
 import "./styles.sass";
 
@@ -21,8 +22,7 @@ const ExploreScreen = ({ user }: Props) => {
     y: 0,
     blocked: false,
   });
-  const [clickedTile, setClickedTile] = useState();
-  const [openEditModal, setOpenEditModal] = useState(false);
+  const [clickedTile, setClickedTile] = useState<Tile>();
 
   const mapId = user.mapId;
 
@@ -51,10 +51,11 @@ const ExploreScreen = ({ user }: Props) => {
             backgroundImage: `url(${tile.sprite})`,
             backgroundSize: "cover",
           }}
-          className="explore__tile"
+          className={classNames("explore__tile", {
+            active: tile.id === clickedTile?.id,
+          })}
           onClick={() => {
             setClickedTile(tile);
-            setOpenEditModal(!openEditModal);
           }}
         >
           {tile.text.length > 2 && (
@@ -83,7 +84,7 @@ const ExploreScreen = ({ user }: Props) => {
       );
     }
     return tiles;
-  }, [mapData, user.x, user.y]);
+  }, [mapData, user.x, user.y, clickedTile]);
 
   if (isFetching) {
     return <Loader />;
@@ -101,17 +102,12 @@ const ExploreScreen = ({ user }: Props) => {
               </div>
             )}
           </ul>
+          <ExploreButtons user={user} />
         </div>
-        <ExploreButtons user={user} />
+        {clickedTile && (
+          <TileEdit editTile={clickedTile} refetchTiles={refetchTiles} />
+        )}
       </div>
-      {clickedTile && (
-        <TileEditModal
-          openEditModal={openEditModal}
-          setOpenEditModal={setOpenEditModal}
-          editTile={clickedTile}
-          refetchTiles={refetchTiles}
-        />
-      )}
     </>
   );
 };

@@ -1,3 +1,4 @@
+import { MapSpritesModule } from './mapSprites/mapSprites.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
@@ -37,6 +38,7 @@ import { UserSocketModule } from './userSocket/userSocket.module';
     BattleSocketModule,
     MapTilesModule,
     UserSocketModule,
+    MapSpritesModule,
   ],
 })
 export class AppModule {}

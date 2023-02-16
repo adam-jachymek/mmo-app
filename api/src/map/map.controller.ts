@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -13,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from '../auth/decorator';
-import { Header } from 'src/auth/decorator/request-header';
 import { JwtGuard } from '../auth/guard';
 import { MapService } from './map.service';
 import { CreateMapDto, EditMapDto } from './dto';

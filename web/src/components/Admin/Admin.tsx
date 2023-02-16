@@ -15,6 +15,9 @@ const Admin = () => {
       <Link className="admin__category" to="mobs">
         Mobs
       </Link>
+      <Link className="admin__category" to="sprites">
+        Sprites
+      </Link>
     </div>
   );
 };
