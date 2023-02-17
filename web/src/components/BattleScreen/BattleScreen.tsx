@@ -72,7 +72,6 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   return (
     <>
       <div className="fight">
-        <button onClick={closeModal}>Delete Battle</button>
         {battle?.mobs?.map((mob: any) => (
           <BattleMobs mob={mob} activeAnimation={battle.mobAnimation} />
         ))}
@@ -101,8 +100,9 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
             <Button
               onClick={closeModal}
               variant="outline"
-              color="gray"
+              color="green"
               size="md"
+              style={{ marginTop: 10 }}
             >
               CLOSE
             </Button>
@@ -118,7 +118,13 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
         <div className="fight__modal">
           <h3 className="fight__modal-title">You Lost!</h3>
           <p>You are dead</p>
-          <Button onClick={closeModal} variant="outline" color="gray" size="md">
+          <Button
+            style={{ marginTop: 10 }}
+            onClick={closeModal}
+            variant="outline"
+            color="gray"
+            size="md"
+          >
             CLOSE
           </Button>
         </div>

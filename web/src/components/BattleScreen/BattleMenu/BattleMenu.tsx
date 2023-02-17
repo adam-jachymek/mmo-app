@@ -21,28 +21,37 @@ const BattleMenu = ({ battle, socket, battleId, currentUser }: Props) => {
     });
   };
 
+  const endBattle = () => {
+    socket.emit("endBattle", { battleId: battleId, userId: currentUser.id });
+  };
+
   if (showFightMenu) {
     return (
       <div className="fight__menu-2">
         {battle?.userTurn && battle?.activeUser === currentUser?.id && (
-          <button
-            className="fight__button fight__attack"
-            onClick={() => {
-              userAttack("sword");
-            }}
-          >
-            WEAPON
-          </button>
-        )}
-        {battle?.userTurn && battle?.activeUser === currentUser?.id && (
-          <button
-            className="fight__button fight__attack"
-            onClick={() => {
-              userAttack("fireball");
-            }}
-          >
-            FIREBALL
-          </button>
+          <>
+            <button
+              className="fight__button fight__attack"
+              onClick={() => {
+                userAttack("sword");
+              }}
+            >
+              WEAPON
+            </button>
+
+            <button
+              className="fight__button fight__attack"
+              onClick={() => {
+                userAttack("fireball");
+              }}
+            >
+              FIREBALL
+            </button>
+
+            <button className="fight__button-fight__run" onClick={endBattle}>
+              RUN
+            </button>
+          </>
         )}
       </div>
     );
@@ -64,12 +73,7 @@ const BattleMenu = ({ battle, socket, battleId, currentUser }: Props) => {
         >
           FIGHT
         </button>
-        <button
-          className="fight__button-fight__run"
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
+        <button className="fight__button-fight__run" onClick={endBattle}>
           RUN
         </button>
       </div>

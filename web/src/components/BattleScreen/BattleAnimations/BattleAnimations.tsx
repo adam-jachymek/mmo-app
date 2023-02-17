@@ -15,7 +15,7 @@ const BattleAnimations = ({ activeAnimation }: Props) => {
     fps: 25,
     shouldAnimate: activeAnimation,
     stopLastFrame: true,
-    scale: 0.5,
+    scale: 0.7,
     onEnd: () => setAnimation(""),
   };
 
@@ -28,7 +28,7 @@ const BattleAnimations = ({ activeAnimation }: Props) => {
       sprite: `/media/animations/bite.svg`,
       ...options,
       fps: 50,
-      scale: 0.7,
+      scale: 1,
       startFrame: 0,
       width: 128,
       height: 128,
@@ -37,7 +37,7 @@ const BattleAnimations = ({ activeAnimation }: Props) => {
       sprite: `/media/animations/fireball.svg`,
       ...options,
       fps: 35,
-      scale: 0.8,
+      scale: 1,
       width: 128,
       height: 128,
     }),

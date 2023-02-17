@@ -16,7 +16,7 @@ const MobileMenu = () => {
         <img
           className="mobile-menu__home"
           onClick={() => {
-            navigate("/");
+            navigate("/explore");
           }}
           src="/media/ui/menu.png"
         />
