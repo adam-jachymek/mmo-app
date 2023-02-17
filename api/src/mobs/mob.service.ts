@@ -36,15 +36,7 @@ export class MobService {
     mobId: number,
     dto: EditMobDto,
   ) {
-    const item = await this.prisma.mob.findUnique(
-      {
-        where: {
-          id: mobId,
-        },
-      },
-    );
-
-    return this.prisma.mob.update({
+    return await this.prisma.mob.update({
       where: {
         id: mobId,
       },

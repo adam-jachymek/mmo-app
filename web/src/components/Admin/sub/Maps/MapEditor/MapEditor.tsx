@@ -93,6 +93,14 @@ const MapEditor = ({ user }: Props) => {
               />
             </div>
           )}
+          {tile.action?.mobSpawn?.mobId && (
+            <div className="map-editor__icon">
+              <img
+                style={{ width: 20, height: 20 }}
+                src="/media/explore/mob_attack.png"
+              />
+            </div>
+          )}
           {tile.text.length > 2 && (
             <div className="map-editor__icon">
               <img
@@ -107,7 +115,7 @@ const MapEditor = ({ user }: Props) => {
             </div>
           )}
 
-          {tile.x === user.x && tile.y === user.y && (
+          {/* {tile.x === user.x && tile.y === user.y && (
             <div>
               <div className="map-editor__username">{user.username}</div>
               <img
@@ -115,7 +123,7 @@ const MapEditor = ({ user }: Props) => {
                 src={`/media/avatars/${user?.avatar}.png`}
               />
             </div>
-          )}
+          )} */}
         </li>
       );
     }
@@ -160,7 +168,7 @@ const MapEditor = ({ user }: Props) => {
               </div>
             )}
           </ul>
-          <ExploreButtons user={user} />
+          {/* <ExploreButtons user={user} /> */}
         </div>
         <TileEdit
           editTile={clickedTile}

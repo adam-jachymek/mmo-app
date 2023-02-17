@@ -18,8 +18,11 @@ const SideNavBar = () => {
         <div className="navbar">
           <img src="/media/logo150.png" />
           <ul className="navbar__ul">
-            <li onClick={() => navigate("/")} className="navbar__li">
+            {/* <li onClick={() => navigate("/")} className="navbar__li">
               <TiHomeOutline /> Home
+            </li> */}
+            <li onClick={() => navigate("/explore")} className="navbar__li">
+              <AiOutlineQuestion /> Explore
             </li>
             <li onClick={() => navigate("/character")} className="navbar__li">
               <GiCharacter /> Character
@@ -27,20 +30,32 @@ const SideNavBar = () => {
             {/* <li onClick={() => navigate("#")} className="navbar__li">
               <AiOutlineQuestion /> Quests
             </li> */}
-            <li onClick={() => navigate("/explore")} className="navbar__li">
-              <AiOutlineQuestion /> Explore
+            <li onClick={() => navigate("/guild")} className="navbar__li">
+              Guild
+            </li>
+          </ul>
+          <ul className="navbar__ul">
+            Admin
+            <li onClick={() => navigate("/admin/maps")} className="navbar__li">
+              Maps
             </li>
             <li onClick={() => navigate("/battle")} className="navbar__li">
               <GiCrossedSwords /> Battle
             </li>
-            <li onClick={() => navigate("/admin")} className="navbar__li">
-              Admin
+            <li onClick={() => navigate("/admin/mobs")} className="navbar__li">
+              Mobs
+            </li>
+            <li onClick={() => navigate("/admin/items")} className="navbar__li">
+              Items
+            </li>
+            <li
+              onClick={() => navigate("/admin/sprites")}
+              className="navbar__li"
+            >
+              Map Sprites
             </li>
             <li onClick={() => navigate("/players")} className="navbar__li">
               Players
-            </li>
-            <li onClick={() => navigate("/guild")} className="navbar__li">
-              Guild
             </li>
           </ul>
         </div>

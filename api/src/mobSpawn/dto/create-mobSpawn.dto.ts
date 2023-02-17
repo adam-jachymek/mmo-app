@@ -9,4 +9,12 @@ export class CreateMobSpawnDto {
   @IsNumber()
   @IsNotEmpty()
   mobId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  minLevel: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  maxLevel: number;
 }

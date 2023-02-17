@@ -62,7 +62,7 @@ const Maps = () => {
             onChange={mapForm.handleChange}
             value={mapForm.values.name}
           />
-          <label className="admin__main-label">Min Level</label>
+          {/* <label className="admin__main-label">Min Level</label>
           <Input
             className="admin__main-input"
             name="minLevel"
@@ -77,7 +77,7 @@ const Maps = () => {
             type="number"
             onChange={mapForm.handleChange}
             value={mapForm.values.maxLevel}
-          />
+          /> */}
           <Button m="30px" type="submit" color="green" size="md">
             Add Map
           </Button>
@@ -85,24 +85,25 @@ const Maps = () => {
         <table className="admin__item-list">
           <tr className="admin__item-list-tr">
             <th>Name</th>
-            <th>Min Level</th>
-            <th>Max Level</th>
+            <th>Editor</th>
             <th>Action</th>
           </tr>
           {mapData?.map((map: Map) => (
             <tr key={map.id} className="admin__item">
               <td>{map.name}</td>
-              <td>{map.minLevel}</td>
-              <td>{map.maxLevel}</td>
               <td>
-                <Button
-                  size="xs"
-                  onClick={() => {
-                    navigate(`editor/${map?.id}`);
-                  }}
-                >
-                  Edit
-                </Button>
+                {!isEmpty(map?.tiles) && (
+                  <Button
+                    size="xs"
+                    onClick={() => {
+                      navigate(`editor/${map?.id}`);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                )}
+              </td>
+              <td>
                 {isEmpty(map?.tiles) && (
                   <Button
                     m="5px"

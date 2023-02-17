@@ -99,16 +99,22 @@ export type EquipItem = {
 };
 
 export type Tile = {
-  blocked: boolean;
-  id: number;
-  sprite: string;
-  object: string;
-  text: string;
+  tileId?: number;
+  blocked?: boolean;
+  id?: number;
+  sprite?: string;
+  object?: string;
+  text?: string;
   action_name?: string;
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   action?: {
     teleport?: { mapId: string; newMapX: number; newMapY: number };
-    mobSpawn?: { mobId: string; procent: number };
+    mobSpawn?: {
+      mobId: string;
+      procent: number;
+      minLevel: number;
+      maxLevel: number;
+    };
   };
 };

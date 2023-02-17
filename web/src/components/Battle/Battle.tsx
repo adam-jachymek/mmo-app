@@ -3,9 +3,11 @@ import { getMobs, spawnMob, createBattle } from "api/endpoints";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { User } from "/types";
-import "./styles.sass";
-import { Button } from "@mantine/core";
+import { Button, Input } from "@mantine/core";
 import { socket } from "api/socket";
+
+import "./styles.sass";
+import { useState } from "react";
 
 type Props = {
   currentUser: User;
@@ -13,6 +15,7 @@ type Props = {
 
 const Battle = ({ currentUser }: Props) => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
+  const [level, setLevel] = useState({ min: 1, max: 5 });
 
   let navigate = useNavigate();
 
@@ -32,25 +35,49 @@ const Battle = ({ currentUser }: Props) => {
   return (
     <div className="battle">
       <h2 className="battle__title">Battle</h2>
+      <div className="battle__level-input">
+        <Input.Wrapper label="min level">
+          <Input
+            value={level.min}
+            type="number"
+            onChange={(e: any) => {
+              setLevel({ ...level, min: e.target.value });
+            }}
+            size="xs"
+            placeholder="min level"
+          />
+        </Input.Wrapper>
+        <Input.Wrapper label="max level">
+          <Input
+            value={level.max}
+            type="number"
+            onChange={(e: any) => {
+              setLevel({ ...level, max: e.target.value });
+            }}
+            size="xs"
+            placeholder="max level"
+          />
+        </Input.Wrapper>
+      </div>
       <table className="battle__item-list">
         <tr>
           <th>Name</th>
-          <th>Min Level</th>
-          <th>Max Level</th>
           <th>Action</th>
         </tr>
         {mobsData?.map((mob: any) => (
           <tr key={mob.id} className="battle__item">
             <td>{mob.name}</td>
-            <td>{mob.minLevel}</td>
-            <td>{mob.maxLevel}</td>
             <td>
               <Button
                 color="red"
                 size="xs"
                 disabled={currentUser?.hp < 1}
                 onClick={() => {
-                  createNewBattle({ mobId: mob.id });
+                  createNewBattle({
+                    mobId: mob.id,
+                    mobMinLevel: level.min,
+                    mobMaxLevel: level.max,
+                  });
                 }}
               >
                 Fight

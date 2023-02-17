@@ -17,11 +17,17 @@ export class BattleService {
 
   async createBattle(
     userId: number,
-    values: { mobId: number },
+    values: {
+      mobId: number;
+      mobMinLevel: number;
+      mobMaxLevel: number;
+    },
   ) {
     const mobSpawned =
       await this.mobSpawnService.createMobSpawn({
         mobId: values.mobId,
+        minLevel: values.mobMinLevel,
+        maxLevel: values.mobMaxLevel,
       });
 
     const battle =

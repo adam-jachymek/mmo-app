@@ -105,12 +105,7 @@ const AppRouter = () => {
         <SideNavBar />
         {/* <PartyNavBar /> */}
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Home currentUser={currentUser} refetchUser={refetchUser} />
-            }
-          />
+          <Route path="/" element={<Explore user={user} />} />
           <Route
             path="/character"
             element={

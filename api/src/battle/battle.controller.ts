@@ -34,7 +34,12 @@ export class BattleController {
   @Post()
   createBattle(
     @GetUser('id') userId: number,
-    @Body() values: { mobId: number },
+    @Body()
+    values: {
+      mobId: number;
+      mobMinLevel: number;
+      mobMaxLevel: number;
+    },
   ) {
     return this.BattleService.createBattle(
       userId,

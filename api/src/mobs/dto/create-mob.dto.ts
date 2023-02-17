@@ -16,14 +16,6 @@ export class CreateMobDto {
 
   @IsNumber()
   @IsOptional()
-  minLevel?: number;
-
-  @IsNumber()
-  @IsOptional()
-  maxLevel?: number;
-
-  @IsNumber()
-  @IsOptional()
   attack?: number;
 
   @IsNumber()

@@ -8,17 +8,25 @@ import {
 export class EditMobDto {
   @IsString()
   @IsOptional()
-  name?: string;
+  name: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   hp?: number;
 
   @IsNumber()
   @IsOptional()
-  minLevel?: number;
+  attack?: number;
 
   @IsNumber()
   @IsOptional()
-  maxLevel?: number;
+  defence?: number;
+
+  @IsNumber()
+  @IsOptional()
+  giveExp: number;
+
+  @IsString()
+  @IsOptional()
+  sprite: string;
 }

@@ -72,6 +72,12 @@ export class ExploreService {
           userId,
           {
             mobId: Number(mobSpawn.mobId),
+            mobMinLevel: Number(
+              mobSpawn.minLevel,
+            ),
+            mobMaxLevel: Number(
+              mobSpawn.maxLevel,
+            ),
           },
         );
       }

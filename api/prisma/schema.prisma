@@ -139,8 +139,6 @@ model Mob {
   updatedAt DateTime @updatedAt
 
   name String
-  minLevel Int?
-  maxLevel Int?
   sprite String?
   hp Int?
   attack Int?

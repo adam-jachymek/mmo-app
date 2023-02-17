@@ -34,8 +34,6 @@ const Mobs = () => {
   const mobsForm = useFormik({
     initialValues: {
       name: "",
-      minLevel: 1,
-      maxLevel: 10,
       hp: 100,
       attack: 5,
       defence: 5,
@@ -58,22 +56,6 @@ const Mobs = () => {
           name="name"
           onChange={mobsForm.handleChange}
           value={mobsForm.values.name}
-        />
-        <label className="admin__main-label">Min Level</label>
-        <Input
-          className="admin__main-input"
-          name="minLevel"
-          type="number"
-          onChange={mobsForm.handleChange}
-          value={mobsForm.values.minLevel}
-        />
-        <label className="admin__main-label">Max Level</label>
-        <Input
-          className="admin__main-input"
-          name="maxLevel"
-          type="number"
-          onChange={mobsForm.handleChange}
-          value={mobsForm.values.maxLevel}
         />
         <label className="admin__main-label">HP</label>
         <Input
@@ -115,8 +97,6 @@ const Mobs = () => {
       <table className="admin__item-list">
         <tr className="admin__item-list-tr">
           <th>Name</th>
-          <th>Min Level</th>
-          <th>Max Level</th>
           <th>HP</th>
           <th>Attack</th>
           <th>Defence</th>
@@ -126,8 +106,6 @@ const Mobs = () => {
         {mobsData?.map((mob: any) => (
           <tr key={mob.id} className="admin__item">
             <td>{mob.name}</td>
-            <td>{mob.minLevel}</td>
-            <td>{mob.maxLevel}</td>
             <td>{mob.hp}</td>
             <td>{mob.attack}</td>
             <td>{mob.defence}</td>

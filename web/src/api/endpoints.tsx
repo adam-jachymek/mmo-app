@@ -96,8 +96,6 @@ export const deleteMap = async (mapId: number) => {
 
 export const createMob = async (values: {
   name: string;
-  minLevel?: number;
-  maxLevel?: number;
   hp?: number;
   attack?: number;
   defence?: number;
@@ -149,8 +147,12 @@ export const createMap = async (values: {
   return response.data;
 };
 
-export const createBattle = async (values: { mobId: number }) => {
-  const response = await api.post("/battle/", values);
+export const createBattle = async (values: {
+  mobId: number;
+  mobMinLevel: number;
+  mobMaxLevel: number;
+}) => {
+  const response = await api.post("/battle", values);
 
   return response.data;
 };

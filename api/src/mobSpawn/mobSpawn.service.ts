@@ -2,15 +2,8 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { Mob } from '@prisma/client';
-import { User } from '@prisma/client';
-import { UserService } from 'src/user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { MobSpawnModule } from './mobSpawn.module';
-import {
-  CreateMobSpawnDto,
-  EditMobSpawnDto,
-} from './dto';
+import { CreateMobSpawnDto } from './dto';
 
 @Injectable()
 export class MobSpawnService {
@@ -42,7 +35,10 @@ export class MobSpawnService {
       },
     });
 
-    const mobLevel = this.generateMobLevel(mob);
+    const mobLevel = this.generateMobLevel(
+      Number(dto.minLevel),
+      Number(dto.maxLevel),
+    );
 
     const mobSpawned =
       await this.prisma.mobSpawn.create({
@@ -65,28 +61,23 @@ export class MobSpawnService {
     return mobSpawned;
   }
 
-  generateMobLevel(mob: Mob) {
-    const difference =
-      mob.maxLevel - mob.minLevel;
+  generateMobLevel(
+    minLevel: number,
+    maxLevel: number,
+  ) {
+    const difference = maxLevel + 1 - minLevel;
 
     let rand = Math.random();
 
     rand = Math.floor(rand * difference);
 
-    rand = rand + mob.minLevel;
+    rand = rand + minLevel;
 
     return rand;
   }
 
   async deleteMobSpawnById(mobSpawnId: number) {
-    const mobSpawn =
-      await this.prisma.mobSpawn.findUnique({
-        where: {
-          id: mobSpawnId,
-        },
-      });
-
-    await this.prisma.mobSpawn.delete({
+    return await this.prisma.mobSpawn.delete({
       where: {
         id: mobSpawnId,
       },

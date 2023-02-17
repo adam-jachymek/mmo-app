@@ -11,7 +11,7 @@ import {
   Loader,
 } from "@mantine/core";
 import { useFormik } from "formik";
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getMap, getMobs } from "api/endpoints";
 import { editTileById, updateManyTiles } from "api/endpoints/tiles";
@@ -106,7 +106,7 @@ const TileEdit = ({
     () =>
       mobsData?.map((mob: Mob) => ({
         image: `/media/mobs/${mob?.sprite}.png`,
-        label: `${mob?.name}, lvl: ${mob?.minLevel} - ${mob?.maxLevel}`,
+        label: mob?.name,
         value: mob?.id,
       })),
     [mobsData]
@@ -177,6 +177,12 @@ const TileEdit = ({
     enableReinitialize: true,
   });
 
+  useEffect(() => {
+    if (tileForm.values.blocked) {
+      tileForm.setFieldValue("action_name", undefined);
+    }
+  }, [tileForm.values.blocked]);
+
   if (fetchingMobs || fetchingMaps || fetchingSprites) {
     return <Loader />;
   }
@@ -184,7 +190,7 @@ const TileEdit = ({
   return (
     <div className="settings">
       <form
-        style={{ width: "300px" }}
+        style={{ width: "480px" }}
         className="admin__form-items"
         onSubmit={tileForm.handleSubmit}
       >
@@ -227,8 +233,8 @@ const TileEdit = ({
                 src={`${assets_url}/${tileForm.values.sprite}`}
               />
             )}
-            <label className="admin__main-label">Object</label>
 
+            <label className="admin__main-label">Object</label>
             <Select
               placeholder="Pick one"
               name="object"
@@ -256,104 +262,140 @@ const TileEdit = ({
                 tileForm.setFieldValue("blocked", event.currentTarget.checked)
               }
             />
+            <label className="admin__main-label">Text</label>
+            <Textarea
+              className="admin__main-input"
+              name="text"
+              disabled={tileForm.values.blocked}
+              onChange={tileForm.handleChange}
+              value={tileForm.values.text}
+            />
           </div>
-          {!tileForm.values.blocked && (
-            <div className="settings__panel">
-              <label className="admin__main-label">Text</label>
-              <Textarea
-                className="admin__main-input"
-                name="text"
-                onChange={tileForm.handleChange}
-                value={tileForm.values.text}
-              />
-              <Select
-                label="Action"
-                placeholder="Pick one"
-                style={{ marginTop: 20 }}
-                clearable
-                data={[
-                  { value: "TELEPORT", label: "Teleport" },
-                  { value: "MOB", label: "Mob Spawn" },
-                ]}
-                value={tileForm.values.action_name}
-                onChange={(value) =>
-                  tileForm.setFieldValue("action_name", value)
-                }
-              />
-              {tileForm.values.action_name === "TELEPORT" && (
-                <>
-                  <Select
-                    label="Map"
-                    placeholder="Pick one"
-                    clearable
-                    data={mapsSelect}
-                    style={{ marginTop: 20 }}
-                    value={tileForm.values.action.teleport?.mapId}
-                    onChange={(value) => {
-                      tileForm.setFieldValue("action.teleport.mapId", value);
-                    }}
-                  />
-                  x:{" "}
-                  <Input
-                    value={tileForm.values.action.teleport?.newMapX}
-                    type="number"
-                    onChange={(e: any) =>
-                      tileForm.setFieldValue(
-                        "action.teleport.newMapX",
-                        e.target.value
-                      )
-                    }
-                  />
-                  y:{" "}
-                  <Input
-                    value={tileForm.values.action.teleport?.newMapY}
-                    type="number"
-                    onChange={(e: any) =>
-                      tileForm.setFieldValue(
-                        "action.teleport.newMapY",
-                        e.target.value
-                      )
-                    }
-                  />
-                </>
-              )}
-              {tileForm.values.action_name === "MOB" && (
-                <div>
-                  <Select
-                    placeholder="Pick one"
-                    name="mob"
-                    allowDeselect
-                    label="Mob"
-                    clearable
-                    style={{ marginTop: 20 }}
-                    itemComponent={SelectItem}
-                    data={mobsSelect}
-                    value={tileForm.values.action.mobSpawn?.mobId}
-                    onChange={(value) =>
-                      tileForm.setFieldValue("action.mobSpawn.mobId", value)
-                    }
-                    searchable
-                    maxDropdownHeight={400}
-                    nothingFound="No mobs available"
-                  />
-                  <Slider
-                    labelAlwaysOn
-                    radius="xs"
-                    styles={{ root: { width: "100%", marginTop: 40 } }}
-                    marks={[
-                      { value: 20, label: "20%" },
-                      { value: 50, label: "50%" },
-                      { value: 80, label: "80%" },
-                    ]}
-                    value={tileForm.values.action.mobSpawn?.procent}
-                    onChange={(value) =>
-                      tileForm.setFieldValue("action.mobSpawn.procent", value)
-                    }
-                  />
+
+          <div className="settings__panel">
+            <label className="admin__main-label">Action</label>
+            <Select
+              placeholder="Pick one"
+              style={{ marginTop: 25 }}
+              clearable
+              data={[
+                { value: "TELEPORT", label: "Teleport" },
+                { value: "MOB", label: "Mob Spawn" },
+              ]}
+              disabled={tileForm.values.blocked}
+              value={tileForm.values.action_name}
+              onChange={(value) => tileForm.setFieldValue("action_name", value)}
+            />
+            {tileForm.values.action_name === "TELEPORT" && (
+              <>
+                <Select
+                  label="Map"
+                  placeholder="Pick one"
+                  clearable
+                  data={mapsSelect}
+                  style={{ marginTop: 20 }}
+                  disabled={tileForm.values.blocked}
+                  value={tileForm.values.action.teleport?.mapId}
+                  onChange={(value) => {
+                    tileForm.setFieldValue("action.teleport.mapId", value);
+                  }}
+                />
+                <div className="settings__inputs">
+                  <Input.Wrapper label="x">
+                    <Input
+                      value={tileForm.values.action.teleport?.newMapX}
+                      type="number"
+                      size="xs"
+                      onChange={(e: any) =>
+                        tileForm.setFieldValue(
+                          "action.teleport.newMapX",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Input.Wrapper>
+                  <Input.Wrapper label="y">
+                    <Input
+                      value={tileForm.values.action.teleport?.newMapY}
+                      type="number"
+                      size="xs"
+                      onChange={(e: any) =>
+                        tileForm.setFieldValue(
+                          "action.teleport.newMapY",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Input.Wrapper>
                 </div>
-              )}
-            </div>
-          )}
+              </>
+            )}
+            {tileForm.values.action_name === "MOB" && (
+              <div>
+                <Select
+                  placeholder="Pick one"
+                  name="mob"
+                  allowDeselect
+                  label="Mob"
+                  clearable
+                  style={{ marginTop: 20 }}
+                  itemComponent={SelectItem}
+                  data={mobsSelect}
+                  value={tileForm.values.action.mobSpawn?.mobId}
+                  onChange={(value) =>
+                    tileForm.setFieldValue("action.mobSpawn.mobId", value)
+                  }
+                  searchable
+                  maxDropdownHeight={400}
+                  nothingFound="No mobs available"
+                />
+                <Slider
+                  labelAlwaysOn
+                  radius="xs"
+                  styles={{
+                    root: { width: "100%", marginTop: 50, marginBottom: 40 },
+                  }}
+                  marks={[
+                    { value: 20, label: "20%" },
+                    { value: 50, label: "50%" },
+                    { value: 80, label: "80%" },
+                  ]}
+                  value={tileForm.values.action.mobSpawn?.procent}
+                  onChange={(value) =>
+                    tileForm.setFieldValue("action.mobSpawn.procent", value)
+                  }
+                />
+                <div className="settings__inputs">
+                  <Input.Wrapper label="min level">
+                    <Input
+                      value={tileForm.values.action.mobSpawn?.minLevel}
+                      type="number"
+                      size="xs"
+                      onChange={(e: any) =>
+                        tileForm.setFieldValue(
+                          "action.mobSpawn.minLevel",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Input.Wrapper>
+                  <Input.Wrapper label="max level">
+                    <Input
+                      value={tileForm.values.action.mobSpawn?.maxLevel}
+                      type="number"
+                      size="xs"
+                      onChange={(e: any) =>
+                        tileForm.setFieldValue(
+                          "action.mobSpawn.maxLevel",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </Input.Wrapper>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <Button m="30px" type="submit" color="green" size="md">
           Save
