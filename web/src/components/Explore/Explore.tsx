@@ -1,64 +1,106 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
-import { getMap } from "api/endpoints";
+import { getMapById } from "api/endpoints";
+import ExploreButtons from "./ExploreButtons";
+import { Loader } from "@mantine/core";
 import { User } from "/types";
-import classNames from "classnames";
-import { Navigate, useNavigate } from "react-router-dom";
+import { assets_url } from "config";
 
 import "./styles.sass";
 
 type Props = {
-  currentUser: User;
+  user: User;
 };
 
-const Explore = ({ currentUser }: Props) => {
-  const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
+const Explore = ({ user }: Props) => {
+  const [activeTile, setActiveTile] = useState({
+    text: "",
+    sprite: "",
+    id: 0,
+    x: 0,
+    y: 0,
+    blocked: false,
+  });
 
-  let navigate = useNavigate();
+  const mapId = user.mapId;
+
+  const { data: mapData, isFetching } = useQuery(["getMapById", mapId], () =>
+    getMapById(mapId.toString())
+  );
+
+  const numberOfVisibleRows = 7;
+  const numberOfVisibleColumns = 7;
+
+  const renderMap = useMemo(() => {
+    const calculateFirstVisibleTile = () => {
+      const tileX = user.x - 3 < 0 ? 0 : user.x - 3;
+      const tileY = user.y - 3 < 0 ? 0 : user.y - 3;
+      const tileIndex = tileY * 20 + tileX;
+      return tileIndex;
+    };
+    let tiles = [];
+    if (user.x === undefined || user.y === undefined || !mapData) {
+      return null;
+    }
+    for (let i = 0; i < numberOfVisibleColumns; i++) {
+      for (let y = 0; y < numberOfVisibleRows; y++) {
+        const tile = mapData?.tiles[calculateFirstVisibleTile() + y + i * 20];
+        tiles.push(
+          <li
+            key={tile.id}
+            style={{
+              backgroundImage: `url(${assets_url}/${tile.sprite})`,
+              backgroundSize: "cover",
+            }}
+            className="explore__tile"
+          >
+            {tile.object && (
+              <div className="explore__icon">
+                <img
+                  style={{ width: 64, height: 64 }}
+                  src={`${assets_url}/${tile.object}`}
+                />
+              </div>
+            )}
+            {tile.x === user.x && tile.y === user.y && (
+              <div>
+                <div className="explore__username">{user.username}</div>
+                <img
+                  className="explore__avatar"
+                  src={`/media/avatars/${user?.avatar}.png`}
+                />
+              </div>
+            )}
+          </li>
+        );
+      }
+    }
+    return tiles;
+  }, [mapData, user.x, user.y]);
+
+  if (isFetching) {
+    return <Loader />;
+  }
 
   return (
-    <div className="explore">
-      <ul className="explore__map-list">
-        {mapData?.map((map: any) => (
-          // <a
-          //   key={map.id}
-          //   href={
-          //     map.minLevel <= currentUser?.level ? `/explore/${map.id}` : "#"
-          //   }
-          // >
-
-          <div
-            className="explore__map-element"
-            onClick={() => {
-              return map.minLevel <= currentUser?.level
-                ? navigate(`/explore/${map.id}`)
-                : "#";
-            }}
-          >
-            <img
-              className="explore__map-img"
-              src={`/media/explore/${map?.sprite}.gif`}
-            />
-            {
-              <li
-                className={classNames("explore__map-item", {
-                  disabled: map.minLevel >= currentUser?.level,
-                })}
-              >
-                {map.name}
-                <p className="explore__map-level">
-                  <p>Requirements</p>
-                  {map.minLevel}
-                  <span className="explore__map-level-lvl">LVL</span> -{" "}
-                  {map.maxLevel}
-                  <span className="explore__map-level-lvl">LVL</span>
-                </p>
-              </li>
-            }
-          </div>
-          // </a>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="explore">
+        <div className="explore__screen">
+          <ul className="explore__tiles">
+            <div className="explore__protection"></div>
+            {renderMap}
+            {activeTile?.text?.length > 2 && (
+              <div className="explore__text">
+                <h2>{activeTile?.text}</h2>
+              </div>
+            )}
+          </ul>
+        </div>
+        <div className="explore__body">
+          <ExploreButtons user={user} />
+        </div>
+      </div>
+    </>
   );
 };
 

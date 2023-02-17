@@ -16,7 +16,7 @@ const Admin = () => {
         Mobs
       </Link>
       <Link className="admin__category" to="sprites">
-        Sprites
+        Map Sprites
       </Link>
     </div>
   );

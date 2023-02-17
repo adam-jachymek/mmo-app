@@ -7,6 +7,7 @@ import TileEdit from "./TileEdit";
 import { Button, Loader, Switch } from "@mantine/core";
 import { Tile, User } from "/types";
 import { assets_url } from "config";
+import { useParams } from "react-router-dom";
 
 import "./styles.sass";
 
@@ -14,7 +15,7 @@ type Props = {
   user: User;
 };
 
-const ExploreScreen = ({ user }: Props) => {
+const MapEditor = ({ user }: Props) => {
   const [activeTile, setActiveTile] = useState({
     text: "",
     sprite: "",
@@ -27,13 +28,13 @@ const ExploreScreen = ({ user }: Props) => {
   const [multiSelect, setMultiSelect] = useState(false);
   const [multiSelectTiles, setMultiSelectTiles] = useState<number[]>([]);
 
-  const mapId = user.mapId;
+  const { id: mapId } = useParams();
 
   const {
     data: mapData,
     refetch: refetchTiles,
     isFetching,
-  } = useQuery(["getMapById", mapId], () => getMapById(mapId.toString()));
+  } = useQuery(["getMapById", mapId], () => getMapById(mapId?.toString()));
 
   useEffect(() => {
     setActiveTile(
@@ -65,7 +66,7 @@ const ExploreScreen = ({ user }: Props) => {
             backgroundImage: `url(${assets_url}/${tile.sprite})`,
             backgroundSize: "cover",
           }}
-          className={classNames("explore__tile", {
+          className={classNames("map-editor__tile", {
             active:
               tile.id === clickedTile?.id || multiSelectTiles.includes(tile.id),
           })}
@@ -85,7 +86,7 @@ const ExploreScreen = ({ user }: Props) => {
           }}
         >
           {tile.object && (
-            <div className="explore__icon">
+            <div className="map-editor__icon">
               <img
                 style={{ width: 42, height: 42 }}
                 src={`${assets_url}/${tile.object}`}
@@ -93,7 +94,7 @@ const ExploreScreen = ({ user }: Props) => {
             </div>
           )}
           {tile.text.length > 2 && (
-            <div className="explore__icon">
+            <div className="map-editor__icon">
               <img
                 style={{ height: 15 }}
                 src="/media/explore/beka-pytajnik.svg"
@@ -101,16 +102,16 @@ const ExploreScreen = ({ user }: Props) => {
             </div>
           )}
           {tile.blocked && (
-            <div className="explore__icon">
+            <div className="map-editor__icon">
               <img style={{ height: 10 }} src="/media/explore/lock.png" />
             </div>
           )}
 
           {tile.x === user.x && tile.y === user.y && (
             <div>
-              <div className="explore__username">{user.username}</div>
+              <div className="map-editor__username">{user.username}</div>
               <img
-                className="explore__avatar"
+                className="map-editor__avatar"
                 src={`/media/avatars/${user?.avatar}.png`}
               />
             </div>
@@ -127,9 +128,9 @@ const ExploreScreen = ({ user }: Props) => {
 
   return (
     <>
-      <div className="explore" tabIndex={0}>
-        <div className="explore__wrapper">
-          <div className="explore__top-bar">
+      <div className="map-editor">
+        <div className="map-editor__wrapper">
+          <div className="map-editor__top-bar">
             <Switch
               label="Multi Select"
               style={{ marginTop: 10 }}
@@ -151,10 +152,10 @@ const ExploreScreen = ({ user }: Props) => {
               </>
             )}
           </div>
-          <ul className="explore__tiles">
+          <ul className="map-editor__tiles">
             {renderMap}
             {activeTile?.text?.length > 2 && (
-              <div className="explore__text">
+              <div className="map-editor__text">
                 <h2>{activeTile?.text}</h2>
               </div>
             )}
@@ -166,10 +167,11 @@ const ExploreScreen = ({ user }: Props) => {
           refetchTiles={refetchTiles}
           multiSelect={multiSelect}
           multiSelectTiles={multiSelectTiles}
+          setMultiSelectTiles={setMultiSelectTiles}
         />
       </div>
     </>
   );
 };
 
-export default ExploreScreen;
+export default MapEditor;

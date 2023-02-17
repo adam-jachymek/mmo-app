@@ -10,10 +10,10 @@ import TopNavBar from "components/TopNavBar";
 import Battle from "components/Battle";
 import BattleScreen from "components/BattleScreen";
 import Items from "./components/Admin/sub/Items";
-import Maps from "./components/Admin/sub/Maps";
+import Maps from "./components/Admin/sub/Maps/Maps";
 import Mobs from "./components/Admin/sub/Mobs";
 import Explore from "./components/Explore";
-import ExploreScreen from "./components/ExploreScreen";
+import ExploreScreen from "./components/Explore";
 import Character from "./components/Character";
 import Players from "./components/Players";
 import GuildHome from "./components/Guild";
@@ -25,6 +25,7 @@ import MobileMenu from "./components/MobileMenu";
 import WelcomeScreen from "./components/WelcomeScreen";
 import { User } from "./types";
 import Spirtes from "./components/Admin/sub/Sprites";
+import MapEditor from "./components/Admin/sub/Maps/MapEditor";
 
 const AppRouter = () => {
   const [user, setUser] = useState<User>();
@@ -123,6 +124,10 @@ const AppRouter = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/items" element={<Items />} />
           <Route path="/admin/maps" element={<Maps />} />
+          <Route
+            path="/admin/maps/editor/:id"
+            element={<MapEditor user={user} />}
+          />
           <Route path="/admin/mobs" element={<Mobs />} />
           <Route path="/admin/sprites" element={<Spirtes />} />
           <Route path="/players" element={<Players />} />
@@ -138,7 +143,7 @@ const AppRouter = () => {
               <GuildInfo currentUser={currentUser} refetchUser={refetchUser} />
             }
           />
-          <Route path="/explore" element={<ExploreScreen user={user} />} />
+          <Route path="/explore" element={<Explore user={user} />} />
           <Route
             path="/battle"
             element={<Battle currentUser={currentUser} />}

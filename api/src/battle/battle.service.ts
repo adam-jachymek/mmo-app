@@ -297,7 +297,7 @@ export class BattleService {
 
     await this.prisma.mobSpawn.update({
       where: {
-        id: activeUser.id,
+        id: activeMob.id,
       },
       data: {
         hp: 0,

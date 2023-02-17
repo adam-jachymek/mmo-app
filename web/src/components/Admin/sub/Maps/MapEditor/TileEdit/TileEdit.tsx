@@ -24,6 +24,7 @@ type Props = {
   refetchTiles: () => void;
   multiSelect: boolean;
   multiSelectTiles: number[];
+  setMultiSelectTiles: (tiles: number[]) => void;
 };
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
@@ -37,6 +38,7 @@ const TileEdit = ({
   refetchTiles,
   multiSelect,
   multiSelectTiles,
+  setMultiSelectTiles,
 }: Props) => {
   const [categories, setCategories] = useState([
     { value: "", label: "All" },
@@ -165,6 +167,7 @@ const TileEdit = ({
           ids: multiSelectTiles,
           values: nonEmptyValues,
         });
+        setMultiSelectTiles([]);
         return;
       }
 
