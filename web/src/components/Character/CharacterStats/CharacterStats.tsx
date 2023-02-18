@@ -1,36 +1,51 @@
 import { useMutation } from "react-query";
 import { addLevelPoint } from "api/endpoints";
+import { User } from "/types";
 
 import "./styles.sass";
 
 type Props = {
-  currentUser: any;
+  user: User;
   refetchUser: () => void;
 };
 
-const CharacterStats = ({ currentUser, refetchUser }: Props) => {
+const CharacterStats = ({ user, refetchUser }: Props) => {
   const { mutate: addPoint } = useMutation(addLevelPoint, {
     onSuccess: (response) => {
       refetchUser();
     },
   });
 
+  const attack = () => {
+    const weapon = { min: 7, max: 17 };
+
+    const strength = 60;
+
+    const halfbaseAttack = 60 + weapon.min;
+    const baseAttack = 120 + weapon.max;
+
+    return {
+      min: Math.floor((halfbaseAttack * strength) / 100 + halfbaseAttack),
+      max: Math.floor((baseAttack * strength) / 100 + baseAttack),
+    };
+  };
+
   return (
     <div className="stats">
       <div className="stats__wrapper">
         <p className="stats__text stats__text-points">
           <span>Skill Points:</span>
-          <span>{currentUser?.points}</span>
+          <span>{user?.points}</span>
         </p>
         <p className="stats__text">
           <span>Stamina:</span>
           <span className="stats__count">
-            {currentUser?.stamina} ({currentUser?.eqStamina})
-            {currentUser?.points > 0 && (
+            {user?.stamina}
+            {user?.points > 0 && (
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ stamina: currentUser?.stamina + 1 });
+                  addPoint({ stamina: user?.stamina + 1 });
                 }}
               >
                 +
@@ -41,12 +56,12 @@ const CharacterStats = ({ currentUser, refetchUser }: Props) => {
         <p className="stats__text">
           <span>Strength:</span>
           <span className="stats__count">
-            {currentUser?.strength}
-            {currentUser?.points > 0 && (
+            {user?.strength}
+            {user?.points > 0 && (
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ strength: currentUser?.strength + 1 });
+                  addPoint({ strength: user?.strength + 1 });
                 }}
               >
                 +
@@ -57,12 +72,12 @@ const CharacterStats = ({ currentUser, refetchUser }: Props) => {
         <p className="stats__text">
           <span>Defence:</span>
           <span className="stats__count">
-            {currentUser?.defence} ({currentUser?.eqDefence})
-            {currentUser?.points > 0 && (
+            {user?.defence}
+            {user?.points > 0 && (
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ defence: currentUser?.defence + 1 });
+                  addPoint({ defence: user?.defence + 1 });
                 }}
               >
                 +
@@ -73,12 +88,12 @@ const CharacterStats = ({ currentUser, refetchUser }: Props) => {
         <p className="stats__text">
           <span>Dexterity:</span>
           <span className="stats__count">
-            {currentUser?.dexterity}
-            {currentUser?.points > 0 && (
+            {user?.dexterity}
+            {user?.points > 0 && (
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ dexterity: currentUser?.dexterity + 1 });
+                  addPoint({ dexterity: user?.dexterity + 1 });
                 }}
               >
                 +
@@ -89,17 +104,31 @@ const CharacterStats = ({ currentUser, refetchUser }: Props) => {
         <p className="stats__text">
           <span> Intelligence: </span>
           <span className="stats__count">
-            {currentUser?.intelligence}
-            {currentUser?.points > 0 && (
+            {user?.intelligence}
+            {user?.points > 0 && (
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ intelligence: currentUser?.intelligence + 1 });
+                  addPoint({ intelligence: user?.intelligence + 1 });
                 }}
               >
                 +
               </button>
             )}
+          </span>
+        </p>
+        <p className="stats__text"></p>
+        <p className="stats__text">
+          Attack:{" "}
+          <span className="stats__count">
+            {attack().min} - {attack().max}
+          </span>
+        </p>
+        <p className="stats__text">
+          Armor:{" "}
+          <span className="stats__count">
+            {Math.floor(120 + (120 * user.defence) / 100 / 2)} -{" "}
+            {Math.floor(120 + (120 * user.defence) / 100)}
           </span>
         </p>
       </div>

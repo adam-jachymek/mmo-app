@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
 import classNames from "classnames";
-import ExploreButtons from "./ExploreButtons";
 import TileEdit from "./TileEdit";
 import { Button, Loader, Switch } from "@mantine/core";
 import { Tile, User } from "/types";
@@ -16,14 +15,6 @@ type Props = {
 };
 
 const MapEditor = ({ user }: Props) => {
-  const [activeTile, setActiveTile] = useState({
-    text: "",
-    sprite: "",
-    id: 0,
-    x: 0,
-    y: 0,
-    blocked: false,
-  });
   const [clickedTile, setClickedTile] = useState<Tile>();
   const [multiSelect, setMultiSelect] = useState(false);
   const [multiSelectTiles, setMultiSelectTiles] = useState<number[]>([]);
@@ -37,12 +28,10 @@ const MapEditor = ({ user }: Props) => {
   } = useQuery(["getMapById", mapId], () => getMapById(mapId?.toString()));
 
   useEffect(() => {
-    setActiveTile(
-      mapData?.tiles?.find(
-        (tile: any) => tile.x === user.x && tile.y === user.y
-      )
+    setClickedTile(
+      mapData?.tiles?.find((tile: Tile) => tile.id === clickedTile?.id)
     );
-  }, [user.x, user.y]);
+  }, [mapData?.tiles]);
 
   useEffect(() => {
     setMultiSelectTiles([]);
@@ -93,7 +82,7 @@ const MapEditor = ({ user }: Props) => {
               />
             </div>
           )}
-          {tile.action?.mobSpawn?.mobId && (
+          {tile.action_name === "MOB" && (
             <div className="map-editor__icon">
               <img
                 style={{ width: 20, height: 20 }}
@@ -114,16 +103,6 @@ const MapEditor = ({ user }: Props) => {
               <img style={{ height: 10 }} src="/media/explore/lock.png" />
             </div>
           )}
-
-          {/* {tile.x === user.x && tile.y === user.y && (
-            <div>
-              <div className="map-editor__username">{user.username}</div>
-              <img
-                className="map-editor__avatar"
-                src={`/media/avatars/${user?.avatar}.png`}
-              />
-            </div>
-          )} */}
         </li>
       );
     }
@@ -160,15 +139,7 @@ const MapEditor = ({ user }: Props) => {
               </>
             )}
           </div>
-          <ul className="map-editor__tiles">
-            {renderMap}
-            {activeTile?.text?.length > 2 && (
-              <div className="map-editor__text">
-                <h2>{activeTile?.text}</h2>
-              </div>
-            )}
-          </ul>
-          {/* <ExploreButtons user={user} /> */}
+          <ul className="map-editor__tiles">{renderMap}</ul>
         </div>
         <TileEdit
           editTile={clickedTile}

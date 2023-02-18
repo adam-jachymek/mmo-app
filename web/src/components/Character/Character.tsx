@@ -49,10 +49,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
                 openItemModal={setActiveItem}
               />
             </div>
-            <CharacterStats
-              currentUser={currentUser}
-              refetchUser={refetchUser}
-            />
+            <CharacterStats user={user} refetchUser={refetchUser} />
           </div>
         </Default>
 
@@ -69,10 +66,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
               openItemModal={setActiveItem}
             />
           ) : (
-            <CharacterStats
-              currentUser={currentUser}
-              refetchUser={refetchUser}
-            />
+            <CharacterStats user={user} refetchUser={refetchUser} />
           )}
         </Mobile>
       </div>

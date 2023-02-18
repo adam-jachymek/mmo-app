@@ -256,8 +256,8 @@ export class BattleService {
     if (userId === activeUser.id) {
       if (activeMob.hp > 0) {
         const damage = this.generateRandomDamage(
-          1,
           activeUser.strength,
+          activeUser.strength * 2,
         );
 
         return await this.prisma.mobSpawn.update({

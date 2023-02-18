@@ -14,6 +14,14 @@ export type User = {
   avatar: string;
   battleId?: number;
   mapId: number;
+  points: number;
+  stamina: number;
+  eqStamina: number;
+  strength: number;
+  eqDefence: number;
+  defence: number;
+  dexterity: number;
+  intelligence: number;
   x: number;
   y: number;
 };
@@ -115,6 +123,12 @@ export type Tile = {
       procent: number;
       minLevel: number;
       maxLevel: number;
+      drop: [
+        {
+          itemId: number;
+          procent: number;
+        }
+      ];
     };
   };
 };

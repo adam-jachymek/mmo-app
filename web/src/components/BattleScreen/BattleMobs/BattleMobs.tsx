@@ -1,10 +1,8 @@
-import { useEffect } from "react";
 import { Progress } from "@mantine/core";
 import { Mob } from "/types";
 import BattleAnimations from "../BattleAnimations";
 import useSound from "use-sound";
 import attackMob from "./audio/attack_mob.mp3";
-import fireball from "./audio/fireball.mp3";
 
 type Props = {
   mob: Mob;

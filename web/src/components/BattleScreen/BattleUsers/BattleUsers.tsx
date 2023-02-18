@@ -35,7 +35,7 @@ const BattleUsers = ({ user, activeAnimation }: Props) => {
         <div className="fight__player-info-display">
           <h2 className="fight__player-info-text">{user?.username}</h2>
           <h3 className="fight__player-info-text">Level: {user?.level}</h3>
-          <p className="fight__player-info-text">
+          <p className="fight__player-info-hp">
             HP: {user?.hp < 1 ? 0 : user?.hp} / {user?.maxHp}
           </p>
           <Progress

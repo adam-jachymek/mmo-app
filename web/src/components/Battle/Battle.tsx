@@ -1,7 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { getMobs, spawnMob, createBattle } from "api/endpoints";
-import { Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { getMobs, createBattle } from "api/endpoints";
 import { User } from "/types";
 import { Button, Input } from "@mantine/core";
 import { socket } from "api/socket";
@@ -15,20 +13,11 @@ type Props = {
 
 const Battle = ({ currentUser }: Props) => {
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
-  const [level, setLevel] = useState({ min: 1, max: 5 });
-
-  let navigate = useNavigate();
-
-  const { mutate: generateMob } = useMutation(spawnMob, {
-    onSuccess: (response, variables) => {
-      // navigate(`/battle`);
-    },
-  });
+  const [level, setLevel] = useState(5);
 
   const { mutate: createNewBattle } = useMutation(createBattle, {
     onSuccess: (response, variables) => {
       socket.emit("startBattle", { userId: currentUser?.id });
-      // navigate(`/battle`);
     },
   });
 
@@ -36,23 +25,12 @@ const Battle = ({ currentUser }: Props) => {
     <div className="battle">
       <h2 className="battle__title">Battle</h2>
       <div className="battle__level-input">
-        <Input.Wrapper label="min level">
+        <Input.Wrapper label="level">
           <Input
-            value={level.min}
+            value={level}
             type="number"
             onChange={(e: any) => {
-              setLevel({ ...level, min: e.target.value });
-            }}
-            size="xs"
-            placeholder="min level"
-          />
-        </Input.Wrapper>
-        <Input.Wrapper label="max level">
-          <Input
-            value={level.max}
-            type="number"
-            onChange={(e: any) => {
-              setLevel({ ...level, max: e.target.value });
+              setLevel(e.target.value);
             }}
             size="xs"
             placeholder="max level"
@@ -75,8 +53,8 @@ const Battle = ({ currentUser }: Props) => {
                 onClick={() => {
                   createNewBattle({
                     mobId: mob.id,
-                    mobMinLevel: level.min,
-                    mobMaxLevel: level.max,
+                    mobMinLevel: level,
+                    mobMaxLevel: level,
                   });
                 }}
               >

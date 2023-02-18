@@ -1,3 +1,4 @@
+import { StatsUserDto } from './dto/stats.dto';
 import {
   Body,
   Controller,
@@ -40,7 +41,7 @@ export class UserController {
   @Patch('points')
   addPoints(
     @GetUser('id') userId: number,
-    @Body() dto: EditUserDto,
+    @Body() dto: StatsUserDto,
   ) {
     return this.userService.addPoints(
       userId,

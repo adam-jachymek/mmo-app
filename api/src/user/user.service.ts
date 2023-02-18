@@ -1,3 +1,4 @@
+import { StatsUserDto } from './dto/stats.dto';
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -47,7 +48,7 @@ export class UserService {
 
   async addPoints(
     userId: number,
-    dto: EditUserDto,
+    dto: StatsUserDto,
   ) {
     const user =
       await this.prisma.user.findUnique({
@@ -56,15 +57,33 @@ export class UserService {
         },
       });
 
-    await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        ...dto,
-        points: user.points - 1,
-      },
-    });
+    if (user.points > 0) {
+      const updatedUser =
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            ...dto,
+            points: user.points - 1,
+          },
+        });
+
+      const newHp = Math.floor(
+        updatedUser.hp +
+          (updatedUser.stamina * updatedUser.hp) /
+            100,
+      );
+
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          maxHp: newHp,
+        },
+      });
+    }
 
     delete user.hash;
 

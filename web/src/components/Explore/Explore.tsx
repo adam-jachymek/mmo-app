@@ -5,6 +5,11 @@ import ExploreButtons from "./ExploreButtons";
 import { Loader } from "@mantine/core";
 import { User } from "/types";
 import { assets_url } from "config";
+import {
+  calculateFirstVisibleTile,
+  NUMBER_OF_TILES_IN_AXIS,
+  NUMBER_OF_VISIBLE_TILES,
+} from "./utils";
 
 import "./styles.sass";
 
@@ -13,38 +18,23 @@ type Props = {
 };
 
 const Explore = ({ user }: Props) => {
-  const [activeTile, setActiveTile] = useState({
-    text: "",
-    sprite: "",
-    id: 0,
-    x: 0,
-    y: 0,
-    blocked: false,
-  });
-
   const mapId = user.mapId;
 
   const { data: mapData, isFetching } = useQuery(["getMapById", mapId], () =>
     getMapById(mapId.toString())
   );
 
-  const numberOfVisibleRows = 7;
-  const numberOfVisibleColumns = 7;
-
   const renderMap = useMemo(() => {
-    const calculateFirstVisibleTile = () => {
-      const tileX = user.x - 3 < 0 ? 0 : user.x - 3;
-      const tileY = user.y - 3 < 0 ? 0 : user.y - 3;
-      const tileIndex = tileY * 20 + tileX;
-      return tileIndex;
-    };
     let tiles = [];
     if (user.x === undefined || user.y === undefined || !mapData) {
       return null;
     }
-    for (let i = 0; i < numberOfVisibleColumns; i++) {
-      for (let y = 0; y < numberOfVisibleRows; y++) {
-        const tile = mapData?.tiles[calculateFirstVisibleTile() + y + i * 20];
+    for (let i = 0; i < NUMBER_OF_VISIBLE_TILES; i++) {
+      for (let y = 0; y < NUMBER_OF_VISIBLE_TILES; y++) {
+        const tile =
+          mapData?.tiles[
+            calculateFirstVisibleTile(user) + y + i * NUMBER_OF_TILES_IN_AXIS
+          ];
         tiles.push(
           <li
             key={tile.id}
@@ -89,11 +79,6 @@ const Explore = ({ user }: Props) => {
           <ul className="explore__tiles">
             <div className="explore__protection"></div>
             {renderMap}
-            {activeTile?.text?.length > 2 && (
-              <div className="explore__text">
-                <h2>{activeTile?.text}</h2>
-              </div>
-            )}
           </ul>
         </div>
         <div className="explore__body">
