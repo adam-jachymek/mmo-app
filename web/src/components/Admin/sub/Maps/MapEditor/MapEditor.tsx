@@ -17,6 +17,7 @@ type Props = {
 const MapEditor = ({ user }: Props) => {
   const [clickedTile, setClickedTile] = useState<Tile>();
   const [multiSelect, setMultiSelect] = useState(false);
+  const [showIcons, setShowIcons] = useState(true);
   const [multiSelectTiles, setMultiSelectTiles] = useState<number[]>([]);
 
   const { id: mapId } = useParams();
@@ -82,32 +83,52 @@ const MapEditor = ({ user }: Props) => {
               />
             </div>
           )}
-          {tile.action_name === "MOB" && (
-            <div className="map-editor__icon">
-              <img
-                style={{ width: 20, height: 20 }}
-                src="/media/explore/mob_attack.png"
-              />
-            </div>
-          )}
-          {tile.text.length > 2 && (
-            <div className="map-editor__icon">
-              <img
-                style={{ height: 15 }}
-                src="/media/explore/beka-pytajnik.svg"
-              />
-            </div>
-          )}
-          {tile.blocked && (
-            <div className="map-editor__icon">
-              <img style={{ height: 10 }} src="/media/explore/lock.png" />
-            </div>
+          {showIcons && (
+            <>
+              {tile.action_name === "MOB" && (
+                <div className="map-editor__icon">
+                  <img
+                    style={{ width: 20, height: 20 }}
+                    src="/media/explore/mob_attack.png"
+                  />
+                </div>
+              )}
+              {tile?.action?.mobSpawn?.drop?.length > 0 && (
+                <div className="map-editor__icon">
+                  <img
+                    style={{ width: 12, height: 12, position: "absolute" }}
+                    src="/media/explore/item_icon.png"
+                  />
+                </div>
+              )}
+              {tile.text.length > 2 && (
+                <div className="map-editor__icon">
+                  <img
+                    style={{ height: 15 }}
+                    src="/media/explore/beka-pytajnik.svg"
+                  />
+                </div>
+              )}
+              {tile.blocked && (
+                <div className="map-editor__icon">
+                  <img style={{ height: 10 }} src="/media/explore/lock.png" />
+                </div>
+              )}
+            </>
           )}
         </li>
       );
     }
     return tiles;
-  }, [mapData, user.x, user.y, clickedTile, multiSelectTiles, multiSelect]);
+  }, [
+    mapData,
+    user.x,
+    user.y,
+    clickedTile,
+    multiSelectTiles,
+    multiSelect,
+    showIcons,
+  ]);
 
   if (isFetching) {
     return <Loader />;
@@ -118,6 +139,12 @@ const MapEditor = ({ user }: Props) => {
       <div className="map-editor">
         <div className="map-editor__wrapper">
           <div className="map-editor__top-bar">
+            <Switch
+              label="Show Icons"
+              style={{ marginTop: 10 }}
+              checked={showIcons}
+              onChange={(event) => setShowIcons(event.currentTarget.checked)}
+            />
             <Switch
               label="Multi Select"
               style={{ marginTop: 10 }}
