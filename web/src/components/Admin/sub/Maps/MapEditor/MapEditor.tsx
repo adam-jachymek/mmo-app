@@ -141,7 +141,7 @@ const MapEditor = ({ user }: Props) => {
           <div className="map-editor__top-bar">
             <Switch
               label="Show Icons"
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 10, marginLeft: 10 }}
               checked={showIcons}
               onChange={(event) => setShowIcons(event.currentTarget.checked)}
             />
