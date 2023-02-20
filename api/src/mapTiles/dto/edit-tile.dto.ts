@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class EditMapDto {
+export class EditTileDto {
   @IsString()
   @IsOptional()
   sprite?: string;
@@ -27,15 +27,4 @@ export class EditMapDto {
   @IsString()
   @IsOptional()
   action_name?: string;
-
-  @IsObject()
-  @IsOptional()
-  action?: {
-    teleport: {
-      mapId: string;
-      newMapX: number;
-      newMaxY: number;
-    };
-    mobSpawn: { modId: string; procent: number };
-  };
 }

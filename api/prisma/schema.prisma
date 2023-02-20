@@ -99,6 +99,7 @@ model ItemPrototype {
   actionName String?
 
   items Item[]
+  actionItemDrop ActionItemDrop[]
 
   @@map("itemPrototypes")
 }
@@ -146,6 +147,7 @@ model Mob {
   giveExp Int?
 
   mobSpawn MobSpawn[]
+  actionMob ActionMobSpawn[]
 
   @@map("mobs")
 }
@@ -203,10 +205,48 @@ model MapTiles {
   action_name String?
   action Json?
 
+  teleportFrom ActionTeleport? @relation(name: "teleportFrom")
+  teleportTo ActionTeleport? @relation(name: "teleportTo")
+
+  actionMobSpawn ActionMobSpawn[]
+  actionItemDrop ActionItemDrop[]
+
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int
 
   @@map("mapTiles")
+}
+
+model ActionTeleport {
+  tile MapTiles? @relation(name: "teleportFrom", fields: [tileId], references: [id])
+  tileId Int @id
+  toTile MapTiles? @relation(name: "teleportTo", fields: [toTileId], references: [id])
+  toTileId Int @unique
+
+  @@map("actionTeleport")
+}
+
+model ActionMobSpawn {
+  id        Int      @id @default(autoincrement())
+  mapTile MapTiles @relation(fields: [mapTileId], references: [id])
+  mapTileId Int
+  mob Mob @relation(fields: [mobId], references: [id])
+  mobId Int
+  minLevel Int
+  maxLevel Int
+  spawnRate Int
+  drop ActionItemDrop[]
+}
+
+model ActionItemDrop {
+  id        Int      @id @default(autoincrement())
+  actionMobSpawn ActionMobSpawn? @relation(fields: [actionMobSpawnId], references: [id])
+  actionMobSpawnId Int?
+  mapTile MapTiles? @relation(fields: [mapTileId], references: [id])
+  mapTileId Int?
+  item ItemPrototype @relation(fields: [itemId], references: [id])
+  itemId Int
+  dropRate Int
 }
 
 model Battle {

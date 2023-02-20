@@ -107,7 +107,7 @@ export type EquipItem = {
 };
 
 export type Tile = {
-  tileId?: number;
+  tileId?: string;
   blocked?: boolean;
   id?: number;
   sprite?: string;
@@ -116,19 +116,35 @@ export type Tile = {
   action_name?: string;
   x?: number;
   y?: number;
-  action?: {
-    teleport?: { mapId: string; newMapX: number; newMapY: number };
-    mobSpawn?: {
+  actionMobSpawn?: [
+    {
       mobId: string;
-      procent: number;
       minLevel: number;
       maxLevel: number;
+      spawnRate: number;
       drop: [
         {
           itemId: number;
-          procent: number;
+          dropRate: number;
         }
       ];
-    };
+    }
+  ];
+  action?: {
+    teleport?: { mapId: string; newMapX: number; newMapY: number };
+    mobSpawn?: [
+      {
+        mobId: string;
+        minLevel: number;
+        maxLevel: number;
+        spawnRate: number;
+        drop: [
+          {
+            itemId: number;
+            dropRate: number;
+          }
+        ];
+      }
+    ];
   };
 };

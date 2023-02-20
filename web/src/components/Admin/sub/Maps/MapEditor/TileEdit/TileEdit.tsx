@@ -79,16 +79,12 @@ const TileEdit = ({
 
   const tileForm = useFormik({
     initialValues: {
-      tileId: editTile?.id,
+      tileId: editTile?.id?.toString(),
       sprite: editTile?.sprite,
       object: editTile?.object,
       text: editTile?.text,
       blocked: editTile?.blocked,
       action_name: editTile?.action_name,
-      action: {
-        teleport: editTile?.action?.teleport,
-        mobSpawn: editTile?.action?.mobSpawn,
-      },
     },
     onSubmit: (values, { resetForm }) => {
       const deleteEmptyValues = (values: any) => {
@@ -120,8 +116,6 @@ const TileEdit = ({
 
     enableReinitialize: true,
   });
-
-  console.log("tileForm", tileForm.values);
 
   useEffect(() => {
     if (tileForm.values.blocked) {
@@ -192,7 +186,11 @@ const TileEdit = ({
               <Teleport tileForm={tileForm} mapData={mapData} />
             )}
             {tileForm.values.action_name === "MOB" && (
-              <MobSpawn tileForm={tileForm} SelectItem={SelectItem} />
+              <MobSpawn
+                tileForm={tileForm}
+                SelectItem={SelectItem}
+                tileId={editTile?.id}
+              />
             )}
           </div>
         </div>

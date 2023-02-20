@@ -29,6 +29,12 @@ export class MapService {
           orderBy: {
             id: 'asc',
           },
+          include: {
+            actionMobSpawn: true,
+            actionItemDrop: true,
+            teleportFrom: true,
+            teleportTo: true,
+          },
         },
       },
     });

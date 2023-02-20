@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard';
 import { MapTilesService } from './mapTiles.service';
-import { CreateMapDto, EditMapDto } from './dto';
+import { CreateMapDto, EditTileDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('map_tiles')
@@ -29,25 +30,27 @@ export class MapTilesController {
   }
 
   @Patch(':id')
-  editTileById(
+  editTile(
     @Param('id', ParseIntPipe) tileId: number,
-    @Body() dto: EditMapDto,
+    @Body() dto: EditTileDto,
   ) {
-    return this.MapTilesService.editTileById(
+    return this.MapTilesService.editTile(
       tileId,
       dto,
     );
   }
 
   @Post('many')
-  updateMany(
+  updateManyTiles(
     @Body()
     data: {
       ids: number[];
-      values: EditMapDto;
+      values: EditTileDto;
     },
   ) {
-    return this.MapTilesService.updateMany(data);
+    return this.MapTilesService.updateManyTiles(
+      data,
+    );
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

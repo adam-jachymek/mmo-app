@@ -1,0 +1,189 @@
+import { Button, Input, Modal, Select, Slider } from "@mantine/core";
+import { useMemo, useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { getItemsAdmin } from "api/endpoints";
+import { useFormik } from "formik";
+import {
+  createActionItemDrop,
+  deleteActionItemDrop,
+  getActionDropItem,
+  updateActionItemDrop,
+} from "api/endpoints/actionItemDrop";
+
+type Props = {
+  tileForm: any;
+  SelectItem: any;
+  actionMobId: number;
+  dropData: any;
+  setDropData: any;
+};
+
+const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [dropIndex, setDropIndex] = useState(0);
+
+  const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
+    "getItemsAdmin",
+    getItemsAdmin
+  );
+
+  const {
+    data: dropItems,
+    isFetching: fetchingDropItems,
+    refetch: refetchDropItems,
+  } = useQuery(["getActionDropItem", actionMobId], () =>
+    getActionDropItem(actionMobId)
+  );
+
+  const { mutate: createItemDrop } = useMutation(createActionItemDrop, {
+    onSuccess: () => {
+      refetchDropItems();
+    },
+  });
+
+  const { mutate: updateItemDrop } = useMutation(updateActionItemDrop, {
+    onSuccess: () => {
+      refetchDropItems();
+    },
+  });
+
+  const { mutate: deleteItemDrop } = useMutation(deleteActionItemDrop, {
+    onSuccess: () => {
+      refetchDropItems();
+    },
+  });
+
+  const dropList = useMemo(() => {
+    return dropItems?.map((dropItem: any) => ({
+      ...itemsPrototypeData?.find((item: any) => item?.id === dropItem?.itemId),
+      ...dropItem,
+    }));
+  }, [itemsPrototypeData, dropItems]);
+
+  const dropForm = useFormik({
+    initialValues: { id: undefined, itemId: "", dropRate: 0 },
+    onSubmit: (values, { resetForm }) => {
+      setOpenModal(false);
+      resetForm();
+      if (values.id) {
+        updateItemDrop({ values, actionMobId });
+        return;
+      }
+      createItemDrop({ values, actionMobId });
+    },
+  });
+
+  const isEdit = Boolean(dropForm.values.id);
+
+  const itemsSelect = useMemo(
+    () =>
+      itemsPrototypeData?.map((item: any) => ({
+        image: `/media/items/${item?.sprite}.png`,
+        label: item?.name,
+        value: item?.id,
+      })),
+    [itemsPrototypeData]
+  );
+
+  const openItem = (item: any) => {
+    dropForm.setValues(item);
+    setOpenModal(true);
+  };
+
+  const handleDeleteItem = () => {
+    deleteItemDrop(dropForm.values.id);
+    setOpenModal(false);
+    dropForm.resetForm();
+  };
+
+  return (
+    <>
+      <ul>
+        {dropList?.map((item: any, index: number) => (
+          <li style={{ marginTop: 10, marginBottom: 10, cursor: "pointer" }}>
+            <div
+              onClick={() => {
+                openItem(item);
+              }}
+            >
+              {item.name}, {item.dropRate}%
+            </div>
+          </li>
+        ))}
+      </ul>
+      <Button
+        compact
+        onClick={() => {
+          setOpenModal(true);
+        }}
+      >
+        Add drop items
+      </Button>
+      {openModal && (
+        <Modal
+          opened={openModal}
+          centered
+          onClose={() => {
+            dropForm.resetForm();
+            setOpenModal(false);
+          }}
+          title={isEdit ? "Edit drop item" : "Add drop item"}
+        >
+          <form onSubmit={dropForm.handleSubmit}>
+            <Select
+              placeholder="Pick one"
+              name="item"
+              label="Item"
+              allowDeselect
+              clearable
+              style={{ marginBottom: 20 }}
+              itemComponent={SelectItem}
+              data={itemsSelect}
+              value={dropForm.values.itemId}
+              onChange={(value) => dropForm.setFieldValue("itemId", value)}
+              searchable
+              maxDropdownHeight={400}
+              nothingFound="No items available"
+            />
+            <Input.Wrapper label="Drop rate (%)" required>
+              <Input
+                value={dropForm.values.dropRate}
+                type="number"
+                size="xs"
+                onChange={(e: any) =>
+                  dropForm.setFieldValue("dropRate", Number(e.target.value))
+                }
+              />
+            </Input.Wrapper>
+            <Slider
+              labelAlwaysOn
+              radius="xs"
+              styles={{
+                root: { width: "100%", marginTop: 50, marginBottom: 40 },
+              }}
+              marks={[
+                { value: 20, label: "20%" },
+                { value: 50, label: "50%" },
+                { value: 80, label: "80%" },
+              ]}
+              value={dropForm.values.dropRate}
+              onChange={(value) => dropForm.setFieldValue("dropRate", value)}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Button color="green" type="submit">
+                {isEdit ? "Update" : "Add"}
+              </Button>
+              {isEdit && (
+                <Button color="red" onClick={handleDeleteItem}>
+                  Delete
+                </Button>
+              )}
+            </div>
+          </form>
+        </Modal>
+      )}
+    </>
+  );
+};
+
+export default MobDrop;

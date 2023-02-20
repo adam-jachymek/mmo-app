@@ -1,3 +1,4 @@
+import { ActionItemDropModule } from './actionItemDrop/actionItemDrop.module';
 import { MapSpritesModule } from './mapSprites/mapSprites.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -17,6 +18,7 @@ import { MessagesModule } from './messages/messages.module';
 import { BattleSocketModule } from './battleSocket/battleSocket.module';
 import { MapTilesModule } from './mapTiles/mapTiles.module';
 import { UserSocketModule } from './userSocket/userSocket.module';
+import { ActionMobSpawnModule } from './actionMobSpawn/actionMobSpawn.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { UserSocketModule } from './userSocket/userSocket.module';
     MapTilesModule,
     UserSocketModule,
     MapSpritesModule,
+    ActionMobSpawnModule,
+    ActionItemDropModule,
   ],
 })
 export class AppModule {}

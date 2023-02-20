@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateMapDto, EditMapDto } from './dto';
+import { CreateMapDto, EditTileDto } from './dto';
 
 @Injectable()
 export class MapTilesService {
@@ -22,23 +22,21 @@ export class MapTilesService {
     }
   }
 
-  async editTileById(
+  async editTile(
     tileId: number,
-    dto: EditMapDto,
+    dto: EditTileDto,
   ) {
-    return this.prisma.mapTiles.update({
-      where: {
-        id: tileId,
-      },
+    return await this.prisma.mapTiles.update({
+      where: { id: tileId },
       data: {
         ...dto,
       },
     });
   }
 
-  async updateMany(data: {
+  async updateManyTiles(data: {
     ids: number[];
-    values: EditMapDto;
+    values: EditTileDto;
   }) {
     return await this.prisma.mapTiles.updateMany({
       where: {
