@@ -187,9 +187,9 @@ const TileEdit = ({
             )}
             {tileForm.values.action_name === "MOB" && (
               <MobSpawn
-                tileForm={tileForm}
                 SelectItem={SelectItem}
                 tileId={editTile?.id}
+                multiSelectTiles={multiSelectTiles}
               />
             )}
           </div>

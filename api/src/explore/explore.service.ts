@@ -56,27 +56,54 @@ export class ExploreService {
     }
 
     if (tile.action_name === 'MOB') {
-      const action =
-        tile?.action as Prisma.JsonObject;
-
       const mobSpawn =
-        action.mobSpawn as Prisma.JsonObject;
+        await this.prisma.actionMobSpawn.findMany(
+          {
+            where: { mapTileId: tile.id },
+          },
+        );
 
-      const random = Math.random();
+      function randomMobOrNull(array) {
+        let totalSpawnRate = 0;
+        array.forEach((obj) => {
+          totalSpawnRate += obj.spawnRate;
+        });
 
-      const procent =
-        Number(mobSpawn.procent) / 100;
+        const randomNumber = Math.random() * 100;
 
-      if (random < procent) {
+        console.log(randomNumber, 'randomNumber');
+
+        if (randomNumber < totalSpawnRate) {
+          let currentRate = 0;
+          for (let i = 0; i < array.length; i++) {
+            currentRate += array[i].spawnRate;
+            if (randomNumber < currentRate) {
+              return array[i];
+            }
+          }
+        }
+
+        return null;
+      }
+
+      const selectedMob =
+        randomMobOrNull(mobSpawn);
+
+      if (selectedMob) {
+        console.log(
+          'mob - level:',
+          selectedMob.minLevel,
+        );
+
         await this.battleService.createBattle(
           userId,
           {
-            mobId: Number(mobSpawn.mobId),
+            mobId: Number(selectedMob.mobId),
             mobMinLevel: Number(
-              mobSpawn.minLevel,
+              selectedMob.minLevel,
             ),
             mobMaxLevel: Number(
-              mobSpawn.maxLevel,
+              selectedMob.maxLevel,
             ),
           },
         );

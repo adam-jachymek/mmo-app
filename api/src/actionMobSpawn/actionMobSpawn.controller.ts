@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -22,6 +23,15 @@ export class ActionMobSpawnController {
   constructor(
     private ActionMobSpawnService: ActionMobSpawnService,
   ) {}
+
+  @Get('/many')
+  getManyMobSpawns(
+    @Query('query') query: string[],
+  ) {
+    return this.ActionMobSpawnService.getManyMobSpawns(
+      query,
+    );
+  }
 
   @Get(':tileId')
   getMobSpawns(

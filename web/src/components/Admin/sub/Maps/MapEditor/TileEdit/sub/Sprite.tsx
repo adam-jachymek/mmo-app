@@ -9,12 +9,12 @@ type Props = {
 };
 
 const Sprite = ({ allSprites, tileForm, SelectItem }: Props) => {
-  const [categories, setCategories] = useState([
+  const categories = [
     { value: "", label: "All" },
     { value: "Forest", label: "Forest" },
     { value: "Cave", label: "Cave" },
-  ]);
-  const [filterCategory, setFilterCategory] = useState<string | null>("");
+  ];
+  const [filterCategory, setFilterCategory] = useState<string>("");
 
   const filteredSprites = allSprites?.filter((sprite: any) =>
     filterCategory !== "" ? sprite.category === filterCategory : sprite
@@ -41,7 +41,7 @@ const Sprite = ({ allSprites, tileForm, SelectItem }: Props) => {
         data={categories}
         style={{ marginBottom: 10 }}
         onChange={(value) => {
-          setFilterCategory(value);
+          setFilterCategory(value || "");
         }}
         value={filterCategory}
         searchable

@@ -9,18 +9,15 @@ import {
   getActionDropItem,
   updateActionItemDrop,
 } from "api/endpoints/actionItemDrop";
+import { getSelectData } from "../utils";
 
 type Props = {
-  tileForm: any;
   SelectItem: any;
   actionMobId: number;
-  dropData: any;
-  setDropData: any;
 };
 
-const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
+const MobDrop = ({ SelectItem, actionMobId }: Props) => {
   const [openModal, setOpenModal] = useState(false);
-  const [dropIndex, setDropIndex] = useState(0);
 
   const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
     "getItemsAdmin",
@@ -75,16 +72,6 @@ const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
 
   const isEdit = Boolean(dropForm.values.id);
 
-  const itemsSelect = useMemo(
-    () =>
-      itemsPrototypeData?.map((item: any) => ({
-        image: `/media/items/${item?.sprite}.png`,
-        label: item?.name,
-        value: item?.id,
-      })),
-    [itemsPrototypeData]
-  );
-
   const openItem = (item: any) => {
     dropForm.setValues(item);
     setOpenModal(true);
@@ -97,27 +84,39 @@ const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
   };
 
   return (
-    <>
+    <div className="mob-drop">
       <ul>
         {dropList?.map((item: any, index: number) => (
-          <li style={{ marginTop: 10, marginBottom: 10, cursor: "pointer" }}>
+          <li
+            className="mob-drop__item"
+            style={{ marginTop: 10, marginBottom: 10, cursor: "pointer" }}
+          >
             <div
+              className="mob-drop__item-info"
               onClick={() => {
                 openItem(item);
               }}
             >
-              {item.name}, {item.dropRate}%
+              <p className="mob-drop__item-info-item">
+                <label className="mob-drop__item-info-label">item: </label>
+                {item.name}
+              </p>
+              <p className="mob-drop__item-info-item">
+                <label className="mob-drop__item-info-label">drop rate: </label>
+                {item.dropRate}%
+              </p>
             </div>
           </li>
         ))}
       </ul>
       <Button
+        className="mob-drop__add-button"
         compact
         onClick={() => {
           setOpenModal(true);
         }}
       >
-        Add drop items
+        Add drop item
       </Button>
       {openModal && (
         <Modal
@@ -138,7 +137,7 @@ const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
               clearable
               style={{ marginBottom: 20 }}
               itemComponent={SelectItem}
-              data={itemsSelect}
+              data={getSelectData(itemsPrototypeData) as any}
               value={dropForm.values.itemId}
               onChange={(value) => dropForm.setFieldValue("itemId", value)}
               searchable
@@ -169,7 +168,7 @@ const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
               value={dropForm.values.dropRate}
               onChange={(value) => dropForm.setFieldValue("dropRate", value)}
             />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className="mob-drop__buttons-wrapper">
               <Button color="green" type="submit">
                 {isEdit ? "Update" : "Add"}
               </Button>
@@ -182,7 +181,7 @@ const MobDrop = ({ tileForm, SelectItem, actionMobId }: Props) => {
           </form>
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 

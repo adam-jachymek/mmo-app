@@ -16,6 +16,22 @@ export class ActionMobSpawnService {
     );
   }
 
+  async getManyMobSpawns(query: string[]) {
+    const idNumbers = query.map((id) =>
+      parseInt(id, 10),
+    );
+
+    return await this.prisma.actionMobSpawn.findMany(
+      {
+        where: {
+          mapTileId: {
+            in: idNumbers,
+          },
+        },
+      },
+    );
+  }
+
   async createOrUpdateMobSpawn(
     tileId: number,
     dto: ActionMobSpawnDto,

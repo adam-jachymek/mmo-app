@@ -15,7 +15,7 @@ type Props = {
 };
 
 const MapEditor = ({ user }: Props) => {
-  const [clickedTile, setClickedTile] = useState<Tile>();
+  const [selectedTile, setSelectedTile] = useState<Tile>();
   const [multiSelect, setMultiSelect] = useState(false);
   const [showIcons, setShowIcons] = useState(true);
   const [multiSelectTiles, setMultiSelectTiles] = useState<number[]>([]);
@@ -29,14 +29,14 @@ const MapEditor = ({ user }: Props) => {
   } = useQuery(["getMapById", mapId], () => getMapById(mapId?.toString()));
 
   useEffect(() => {
-    setClickedTile(
-      mapData?.tiles?.find((tile: Tile) => tile.id === clickedTile?.id)
+    setSelectedTile(
+      mapData?.tiles?.find((tile: Tile) => tile.id === selectedTile?.id)
     );
   }, [mapData?.tiles]);
 
   useEffect(() => {
     setMultiSelectTiles([]);
-    setClickedTile(undefined);
+    setSelectedTile(undefined);
   }, [multiSelect]);
 
   const selectAllSprites = () => {
@@ -58,7 +58,8 @@ const MapEditor = ({ user }: Props) => {
           }}
           className={classNames("map-editor__tile", {
             active:
-              tile.id === clickedTile?.id || multiSelectTiles.includes(tile.id),
+              tile.id === selectedTile?.id ||
+              multiSelectTiles.includes(tile.id),
           })}
           onClick={() => {
             if (multiSelect) {
@@ -72,7 +73,7 @@ const MapEditor = ({ user }: Props) => {
                 return;
               }
             }
-            setClickedTile(tile);
+            setSelectedTile(tile);
           }}
         >
           {tile.object && (
@@ -124,7 +125,7 @@ const MapEditor = ({ user }: Props) => {
     mapData,
     user.x,
     user.y,
-    clickedTile,
+    selectedTile,
     multiSelectTiles,
     multiSelect,
     showIcons,
@@ -169,7 +170,7 @@ const MapEditor = ({ user }: Props) => {
           <ul className="map-editor__tiles">{renderMap}</ul>
         </div>
         <TileEdit
-          editTile={clickedTile}
+          editTile={selectedTile}
           refetchTiles={refetchTiles}
           multiSelect={multiSelect}
           multiSelectTiles={multiSelectTiles}

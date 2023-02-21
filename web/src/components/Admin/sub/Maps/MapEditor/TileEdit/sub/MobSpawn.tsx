@@ -2,26 +2,28 @@ import { Button, Input, Loader, Modal, Select, Slider } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getMobs } from "api/endpoints";
-import { Mob } from "types";
 import MobDrop from "./MobDrop";
 import { useFormik } from "formik";
 import {
   createActionMobSpawn,
   deleteActionMobSpawn,
   getActionMobSpawn,
+  getManyActionMobSpawn,
   updateActionMobSpawn,
 } from "api/endpoints/actionMobSpawn";
+import { isEmpty } from "lodash";
+import { getSelectData } from "../utils";
 
 type Props = {
-  tileForm: any;
   SelectItem: any;
   tileId?: number;
+  multiSelectTiles: number[];
 };
 
-const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
+const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
   const [openModal, setOpenModal] = useState(false);
-  const [mobIndex, setMobIndex] = useState(0);
-  const [dropData, setDropData] = useState();
+  const [maxSpawnRateForSelectedMob, setMaxSpawnRateForSelectedMob] =
+    useState(100);
 
   const { data: mobsData, isFetching: fetchingMobs } = useQuery(
     "getMobs",
@@ -32,7 +34,23 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
     data: spawnMobs,
     isFetching: fetchingSpawnMobs,
     refetch: refetchSpawnMobs,
-  } = useQuery(["getActionMobSpawn", tileId], () => getActionMobSpawn(tileId));
+  } = useQuery(["getActionMobSpawn", tileId], () => getActionMobSpawn(tileId), {
+    enabled: Boolean(tileId),
+  });
+
+  const {
+    data: spawnManyMobs,
+    isFetching: fetchingManySpawnMobs,
+    refetch: refetchManySpawnMobs,
+  } = useQuery(
+    ["getManyActionMobSpawn", multiSelectTiles],
+    () => getManyActionMobSpawn(multiSelectTiles),
+    {
+      enabled: !isEmpty(multiSelectTiles),
+    }
+  );
+
+  const spawnMobsToMap = isEmpty(multiSelectTiles) ? spawnMobs : spawnManyMobs;
 
   const { mutate: createMobSpawn } = useMutation(createActionMobSpawn, {
     onSuccess: () => {
@@ -51,16 +69,6 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
       refetchSpawnMobs();
     },
   });
-
-  const mobsSelect = useMemo(
-    () =>
-      mobsData?.map((mob: Mob) => ({
-        image: `/media/mobs/${mob?.sprite}.png`,
-        label: mob?.name,
-        value: mob?.id,
-      })),
-    [mobsData]
-  );
 
   const mobForm = useFormik({
     initialValues: {
@@ -84,53 +92,87 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
   const isEdit = Boolean(mobForm.values.id);
 
   const mobList = useMemo(() => {
-    return spawnMobs?.map((mobSpawn: any) => ({
+    return spawnMobsToMap?.map((mobSpawn: any) => ({
       ...mobsData?.find((mob: any) => mobSpawn?.mobId === mob?.id),
       ...mobSpawn,
     }));
-  }, [mobsData, spawnMobs]);
+  }, [mobsData, spawnMobs, spawnMobsToMap]);
 
-  const openMob = (mob: any) => {
-    mobForm.setValues(mob);
-    setOpenModal(true);
-  };
+  const calculateMaxSpawnRate = useMemo(() => {
+    const spawnRateSum = mobList?.reduce(
+      (sum: number, obj: any) => sum + obj.spawnRate,
+      0
+    );
 
-  const handleDeleteItemDrop = () => {
-    deleteMobSpawn(mobForm.values.id);
-    setOpenModal(false);
-    mobForm.resetForm();
-  };
+    const availableSpawnRate = 100 - spawnRateSum;
+
+    return {
+      spawnRateSum: spawnRateSum,
+      availableSpawnRate: availableSpawnRate,
+    };
+  }, [mobList]);
 
   if (fetchingMobs || fetchingSpawnMobs) {
     return <Loader />;
   }
 
+  const handleCreateMob = () => {
+    setMaxSpawnRateForSelectedMob(calculateMaxSpawnRate.availableSpawnRate);
+    setOpenModal(true);
+  };
+
+  const handleOpenMob = (mob: any) => {
+    mobForm.setValues(mob);
+    setMaxSpawnRateForSelectedMob(
+      calculateMaxSpawnRate.availableSpawnRate + mob.spawnRate
+    );
+    setOpenModal(true);
+  };
+
+  const handleDeleteMob = () => {
+    deleteMobSpawn(mobForm.values.id);
+    setOpenModal(false);
+    mobForm.resetForm();
+  };
+
   return (
-    <>
-      <ul>
-        {mobList?.map((mob: any, index: number) => (
-          <li style={{ marginTop: 10, marginBottom: 10, cursor: "pointer" }}>
+    <div className="mob-spawn">
+      <p className="mob-spawn__spawn-rate">
+        <label className="mob-spawn__mob-info-label">spawn rate: </label>
+        {calculateMaxSpawnRate.spawnRateSum}%
+      </p>
+      <ul className="mob-spawn__list">
+        {mobList?.map((mob: any) => (
+          <li className="mob-spawn__mob" key={mob.id}>
             <div
+              className="mob-spawn__mob-info"
               onClick={() => {
-                openMob(mob);
+                handleOpenMob(mob);
               }}
             >
-              {mob.name}, {mob.spawnRate}%
+              <p className="mob-spawn__mob-info-item">
+                <label className="mob-spawn__mob-info-label">mob: </label>
+                {mob.name}
+              </p>
+              <p className="mob-spawn__mob-info-item">
+                <label className="mob-spawn__mob-info-label">
+                  spawn rate:{" "}
+                </label>
+                {mob.spawnRate}%
+              </p>
+              <p className="mob-spawn__mob-info-item">
+                <label className="mob-spawn__mob-info-label">level: </label>
+                {mob.minLevel} - {mob.maxLevel}
+              </p>
             </div>
-            <MobDrop
-              tileForm={tileForm}
-              SelectItem={SelectItem}
-              actionMobId={mob.id}
-              dropData={dropData}
-              setDropData={setDropData}
-            />
+            <MobDrop SelectItem={SelectItem} actionMobId={mob.id} />
           </li>
         ))}
       </ul>
       <Button
-        onClick={() => {
-          setOpenModal(true);
-        }}
+        className="mob-spawn__add-button"
+        color="green"
+        onClick={handleCreateMob}
       >
         Add mob
       </Button>
@@ -152,7 +194,7 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
               required
               style={{ marginTop: 20, marginBottom: 20 }}
               itemComponent={SelectItem}
-              data={mobsSelect}
+              data={getSelectData(mobsData) as any}
               value={mobForm.values.mobId}
               onChange={(value) => mobForm.setFieldValue("mobId", value)}
               searchable
@@ -163,6 +205,7 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
               <Input
                 value={mobForm.values.spawnRate}
                 type="number"
+                max={maxSpawnRateForSelectedMob}
                 size="xs"
                 onChange={(e: any) =>
                   mobForm.setFieldValue("spawnRate", Number(e.target.value))
@@ -172,6 +215,7 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
             <Slider
               labelAlwaysOn
               radius="xs"
+              max={maxSpawnRateForSelectedMob}
               styles={{
                 root: { width: "100%", marginTop: 50, marginBottom: 40 },
               }}
@@ -207,12 +251,12 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
                 />
               </Input.Wrapper>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div className="mob-spawn__buttons-wrapper">
               <Button color="green" type="submit">
                 {isEdit ? "Update" : "Add"}
               </Button>
               {isEdit && (
-                <Button color="red" onClick={handleDeleteItemDrop}>
+                <Button color="red" onClick={handleDeleteMob}>
                   Delete
                 </Button>
               )}
@@ -220,7 +264,7 @@ const MobSpawn = ({ tileForm, SelectItem, tileId }: Props) => {
           </form>
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 
