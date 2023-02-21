@@ -71,8 +71,6 @@ export class ExploreService {
 
         const randomNumber = Math.random() * 100;
 
-        console.log(randomNumber, 'randomNumber');
-
         if (randomNumber < totalSpawnRate) {
           let currentRate = 0;
           for (let i = 0; i < array.length; i++) {
@@ -90,11 +88,6 @@ export class ExploreService {
         randomMobOrNull(mobSpawn);
 
       if (selectedMob) {
-        console.log(
-          'mob - level:',
-          selectedMob.minLevel,
-        );
-
         await this.battleService.createBattle(
           userId,
           {
