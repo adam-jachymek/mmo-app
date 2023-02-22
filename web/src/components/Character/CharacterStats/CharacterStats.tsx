@@ -1,6 +1,7 @@
 import { useMutation } from "react-query";
 import { addLevelPoint } from "api/endpoints";
-import { User } from "/types";
+import { User } from "types";
+import { socket } from "api/socket";
 
 import "./styles.sass";
 
@@ -12,7 +13,7 @@ type Props = {
 const CharacterStats = ({ user, refetchUser }: Props) => {
   const { mutate: addPoint } = useMutation(addLevelPoint, {
     onSuccess: (response) => {
-      refetchUser();
+      socket.emit("updateUser", { userId: user.id });
     },
   });
 
