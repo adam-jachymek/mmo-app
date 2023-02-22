@@ -169,29 +169,17 @@ const TileEdit = ({
           </div>
 
           <div className="settings__panel">
-            <label className="admin__main-label">Action</label>
-            <Select
-              placeholder="Pick one"
-              style={{ marginTop: 25 }}
-              clearable
-              data={[
-                { value: "TELEPORT", label: "Teleport" },
-                { value: "MOB", label: "Mob Spawn" },
-              ]}
-              disabled={tileForm.values.blocked}
-              value={tileForm.values.action_name}
-              onChange={(value) => tileForm.setFieldValue("action_name", value)}
-            />
+            <label className="admin__main-label">Mob Spawn</label>
             {tileForm.values.action_name === "TELEPORT" && (
               <Teleport tileForm={tileForm} mapData={mapData} />
             )}
-            {tileForm.values.action_name === "MOB" && (
-              <MobSpawn
-                SelectItem={SelectItem}
-                tileId={editTile?.id}
-                multiSelectTiles={multiSelectTiles}
-              />
-            )}
+            <MobSpawn
+              SelectItem={SelectItem}
+              tileId={editTile?.id}
+              multiSelectTiles={multiSelectTiles}
+              setMultiSelectTiles={setMultiSelectTiles}
+              refetchTiles={refetchTiles}
+            />
           </div>
         </div>
         <Button m="30px" type="submit" color="green" size="md">

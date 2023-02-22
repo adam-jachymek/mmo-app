@@ -208,8 +208,9 @@ model MapTiles {
   teleportFrom ActionTeleport? @relation(name: "teleportFrom")
   teleportTo ActionTeleport? @relation(name: "teleportTo")
 
-  actionMobSpawn ActionMobSpawn[]
   actionItemDrop ActionItemDrop[]
+
+  actionMobSpawns ActionMobSpawnsOnTiles[]
 
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int
@@ -228,14 +229,22 @@ model ActionTeleport {
 
 model ActionMobSpawn {
   id        Int      @id @default(autoincrement())
-  mapTile MapTiles @relation(fields: [mapTileId], references: [id])
-  mapTileId Int
   mob Mob @relation(fields: [mobId], references: [id])
   mobId Int
   minLevel Int
   maxLevel Int
   spawnRate Int
   drop ActionItemDrop[]
+  mapTiles ActionMobSpawnsOnTiles[]
+}
+
+model ActionMobSpawnsOnTiles {
+  actionMobSpawn  ActionMobSpawn @relation(fields: [actionMobSpawnId], references: [id], onDelete: Cascade)
+  actionMobSpawnId Int
+  mapTile MapTiles @relation(fields: [mapTileId], references: [id])
+  mapTileId Int
+
+  @@id([actionMobSpawnId, mapTileId])
 }
 
 model ActionItemDrop {

@@ -27,12 +27,16 @@ export const createActionMobSpawn = async (data: {
     minLevel?: number;
     maxLevel?: number;
   };
-  tileId?: number;
+  tilesIds?: number[];
 }) => {
-  const response = await api.post(
-    `action_mob_spawn/${data.tileId?.toString()}`,
-    data.values
-  );
+  const response = await api.post(`action_mob_spawn`, data.values, {
+    params: {
+      query: data.tilesIds,
+    },
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: "repeat" });
+    },
+  });
 
   return response.data;
 };
@@ -45,11 +49,59 @@ export const updateActionMobSpawn = async (data: {
     minLevel?: number;
     maxLevel?: number;
   };
-  tileId?: number;
+  tilesIds?: number[];
 }) => {
   const response = await api.patch(
-    `action_mob_spawn/${data.tileId?.toString()}/${data.values.id}/`,
-    data.values
+    `action_mob_spawn/${data.values.id}`,
+    data.values,
+    {
+      params: {
+        query: data.tilesIds,
+      },
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const addTilesToActionMobSpawn = async (data: {
+  mobSpawnId?: number;
+  tilesIds?: number[];
+}) => {
+  const response = await api.patch(
+    `action_mob_spawn/addtiles/${data.mobSpawnId}`,
+    data,
+    {
+      params: {
+        query: data.tilesIds,
+      },
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const deleteTilesToActionMobSpawn = async (data: {
+  mobSpawnId?: number;
+  tilesIds?: number[];
+}) => {
+  const response = await api.patch(
+    `action_mob_spawn/deletetiles/${data.mobSpawnId}`,
+    data,
+    {
+      params: {
+        query: data.tilesIds,
+      },
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
+    }
   );
 
   return response.data;

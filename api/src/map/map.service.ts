@@ -30,8 +30,8 @@ export class MapService {
             id: 'asc',
           },
           include: {
-            actionMobSpawn: true,
             actionItemDrop: true,
+            actionMobSpawns: true,
             teleportFrom: true,
             teleportTo: true,
           },

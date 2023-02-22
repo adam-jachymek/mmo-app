@@ -5,8 +5,10 @@ import { getMobs } from "api/endpoints";
 import MobDrop from "./MobDrop";
 import { useFormik } from "formik";
 import {
+  addTilesToActionMobSpawn,
   createActionMobSpawn,
   deleteActionMobSpawn,
+  deleteTilesToActionMobSpawn,
   getActionMobSpawn,
   getManyActionMobSpawn,
   updateActionMobSpawn,
@@ -18,9 +20,17 @@ type Props = {
   SelectItem: any;
   tileId?: number;
   multiSelectTiles: number[];
+  setMultiSelectTiles: any;
+  refetchTiles: any;
 };
 
-const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
+const MobSpawn = ({
+  SelectItem,
+  tileId,
+  multiSelectTiles,
+  setMultiSelectTiles,
+  refetchTiles,
+}: Props) => {
   const [openModal, setOpenModal] = useState(false);
   const [maxSpawnRateForSelectedMob, setMaxSpawnRateForSelectedMob] =
     useState(100);
@@ -54,6 +64,7 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
 
   const { mutate: createMobSpawn } = useMutation(createActionMobSpawn, {
     onSuccess: () => {
+      refetchTiles();
       refetchSpawnMobs();
     },
   });
@@ -64,8 +75,26 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
     },
   });
 
+  const { mutate: addTilesToMobSpawn } = useMutation(addTilesToActionMobSpawn, {
+    onSuccess: () => {
+      refetchTiles();
+      refetchSpawnMobs();
+    },
+  });
+
+  const { mutate: deleteTilesFromMobSpawn } = useMutation(
+    deleteTilesToActionMobSpawn,
+    {
+      onSuccess: () => {
+        refetchTiles();
+        refetchSpawnMobs();
+      },
+    }
+  );
+
   const { mutate: deleteMobSpawn } = useMutation(deleteActionMobSpawn, {
     onSuccess: () => {
+      refetchTiles();
       refetchSpawnMobs();
     },
   });
@@ -82,10 +111,19 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
       setOpenModal(false);
       resetForm();
       if (values.id) {
-        updateMobSpawn({ values, tileId });
+        if (tileId) {
+          updateMobSpawn({ values, tilesIds: [tileId] });
+          return;
+        }
+      }
+      if (tileId) {
+        createMobSpawn({ values, tilesIds: [tileId] });
         return;
       }
-      createMobSpawn({ values, tileId });
+      if (multiSelectTiles) {
+        createMobSpawn({ values, tilesIds: multiSelectTiles });
+        return;
+      }
     },
   });
 
@@ -112,7 +150,7 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
     };
   }, [mobList]);
 
-  if (fetchingMobs || fetchingSpawnMobs) {
+  if (fetchingMobs || fetchingSpawnMobs || fetchingManySpawnMobs) {
     return <Loader />;
   }
 
@@ -137,10 +175,12 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
 
   return (
     <div className="mob-spawn">
-      <p className="mob-spawn__spawn-rate">
-        <label className="mob-spawn__mob-info-label">spawn rate: </label>
-        {calculateMaxSpawnRate.spawnRateSum}%
-      </p>
+      {calculateMaxSpawnRate.spawnRateSum > 0 && (
+        <p className="mob-spawn__spawn-rate">
+          <label className="mob-spawn__mob-info-label">spawn rate: </label>
+          {calculateMaxSpawnRate.spawnRateSum}%
+        </p>
+      )}
       <ul className="mob-spawn__list">
         {mobList?.map((mob: any) => (
           <li className="mob-spawn__mob" key={mob.id}>
@@ -164,7 +204,24 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
                 <label className="mob-spawn__mob-info-label">level: </label>
                 {mob.minLevel} - {mob.maxLevel}
               </p>
+              <p className="mob-spawn__mob-info-item">
+                <label className="mob-spawn__mob-info-label">on tiles: </label>
+                {mob.mapTiles.length}
+                <Button
+                  compact
+                  style={{ marginLeft: "10px" }}
+                  type="button"
+                  onClick={() => {
+                    setMultiSelectTiles(
+                      mob.mapTiles.map((mapTile: any) => mapTile.mapTileId)
+                    );
+                  }}
+                >
+                  Select
+                </Button>
+              </p>
             </div>
+
             <MobDrop SelectItem={SelectItem} actionMobId={mob.id} />
           </li>
         ))}
@@ -186,6 +243,38 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
           }}
           title={isEdit ? "Edit mob spawn" : "Add mob spawn"}
         >
+          {!isEmpty(multiSelectTiles) && (
+            <>
+              <Button
+                compact
+                style={{ marginLeft: "10px", marginBottom: "10px" }}
+                type="button"
+                color="green"
+                onClick={() => {
+                  addTilesToMobSpawn({
+                    mobSpawnId: mobForm.values.id,
+                    tilesIds: multiSelectTiles,
+                  });
+                }}
+              >
+                Add to selected tiles
+              </Button>
+              <Button
+                compact
+                style={{ marginLeft: "10px" }}
+                type="button"
+                color="red"
+                onClick={() => {
+                  deleteTilesFromMobSpawn({
+                    mobSpawnId: mobForm.values.id,
+                    tilesIds: multiSelectTiles,
+                  });
+                }}
+              >
+                Delete from selected tiles
+              </Button>
+            </>
+          )}
           <form onSubmit={mobForm.handleSubmit}>
             <Select
               placeholder="Pick one"
@@ -220,9 +309,15 @@ const MobSpawn = ({ SelectItem, tileId, multiSelectTiles }: Props) => {
                 root: { width: "100%", marginTop: 50, marginBottom: 40 },
               }}
               marks={[
-                { value: 20, label: "20%" },
-                { value: 50, label: "50%" },
-                { value: 80, label: "80%" },
+                { value: 0, label: "0%" },
+                {
+                  value: maxSpawnRateForSelectedMob / 2,
+                  label: `${maxSpawnRateForSelectedMob / 2}%`,
+                },
+                {
+                  value: maxSpawnRateForSelectedMob,
+                  label: `${maxSpawnRateForSelectedMob}%`,
+                },
               ]}
               value={mobForm.values.spawnRate}
               onChange={(value: any) =>

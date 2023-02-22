@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { BattleService } from 'src/battle/battle.service';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class ExploreService {
@@ -34,36 +35,31 @@ export class ExploreService {
           mapId: user.mapId,
           ...newAxis,
         },
-      });
-
-    if (tile.action_name === 'TELEPORT') {
-      const action =
-        tile?.action as Prisma.JsonObject;
-
-      const teleport =
-        action.teleport as Prisma.JsonObject;
-
-      return this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          mapId: Number(teleport.mapId),
-          x: Number(teleport.newMapX),
-          y: Number(teleport.newMapY),
+        include: {
+          actionItemDrop: true,
+          actionMobSpawns: true,
+          teleportFrom: true,
+          teleportTo: true,
         },
       });
-    }
 
-    if (tile.action_name === 'MOB') {
+    if (!isEmpty(tile.actionMobSpawns)) {
       const mobSpawn =
         await this.prisma.actionMobSpawn.findMany(
           {
-            where: { mapTileId: tile.id },
+            where: {
+              mapTiles: {
+                some: {
+                  mapTile: {
+                    id: tile.id,
+                  },
+                },
+              },
+            },
           },
         );
 
-      function randomMobOrNull(array) {
+      async function randomMobOrNull(array) {
         let totalSpawnRate = 0;
         array.forEach((obj) => {
           totalSpawnRate += obj.spawnRate;
@@ -84,8 +80,9 @@ export class ExploreService {
         return null;
       }
 
-      const selectedMob =
-        randomMobOrNull(mobSpawn);
+      const selectedMob = await randomMobOrNull(
+        mobSpawn,
+      );
 
       if (selectedMob) {
         await this.battleService.createBattle(
@@ -108,6 +105,25 @@ export class ExploreService {
         },
         data: {
           [axis]: user[axis] + direction,
+        },
+      });
+    }
+
+    if (tile.action_name === 'TELEPORT') {
+      const action =
+        tile?.action as Prisma.JsonObject;
+
+      const teleport =
+        action.teleport as Prisma.JsonObject;
+
+      return this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          mapId: Number(teleport.mapId),
+          x: Number(teleport.newMapX),
+          y: Number(teleport.newMapY),
         },
       });
     }

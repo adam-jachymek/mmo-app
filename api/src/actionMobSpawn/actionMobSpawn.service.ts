@@ -6,46 +6,176 @@ import { ActionMobSpawnDto } from './dto/ActionMobSpawn';
 export class ActionMobSpawnService {
   constructor(private prisma: PrismaService) {}
 
-  async getMobSpawns(tileId: number) {
+  async getActionMobSpawns(tileId: number) {
     return await this.prisma.actionMobSpawn.findMany(
       {
         where: {
-          mapTileId: tileId,
+          mapTiles: {
+            some: {
+              mapTile: {
+                id: tileId,
+              },
+            },
+          },
+        },
+        include: {
+          mapTiles: true,
         },
       },
     );
   }
 
-  async getManyMobSpawns(query: string[]) {
-    const idNumbers = query.map((id) =>
-      parseInt(id, 10),
-    );
+  async getManyActionMobSpawns(
+    tilesIdsQuery: string[],
+  ) {
+    const tilesIds = Array.isArray(tilesIdsQuery)
+      ? tilesIdsQuery.map((id) =>
+          parseInt(id, 10),
+        )
+      : [parseInt(tilesIdsQuery, 10)];
 
     return await this.prisma.actionMobSpawn.findMany(
       {
         where: {
-          mapTileId: {
-            in: idNumbers,
+          mapTiles: {
+            some: {
+              mapTile: {
+                id: { in: tilesIds },
+              },
+            },
+          },
+        },
+        include: {
+          mapTiles: true,
+        },
+      },
+    );
+  }
+
+  async createActionMobSpawn(
+    tilesIdsQuery: string[],
+    dto: ActionMobSpawnDto,
+  ) {
+    const tilesIds = Array.isArray(tilesIdsQuery)
+      ? tilesIdsQuery.map((id) =>
+          parseInt(id, 10),
+        )
+      : [parseInt(tilesIdsQuery, 10)];
+
+    const mapTilesData = tilesIds.map((id) => ({
+      mapTile: {
+        connect: {
+          id: id,
+        },
+      },
+    }));
+
+    return await this.prisma.actionMobSpawn.create(
+      {
+        data: {
+          ...dto,
+          mapTiles: {
+            create: mapTilesData,
           },
         },
       },
     );
   }
 
-  async createOrUpdateMobSpawn(
-    tileId: number,
+  async updateActionMobSpawn(
+    actionMobSpawnId: number,
+    tilesIdsQuery: string[],
     dto: ActionMobSpawnDto,
-    actionMobSpawnId?: number,
   ) {
-    return await this.prisma.actionMobSpawn.upsert(
-      {
-        where: { id: actionMobSpawnId || 0 },
-        update: {
-          ...dto,
+    const tilesIds = Array.isArray(tilesIdsQuery)
+      ? tilesIdsQuery.map((id) =>
+          parseInt(id, 10),
+        )
+      : [parseInt(tilesIdsQuery, 10)];
+
+    const mapTilesData = tilesIds.map((id) => ({
+      mapTile: {
+        connect: {
+          id: id,
         },
-        create: {
-          mapTileId: tileId,
+      },
+    }));
+
+    return await this.prisma.actionMobSpawn.update(
+      {
+        where: {
+          id: actionMobSpawnId,
+        },
+        data: {
           ...dto,
+          mapTiles: {
+            deleteMany: {
+              actionMobSpawnId: actionMobSpawnId,
+            },
+            create: mapTilesData,
+          },
+        },
+      },
+    );
+  }
+
+  async addTilesToActionMobSpawn(
+    actionMobSpawnId: number,
+    tilesIdsQuery: string[],
+  ) {
+    const tilesIds = Array.isArray(tilesIdsQuery)
+      ? tilesIdsQuery.map((id) =>
+          parseInt(id, 10),
+        )
+      : [parseInt(tilesIdsQuery, 10)];
+
+    const mapTilesData = tilesIds.map((id) => ({
+      mapTile: {
+        connect: {
+          id: id,
+        },
+      },
+    }));
+
+    return await this.prisma.actionMobSpawn.update(
+      {
+        where: {
+          id: actionMobSpawnId,
+        },
+        data: {
+          mapTiles: {
+            deleteMany: {
+              actionMobSpawnId: actionMobSpawnId,
+            },
+            create: mapTilesData,
+          },
+        },
+      },
+    );
+  }
+
+  async deleteTilesFromActionMobSpawn(
+    actionMobSpawnId: number,
+    tilesIdsQuery: string[],
+  ) {
+    const tilesIds = Array.isArray(tilesIdsQuery)
+      ? tilesIdsQuery.map((id) =>
+          parseInt(id, 10),
+        )
+      : [parseInt(tilesIdsQuery, 10)];
+
+    return await this.prisma.actionMobSpawn.update(
+      {
+        where: {
+          id: actionMobSpawnId,
+        },
+        data: {
+          mapTiles: {
+            deleteMany: {
+              actionMobSpawnId: actionMobSpawnId,
+              mapTileId: { in: tilesIds },
+            },
+          },
         },
       },
     );

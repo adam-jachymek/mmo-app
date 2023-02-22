@@ -7,6 +7,7 @@ import { Button, Loader, Switch } from "@mantine/core";
 import { Tile, User } from "/types";
 import { assets_url } from "config";
 import { useParams } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 import "./styles.sass";
 
@@ -38,6 +39,10 @@ const MapEditor = ({ user }: Props) => {
     setMultiSelectTiles([]);
     setSelectedTile(undefined);
   }, [multiSelect]);
+
+  useEffect(() => {
+    setMultiSelectTiles([]);
+  }, [selectedTile]);
 
   const selectAllSprites = () => {
     const allTilesId = mapData?.tiles?.map((tile: Tile) => tile.id);
@@ -86,7 +91,7 @@ const MapEditor = ({ user }: Props) => {
           )}
           {showIcons && (
             <>
-              {tile.action_name === "MOB" && (
+              {!isEmpty(tile.actionMobSpawns) && (
                 <div className="map-editor__icon">
                   <img
                     style={{ width: 20, height: 20 }}
