@@ -423,7 +423,7 @@ export class BattleService {
     battleId: number,
     userId: number,
   ) {
-    await this.prisma.user.update({
+    const userUpdate = this.prisma.user.update({
       where: {
         id: userId,
       },
@@ -432,8 +432,10 @@ export class BattleService {
       },
     });
 
-    await this.prisma.battle.delete({
+    const battleDelete = this.prisma.battle.delete({
       where: { id: battleId },
     });
+
+    await this.prisma.$transaction([ userUpdate, battleDelete ])
   }
 }
