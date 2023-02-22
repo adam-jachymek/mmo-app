@@ -43,136 +43,8 @@ export class ExploreService {
         },
       });
 
-    if (!isEmpty(tile.actionMobSpawns)) {
-      const mobSpawn =
-        await this.prisma.actionMobSpawn.findMany(
-          {
-            where: {
-              mapTiles: {
-                some: {
-                  mapTile: {
-                    id: tile.id,
-                  },
-                },
-              },
-            },
-            include: {
-              drop: true,
-            },
-          },
-        );
-
-      async function randomMobOrNull(array) {
-        let totalSpawnRate = 0;
-        array.forEach((obj) => {
-          totalSpawnRate += obj.spawnRate;
-        });
-
-        const randomNumber = Math.random() * 100;
-
-        if (randomNumber < totalSpawnRate) {
-          let currentRate = 0;
-          for (let i = 0; i < array.length; i++) {
-            currentRate += array[i].spawnRate;
-            if (randomNumber < currentRate) {
-              return array[i];
-            }
-          }
-        }
-
-        const dropItems = [
-          {
-            id: 1,
-            dropRate: 30,
-          },
-          {
-            id: 2,
-            dropRate: 50,
-          },
-        ];
-
-        return null;
-      }
-
-      const selectedMob = await randomMobOrNull(
-        mobSpawn,
-      );
-
-      if (selectedMob) {
-        function getDroppedItems(dropItems) {
-          const totalDropRate = dropItems.reduce(
-            (sum, item) => sum + item.dropRate,
-            0,
-          );
-          const items = [];
-          const count = Math.floor(
-            Math.random() *
-              (dropItems.length + 1),
-          );
-
-          for (let i = 0; i < count; i++) {
-            const randomValue =
-              Math.random() * 100;
-            let accumulatedDropRate = 0;
-
-            for (const item of dropItems) {
-              accumulatedDropRate +=
-                item.dropRate;
-              if (
-                randomValue <= accumulatedDropRate
-              ) {
-                const quantity =
-                  Math.floor(
-                    Math.random() *
-                      (item.quantityMax -
-                        item.quantityMin),
-                  ) + item.quantityMin;
-                for (
-                  let j = 0;
-                  j < quantity;
-                  j++
-                ) {
-                  items.push(item);
-                }
-                break;
-              }
-            }
-          }
-
-          return items;
-        }
-
-        console.log('DROP:');
-
-        const droppedItems = getDroppedItems(
-          selectedMob.drop,
-        );
-
-        console.log(droppedItems);
-
-        await this.battleService.createBattle(
-          userId,
-          {
-            mobId: Number(selectedMob.mobId),
-            mobMinLevel: Number(
-              selectedMob.minLevel,
-            ),
-            mobMaxLevel: Number(
-              selectedMob.maxLevel,
-            ),
-            dropArray: droppedItems,
-          },
-        );
-      }
-
-      return this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          [axis]: user[axis] + direction,
-        },
-      });
+    if (!tile || tile.blocked) {
+      return;
     }
 
     if (tile.action_name === 'TELEPORT') {
@@ -194,15 +66,98 @@ export class ExploreService {
       });
     }
 
-    if (!tile.blocked) {
-      return this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          [axis]: user[axis] + direction,
-        },
-      });
+    if (!isEmpty(tile.actionMobSpawns)) {
+      const mobSpawns =
+        await this.prisma.actionMobSpawn.findMany(
+          {
+            where: {
+              mapTiles: {
+                some: {
+                  mapTile: {
+                    id: tile.id,
+                  },
+                },
+              },
+            },
+            include: {
+              drop: true,
+            },
+          },
+        );
+
+      const selectedMob =
+        this.randomMobOrNull(mobSpawns);
+
+      if (selectedMob) {
+        const droppedItems = this.getItemsToDrop(
+          selectedMob.drop,
+        );
+
+        await this.battleService.createBattle(
+          userId,
+          {
+            mobId: Number(selectedMob.mobId),
+            mobMinLevel: Number(
+              selectedMob.minLevel,
+            ),
+            mobMaxLevel: Number(
+              selectedMob.maxLevel,
+            ),
+            dropArray: droppedItems,
+          },
+        );
+      }
     }
+
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        [axis]: user[axis] + direction,
+      },
+    });
+  }
+
+  getItemsToDrop(dropItems) {
+    const itemsToDrop = [];
+
+    for (const item of dropItems) {
+      const randomValue = Math.random() * 100;
+      if (randomValue <= item.dropRate) {
+        const quantity =
+          Math.floor(
+            Math.random() *
+              (item.quantityMax -
+                item.quantityMin),
+          ) + item.quantityMin;
+        for (let j = 0; j < quantity; j++) {
+          itemsToDrop.push(item);
+        }
+      }
+    }
+
+    return itemsToDrop;
+  }
+
+  randomMobOrNull(mobSpawns) {
+    let totalSpawnRate = 0;
+    mobSpawns.forEach((mobSpawn) => {
+      totalSpawnRate += mobSpawn.spawnRate;
+    });
+
+    const randomNumber = Math.random() * 100;
+
+    if (randomNumber < totalSpawnRate) {
+      let currentRate = 0;
+      for (let i = 0; i < mobSpawns.length; i++) {
+        currentRate += mobSpawns[i].spawnRate;
+        if (randomNumber < currentRate) {
+          return mobSpawns[i];
+        }
+      }
+    }
+
+    return null;
   }
 }
