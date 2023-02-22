@@ -1,3 +1,4 @@
+import { ItemModule } from './../item/item.module';
 import {
   forwardRef,
   Module,
@@ -10,7 +11,11 @@ import { BattleService } from './battle.service';
 @Module({
   controllers: [BattleController],
   providers: [BattleService],
-  imports: [UserModule, MobSpawnModule],
+  imports: [
+    UserModule,
+    MobSpawnModule,
+    ItemModule,
+  ],
   exports: [BattleService],
 })
 export class BattleModule {}

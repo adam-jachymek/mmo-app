@@ -20,4 +20,12 @@ export class ActionItemDropDto {
   @IsNumber()
   @IsOptional()
   dropRate: number;
+
+  @IsNumber()
+  @IsOptional()
+  quantityMin: number;
+
+  @IsNumber()
+  @IsOptional()
+  quantityMax: number;
 }

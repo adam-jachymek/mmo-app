@@ -10,6 +10,8 @@ export const createActionItemDrop = async (data: {
   values: {
     itemId?: string;
     dropRate?: number;
+    quantityMin?: number;
+    quantityMax?: number;
   };
   actionMobId?: number;
 }) => {
@@ -26,6 +28,8 @@ export const updateActionItemDrop = async (data: {
     id?: number;
     itemId?: string;
     dropRate?: number;
+    quantityMin?: number;
+    quantityMax?: number;
   };
   actionMobId?: number;
 }) => {

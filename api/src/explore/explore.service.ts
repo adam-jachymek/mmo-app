@@ -56,6 +56,9 @@ export class ExploreService {
                 },
               },
             },
+            include: {
+              drop: true,
+            },
           },
         );
 
@@ -77,6 +80,17 @@ export class ExploreService {
           }
         }
 
+        const dropItems = [
+          {
+            id: 1,
+            dropRate: 30,
+          },
+          {
+            id: 2,
+            dropRate: 50,
+          },
+        ];
+
         return null;
       }
 
@@ -85,6 +99,57 @@ export class ExploreService {
       );
 
       if (selectedMob) {
+        function getDroppedItems(dropItems) {
+          const totalDropRate = dropItems.reduce(
+            (sum, item) => sum + item.dropRate,
+            0,
+          );
+          const items = [];
+          const count = Math.floor(
+            Math.random() *
+              (dropItems.length + 1),
+          );
+
+          for (let i = 0; i < count; i++) {
+            const randomValue =
+              Math.random() * 100;
+            let accumulatedDropRate = 0;
+
+            for (const item of dropItems) {
+              accumulatedDropRate +=
+                item.dropRate;
+              if (
+                randomValue <= accumulatedDropRate
+              ) {
+                const quantity =
+                  Math.floor(
+                    Math.random() *
+                      (item.quantityMax -
+                        item.quantityMin),
+                  ) + item.quantityMin;
+                for (
+                  let j = 0;
+                  j < quantity;
+                  j++
+                ) {
+                  items.push(item);
+                }
+                break;
+              }
+            }
+          }
+
+          return items;
+        }
+
+        console.log('DROP:');
+
+        const droppedItems = getDroppedItems(
+          selectedMob.drop,
+        );
+
+        console.log(droppedItems);
+
         await this.battleService.createBattle(
           userId,
           {
@@ -95,6 +160,7 @@ export class ExploreService {
             mobMaxLevel: Number(
               selectedMob.maxLevel,
             ),
+            dropArray: droppedItems,
           },
         );
       }

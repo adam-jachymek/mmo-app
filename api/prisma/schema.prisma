@@ -165,6 +165,7 @@ model MobSpawn {
   defence Int?
   giveExp Int?
   sprite String?
+  actionItemDropIds Int[]
 
   mob Mob @relation(fields: [mobId], references: [id])
   mobId Int
@@ -256,6 +257,8 @@ model ActionItemDrop {
   item ItemPrototype @relation(fields: [itemId], references: [id])
   itemId Int
   dropRate Int
+  quantityMin Int
+  quantityMax Int
 }
 
 model Battle {
@@ -272,6 +275,7 @@ model Battle {
   userTurn     Boolean?
   battleEnded  Boolean?
   youWin       Boolean?
+  itemDropIds  Int[]
   youLost      Boolean?
 
   @@map("battle")

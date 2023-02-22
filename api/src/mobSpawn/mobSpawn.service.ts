@@ -52,6 +52,7 @@ export class MobSpawnService {
           defence: mob.defence * mobLevel,
           giveExp: mob.giveExp * mobLevel,
           sprite: mob.sprite,
+          actionItemDropIds: dto.dropItemsIds,
         },
         include: {
           mob: true,

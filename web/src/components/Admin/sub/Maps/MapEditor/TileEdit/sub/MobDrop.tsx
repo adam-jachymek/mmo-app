@@ -58,7 +58,13 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
   }, [itemsPrototypeData, dropItems]);
 
   const dropForm = useFormik({
-    initialValues: { id: undefined, itemId: "", dropRate: 0 },
+    initialValues: {
+      id: undefined,
+      itemId: "",
+      dropRate: undefined,
+      quantityMin: 1,
+      quantityMax: 1,
+    },
     onSubmit: (values, { resetForm }) => {
       setOpenModal(false);
       resetForm();
@@ -104,6 +110,10 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
               <p className="mob-drop__item-info-item">
                 <label className="mob-drop__item-info-label">drop rate: </label>
                 {item.dropRate}%
+              </p>
+              <p className="mob-drop__item-info-item">
+                <label className="mob-drop__item-info-label">quantity: </label>
+                {item.quantityMin} - {item.quantityMax}
               </p>
             </div>
           </li>
@@ -168,6 +178,34 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
               value={dropForm.values.dropRate}
               onChange={(value) => dropForm.setFieldValue("dropRate", value)}
             />
+            <div className="settings__inputs">
+              <Input.Wrapper label="Min Quantity" required>
+                <Input
+                  value={dropForm.values.quantityMin}
+                  type="number"
+                  size="xs"
+                  onChange={(e: any) =>
+                    dropForm.setFieldValue(
+                      "quantityMin",
+                      Number(e.target.value)
+                    )
+                  }
+                />
+              </Input.Wrapper>
+              <Input.Wrapper label="Max Quantity" required>
+                <Input
+                  value={dropForm.values.quantityMax}
+                  type="number"
+                  size="xs"
+                  onChange={(e: any) =>
+                    dropForm.setFieldValue(
+                      "quantityMax",
+                      Number(e.target.value)
+                    )
+                  }
+                />
+              </Input.Wrapper>
+            </div>
             <div className="mob-drop__buttons-wrapper">
               <Button color="green" type="submit">
                 {isEdit ? "Update" : "Add"}

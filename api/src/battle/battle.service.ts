@@ -1,11 +1,9 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { ItemService } from './../item/item.service';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { MobSpawnService } from 'src/mobSpawn/mobSpawn.service';
 import { UserService } from 'src/user/user.service';
+import { ActionItemDrop } from '@prisma/client';
 
 @Injectable()
 export class BattleService {
@@ -13,6 +11,7 @@ export class BattleService {
     private prisma: PrismaService,
     private readonly mobSpawnService: MobSpawnService,
     private readonly userService: UserService,
+    private readonly itemService: ItemService,
   ) {}
 
   async createBattle(
@@ -21,13 +20,19 @@ export class BattleService {
       mobId: number;
       mobMinLevel: number;
       mobMaxLevel: number;
+      dropArray?: ActionItemDrop[];
     },
   ) {
+    const dropIds = values.dropArray?.map(
+      (drop) => drop.itemId,
+    );
+
     const mobSpawned =
       await this.mobSpawnService.createMobSpawn({
         mobId: values.mobId,
         minLevel: values.mobMinLevel,
         maxLevel: values.mobMaxLevel,
+        dropItemsIds: dropIds,
       });
 
     const battle =
@@ -135,6 +140,7 @@ export class BattleService {
       mobs: mobs,
       mobAnimation: mobAnimation,
       playerAnimation: playerAnimation,
+      itemDropIds: getBattle.itemDropIds,
     };
   }
 
@@ -288,39 +294,6 @@ export class BattleService {
     });
   }
 
-  async youWin(battleId: number) {
-    const battle = this.getBattle(battleId);
-    const usersInBattle = (await battle).users;
-    const mobsInBattle = (await battle).mobs;
-
-    const activeUser = (await battle).activeUser;
-    const activeMob = (await battle).activeMob;
-
-    await this.userService.giveExp(
-      activeUser,
-      activeMob.giveExp,
-    );
-
-    await this.prisma.mobSpawn.update({
-      where: {
-        id: activeMob.id,
-      },
-      data: {
-        hp: 0,
-      },
-    });
-
-    await this.prisma.battle.update({
-      where: {
-        id: battleId,
-      },
-      data: {
-        battleEnded: true,
-        youWin: true,
-      },
-    });
-  }
-
   async attackUser(
     battleId: number,
     userId: number,
@@ -349,6 +322,58 @@ export class BattleService {
         });
       }
     }
+  }
+
+  async youWin(battleId: number) {
+    const battle = this.getBattle(battleId);
+    const usersInBattle = (await battle).users;
+    const mobsInBattle = (await battle).mobs;
+
+    const activeUser = (await battle).activeUser;
+    const activeMob = (await battle).activeMob;
+
+    await this.userService.giveExp(
+      activeUser,
+      activeMob.giveExp,
+    );
+
+    const generatedItemIds = await Promise.all(
+      activeMob.actionItemDropIds.map(
+        async (id: number) => {
+          const createdItem =
+            await this.itemService.createItem(
+              activeUser,
+              { itemPrototypeId: id },
+            );
+          return createdItem.id;
+        },
+      ),
+    );
+
+    console.log(
+      'generatedItemIds',
+      generatedItemIds,
+    );
+
+    await this.prisma.mobSpawn.update({
+      where: {
+        id: activeMob.id,
+      },
+      data: {
+        hp: 0,
+      },
+    });
+
+    await this.prisma.battle.update({
+      where: {
+        id: battleId,
+      },
+      data: {
+        battleEnded: true,
+        youWin: true,
+        itemDropIds: generatedItemIds,
+      },
+    });
   }
 
   async youLost(battleId: number) {

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
@@ -13,7 +13,12 @@ import youwin from "./audio/youwin.mp3";
 import wasted from "./audio/wasted.mp3";
 import useSounds from "../../hooks/useSounds";
 
+import { getItems } from "api/endpoints";
+import { useQuery } from "react-query";
+
 import "./styles.sass";
+import ItemModal from "../ItemModal";
+import { isEmpty } from "lodash";
 
 type Props = {
   currentUser: User;
@@ -25,6 +30,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   let navigate = useNavigate();
   const { id: paramsBattleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [itemModal, setItemModal] = useState({ isVisible: false, item: {} });
   const [lostModal, setLostModal] = useState(false);
   const [battle, setBattle] = useState<any>({});
   const [music, { stop: stopMusic }] = useSound(battleMusic);
@@ -37,6 +43,17 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   }, [music]);
 
   const battleId = Number(paramsBattleId) || propsBattleId;
+
+  const { data: itemsData, refetch: refetchItems } = useQuery(
+    ["getItemsToDrop", battle?.itemDropIds],
+    getItems
+  );
+
+  const dropItems = useMemo(() => {
+    return battle?.itemDropIds?.map((id: number) =>
+      itemsData?.find((item: any) => item.id === id)
+    );
+  }, [battle?.itemDropIds, itemsData]);
 
   useEffect(() => {
     battleId && socket.emit("joinBattle", battleId.toString());
@@ -69,6 +86,10 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
 
   useSounds(battle.mobAnimation || battle.playerAnimation);
 
+  const handleCloseItemModal = () => {
+    setItemModal({ ...itemModal, isVisible: false });
+  };
+
   return (
     <>
       <div className="fight">
@@ -96,7 +117,31 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
         {battle?.mobs?.map((mob: any) => (
           <div className="fight__modal">
             <h3 className="fight__modal-title">You Win!</h3>
-            <p>You got: {mob?.giveExp} EXP</p>
+            <p style={{ marginTop: 10 }}>You got: {mob?.giveExp} EXP</p>
+            {!isEmpty(dropItems) && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              >
+                {dropItems?.map((item: any) => (
+                  <div
+                    onClick={() =>
+                      setItemModal({ isVisible: true, item: item })
+                    }
+                  >
+                    <img
+                      src={`/media/items/${item?.item?.sprite}.png`}
+                      className="inventory__bag-icon"
+                      style={{ height: 64, width: 64 }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
             <Button
               onClick={closeModal}
               variant="outline"
@@ -129,6 +174,14 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
           </Button>
         </div>
       </Modal>
+      {itemModal.isVisible && (
+        <ItemModal
+          handleCloseModal={handleCloseItemModal}
+          isVisible={itemModal.isVisible}
+          item={itemModal.item}
+          refetchItems={refetchItems}
+        />
+      )}
     </>
   );
 };

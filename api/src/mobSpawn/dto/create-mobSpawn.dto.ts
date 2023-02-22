@@ -1,8 +1,8 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
 } from 'class-validator';
 
 export class CreateMobSpawnDto {
@@ -17,4 +17,8 @@ export class CreateMobSpawnDto {
   @IsNumber()
   @IsNotEmpty()
   maxLevel: number;
+
+  @IsArray()
+  @IsOptional()
+  dropItemsIds: number[];
 }
