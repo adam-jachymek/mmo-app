@@ -295,7 +295,7 @@ model UsersInBattle {
 model MobsInBattle {
   battle       Battle     @relation(fields: [battleId], references: [id], onDelete: Cascade)
   battleId     Int
-  mob          MobSpawn @relation(fields: [mobId], references: [id])
+  mob          MobSpawn @relation(fields: [mobId], references: [id], onDelete: Cascade)
   mobId        Int
   assignedAt   DateTime @default(now())
   turn         Boolean?
