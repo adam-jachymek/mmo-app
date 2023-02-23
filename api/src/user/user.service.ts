@@ -70,7 +70,7 @@ export class UserService {
         });
 
       const newHp = Math.floor(
-        updatedUser.hp +
+        updatedUser.maxHp +
           (updatedUser.stamina * updatedUser.hp) /
             100,
       );
