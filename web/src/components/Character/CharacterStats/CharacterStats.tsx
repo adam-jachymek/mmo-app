@@ -46,7 +46,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ stamina: user?.stamina + 1 });
+                  addPoint({ stamina: 1 });
                 }}
               >
                 +
@@ -62,7 +62,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
               <button
                 className="stats__add-button"
                 onClick={() => {
-                  addPoint({ strength: user?.strength + 1 });
+                  addPoint({ strength: 1 });
                 }}
               >
                 +
@@ -70,7 +70,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
             )}
           </span>
         </p>
-        <p className="stats__text">
+        {/* <p className="stats__text">
           <span>Defence:</span>
           <span className="stats__count">
             {user?.defence}
@@ -117,7 +117,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
               </button>
             )}
           </span>
-        </p>
+        </p> */}
         <p className="stats__text"></p>
         <p className="stats__text">
           Attack:{" "}

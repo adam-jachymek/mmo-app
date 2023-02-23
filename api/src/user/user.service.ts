@@ -58,31 +58,37 @@ export class UserService {
       });
 
     if (user.points > 0) {
-      const updatedUser =
-        await this.prisma.user.update({
+      /// STAMINA
+      if (dto.stamina > 0) {
+        const newMaxHp = Math.floor(
+          user.maxHp +
+            (user.stamina * user.hp) / 100,
+        );
+
+        return await this.prisma.user.update({
           where: {
             id: userId,
           },
           data: {
-            ...dto,
+            stamina: user.stamina + 1,
+            maxHp: newMaxHp,
             points: user.points - 1,
           },
         });
+      }
 
-      const newHp = Math.floor(
-        updatedUser.maxHp +
-          (updatedUser.stamina * updatedUser.hp) /
-            100,
-      );
-
-      await this.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          maxHp: newHp,
-        },
-      });
+      /// STRENGHT
+      if (dto.strength > 0) {
+        return await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            strength: user.strength + 1,
+            points: user.points - 1,
+          },
+        });
+      }
     }
 
     delete user.hash;
