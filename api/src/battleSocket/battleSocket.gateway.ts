@@ -83,9 +83,14 @@ export class BattleSocketGateway {
           userId,
         );
 
-      this.sendUpdate(battleId, mobAnimation);
+      this.sendUpdate(
+        battleId,
+        mobAnimation,
+        null,
+        mobAfterAttack.damage,
+      );
 
-      if (mobAfterAttack.hp > 0) {
+      if (mobAfterAttack?.mob.hp > 0) {
         await this.attackUser(battleId, userId);
       } else {
         await this.youWin(battleId);
@@ -109,7 +114,7 @@ export class BattleSocketGateway {
 
     await this.delay(500);
 
-    if (userAfterAttack.hp > 0) {
+    if (userAfterAttack.user.hp > 0) {
       await this.battleService.userTurnChanger(
         battleIdInt,
         true,
@@ -118,6 +123,8 @@ export class BattleSocketGateway {
         battleId,
         null,
         playerAnimation,
+        0,
+        userAfterAttack.damage,
       );
     } else {
       this.youLost(battleId);
@@ -148,6 +155,8 @@ export class BattleSocketGateway {
     battleId: string,
     mobAnimation?: string,
     playerAnimation?: string,
+    userDamage?: number,
+    mobDamage?: number,
   ) {
     const battleSocket = battleId.toString();
 
@@ -156,6 +165,8 @@ export class BattleSocketGateway {
         Number(battleId),
         mobAnimation,
         playerAnimation,
+        userDamage,
+        mobDamage,
       );
 
     this.server

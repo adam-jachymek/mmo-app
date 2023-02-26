@@ -94,10 +94,18 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
     <>
       <div className="fight">
         {battle?.mobs?.map((mob: any) => (
-          <BattleMobs mob={mob} activeAnimation={battle.mobAnimation} />
+          <BattleMobs
+            mob={mob}
+            activeAnimation={battle.mobAnimation}
+            userDamage={battle.userDamage}
+          />
         ))}
         {battle?.users?.map((user: any) => (
-          <BattleUsers user={user} activeAnimation={battle.playerAnimation} />
+          <BattleUsers
+            user={user}
+            activeAnimation={battle.playerAnimation}
+            mobDamage={battle.mobDamage}
+          />
         ))}
         <div className="fight__menu-display">
           <BattleMenu

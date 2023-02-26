@@ -1,3 +1,5 @@
+import { UserSocketGateway } from 'src/userSocket/userSocket.gateway';
+import { UserService } from 'src/user/user.service';
 import {
   ForbiddenException,
   Injectable,
@@ -16,7 +18,10 @@ import {
 
 @Injectable()
 export class ItemService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
   getItems(user: User) {
     return this.prisma.item.findMany({
@@ -73,44 +78,18 @@ export class ItemService {
           user.level,
         );
 
-      const generatedStat = Math.round(
-        (this.generateItemStat(
-          itemPrototype.minStat,
-          itemPrototype.maxStat,
-        ) +
-          generatedLevel) *
-          (1 +
-            this.addQualityBonus(
-              itemPrototype.quality,
-            )),
-      );
-
       return await this.prisma.item.create({
         data: {
           name: itemPrototype.name,
           sprite: itemPrototype.sprite,
           level: generatedLevel,
-          stamina: Math.round(
-            (this.generateItemStat(
-              itemPrototype.minStat,
-              itemPrototype.maxStat,
-            ) +
-              generatedLevel) *
-              (1 +
-                this.addQualityBonus(
-                  itemPrototype.quality,
-                )),
+          stamina: this.generateItemStat(
+            itemPrototype.maxStat,
+            itemPrototype.quality,
           ),
-          defence: Math.round(
-            (this.generateItemStat(
-              itemPrototype.minStat,
-              itemPrototype.maxStat,
-            ) +
-              generatedLevel) *
-              (1 +
-                this.addQualityBonus(
-                  itemPrototype.quality,
-                )),
+          defence: this.generateItemStat(
+            itemPrototype.maxStat,
+            itemPrototype.quality,
           ),
           isEquipment: true,
           quality: itemPrototype.quality,
@@ -133,21 +112,13 @@ export class ItemService {
           name: itemPrototype.name,
           sprite: itemPrototype.sprite,
           level: generatedLevel,
-          minAttack: Math.round(
-            (itemPrototype.minStat +
-              generatedLevel) *
-              (1 +
-                this.addQualityBonus(
-                  itemPrototype.quality,
-                )),
+          minAttack: this.generateItemStat(
+            itemPrototype.minStat,
+            itemPrototype.quality,
           ),
-          maxAttack: Math.round(
-            (itemPrototype.maxStat +
-              generatedLevel) *
-              (1 +
-                this.addQualityBonus(
-                  itemPrototype.quality,
-                )),
+          maxAttack: this.generateItemStat(
+            itemPrototype.maxStat,
+            itemPrototype.quality,
           ),
           itemPrototypeId: dto.itemPrototypeId,
           isEquipment: true,
@@ -169,28 +140,6 @@ export class ItemService {
         actionAmount: itemPrototype.actionAmount,
       },
     });
-  }
-
-  addQualityBonus(quality: ItemQuality) {
-    if (quality === ItemQuality.COMMON) {
-      return 0;
-    }
-
-    if (quality === ItemQuality.UNCOMMON) {
-      return 0.05;
-    }
-
-    if (quality === ItemQuality.RARE) {
-      return 0.1;
-    }
-
-    if (quality === ItemQuality.EPIC) {
-      return 0.15;
-    }
-
-    if (quality === ItemQuality.LEGENDARY) {
-      return 0.2;
-    }
   }
 
   generateItemLevel(
@@ -243,16 +192,35 @@ export class ItemService {
     return rand;
   }
 
-  generateItemStat(min: number, max: number) {
-    const difference = max - min;
+  generateItemStat(
+    stat: number,
+    quality: ItemQuality,
+  ) {
+    const qualityBonus = () => {
+      if (quality === ItemQuality.COMMON) {
+        return 0;
+      }
 
-    let rand = Math.random();
+      if (quality === ItemQuality.UNCOMMON) {
+        return 5;
+      }
 
-    rand = Math.floor(rand * difference);
+      if (quality === ItemQuality.RARE) {
+        return 10;
+      }
 
-    rand = rand + min;
+      if (quality === ItemQuality.EPIC) {
+        return 15;
+      }
 
-    return rand;
+      if (quality === ItemQuality.LEGENDARY) {
+        return 20;
+      }
+    };
+
+    return Math.floor(
+      stat * (1 + qualityBonus() / 100),
+    );
   }
 
   async equipItem(
@@ -297,13 +265,16 @@ export class ItemService {
           equip: false,
         },
       });
+      await this.userService.updateUserAttack(
+        userId,
+      );
     }
 
     if (
       item.isEquipment ||
       item.type === ItemType.BAG
     ) {
-      return await this.prisma.item.update({
+      await this.prisma.item.update({
         where: {
           id: itemId,
         },
@@ -311,6 +282,10 @@ export class ItemService {
           equip: !item.equip,
         },
       });
+
+      await this.userService.updateUserAttack(
+        userId,
+      );
     }
   }
 

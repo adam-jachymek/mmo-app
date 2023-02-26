@@ -3,8 +3,9 @@ import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { deleteItem, equipItem } from "api/endpoints";
-import { EquipItem } from "/types";
+import { EquipItem, User } from "/types";
 import ConfirmModal from "../ConfirmModal";
+import { socket } from "api/socket";
 
 import "./styles.sass";
 
@@ -13,6 +14,7 @@ type Props = {
   isVisible: boolean;
   item: EquipItem | undefined;
   refetchItems: () => void;
+  user?: User;
 };
 
 const ItemModal = ({
@@ -20,11 +22,13 @@ const ItemModal = ({
   isVisible,
   item,
   refetchItems,
+  user,
 }: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { mutate: equipThisItem } = useMutation(equipItem, {
     onSuccess: (response) => {
       refetchItems();
+      socket.emit("updateUser", { userId: user?.id });
     },
   });
 

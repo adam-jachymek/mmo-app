@@ -75,6 +75,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
         isVisible={Boolean(activeItem)}
         handleCloseModal={() => setActiveItem(undefined)}
         refetchItems={refetchItems}
+        user={user}
       />
     </>
   );

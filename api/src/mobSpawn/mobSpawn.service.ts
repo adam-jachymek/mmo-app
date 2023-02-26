@@ -45,8 +45,12 @@ export class MobSpawnService {
         data: {
           name: mob.name,
           level: mobLevel,
-          hp: mob.hp * mobLevel,
-          maxHp: mob.hp * mobLevel,
+          hp: Math.floor(
+            (mob.hp * mobLevel) / 1.5,
+          ),
+          maxHp: Math.floor(
+            (mob.hp * mobLevel) / 1.5,
+          ),
           mobId: dto.mobId,
           attack: mob.attack * mobLevel,
           defence: mob.defence * mobLevel,

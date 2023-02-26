@@ -81,6 +81,8 @@ export class BattleService {
     battleId: number,
     mobAnimation?: string,
     playerAnimation?: string,
+    userDamage?: number,
+    mobDamage?: number,
   ) {
     const getBattle =
       await this.prisma.battle.findUnique({
@@ -102,6 +104,9 @@ export class BattleService {
           },
         },
       });
+
+    const userDmg = userDamage || null;
+    const mobDmg = mobDamage || null;
 
     const users = getBattle.usersInBattle.map(
       (user) => ({
@@ -139,6 +144,8 @@ export class BattleService {
       users: users,
       mobs: mobs,
       mobAnimation: mobAnimation,
+      userDamage: userDmg,
+      mobDamage: mobDmg,
       playerAnimation: playerAnimation,
       itemDropIds: getBattle.itemDropIds,
     };
@@ -261,22 +268,32 @@ export class BattleService {
 
     if (userId === activeUser.id) {
       if (activeMob.hp > 0) {
-        const damage = this.generateRandomDamage(
-          activeUser.strength,
-          activeUser.strength * 2,
-        );
+        const generatedDamage =
+          this.generateRandomDamage(
+            activeUser.minAttack /
+              (1 +
+                activeMob.defence /
+                  (260 + activeMob.defence)),
+            activeUser.maxAttack /
+              (1 +
+                activeMob.defence /
+                  (260 + activeMob.defence)),
+          );
 
-        return await this.prisma.mobSpawn.update({
-          where: {
-            id: activeMob.id,
-          },
-          data: {
-            hp: activeMob.hp - damage,
-          },
-        });
+        return {
+          mob: await this.prisma.mobSpawn.update({
+            where: {
+              id: activeMob.id,
+            },
+            data: {
+              hp: activeMob.hp - generatedDamage,
+            },
+          }),
+          damage: generatedDamage,
+        };
       }
 
-      return activeMob;
+      return { mob: activeMob, damage: 0 };
     }
   }
 
@@ -305,21 +322,34 @@ export class BattleService {
     const activeUser = (await battle).activeUser;
     const activeMob = (await battle).activeMob;
 
+    const minMobAttack = activeMob.attack / 2;
+    const maxMobAttack = activeMob.attack;
+
+    const generatedDamage =
+      this.generateRandomDamage(
+        minMobAttack /
+          (1 +
+            activeUser.defence /
+              (260 + activeUser.defence)),
+        maxMobAttack /
+          (1 +
+            activeUser.defence /
+              (260 + activeUser.defence)),
+      );
+
     if (userId === activeUser.id) {
       if (activeUser.hp > 0) {
-        return this.prisma.user.update({
-          where: {
-            id: activeUser.id,
-          },
-          data: {
-            hp:
-              activeUser.hp -
-              this.generateRandomDamage(
-                1,
-                activeMob.attack,
-              ),
-          },
-        });
+        return {
+          user: await this.prisma.user.update({
+            where: {
+              id: activeUser.id,
+            },
+            data: {
+              hp: activeUser.hp - generatedDamage,
+            },
+          }),
+          damage: generatedDamage,
+        };
       }
     }
   }
@@ -348,11 +378,6 @@ export class BattleService {
           return createdItem.id;
         },
       ),
-    );
-
-    console.log(
-      'generatedItemIds',
-      generatedItemIds,
     );
 
     await this.prisma.mobSpawn.update({
@@ -432,10 +457,14 @@ export class BattleService {
       },
     });
 
-    const battleDelete = this.prisma.battle.delete({
-      where: { id: battleId },
-    });
+    const battleDelete =
+      this.prisma.battle.delete({
+        where: { id: battleId },
+      });
 
-    await this.prisma.$transaction([ userUpdate, battleDelete ])
+    await this.prisma.$transaction([
+      userUpdate,
+      battleDelete,
+    ]);
   }
 }

@@ -17,20 +17,6 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
     },
   });
 
-  const attack = () => {
-    const weapon = { min: 7, max: 17 };
-
-    const strength = 60;
-
-    const halfbaseAttack = 60 + weapon.min;
-    const baseAttack = 120 + weapon.max;
-
-    return {
-      min: Math.floor((halfbaseAttack * strength) / 100 + halfbaseAttack),
-      max: Math.floor((baseAttack * strength) / 100 + baseAttack),
-    };
-  };
-
   return (
     <div className="stats">
       <div className="stats__wrapper">
@@ -70,7 +56,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
             )}
           </span>
         </p>
-        {/* <p className="stats__text">
+        <p className="stats__text">
           <span>Defence:</span>
           <span className="stats__count">
             {user?.defence}
@@ -117,20 +103,16 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
               </button>
             )}
           </span>
-        </p> */}
+        </p>
         <p className="stats__text"></p>
         <p className="stats__text">
           Attack:{" "}
           <span className="stats__count">
-            {attack().min} - {attack().max}
+            {user.minAttack} - {user.maxAttack}
           </span>
         </p>
         <p className="stats__text">
-          Armor:{" "}
-          <span className="stats__count">
-            {Math.floor(120 + (120 * user.defence) / 100 / 2)} -{" "}
-            {Math.floor(120 + (120 * user.defence) / 100)}
-          </span>
+          Armor: <span className="stats__count">{user.defence}</span>
         </p>
       </div>
     </div>

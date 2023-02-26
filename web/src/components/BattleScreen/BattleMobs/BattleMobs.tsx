@@ -1,23 +1,14 @@
 import { Progress } from "@mantine/core";
 import { Mob } from "/types";
 import BattleAnimations from "../BattleAnimations";
-import useSound from "use-sound";
-import attackMob from "./audio/attack_mob.mp3";
 
 type Props = {
   mob: Mob;
   activeAnimation: string;
+  userDamage: number;
 };
 
-const BattleMobs = ({ mob, activeAnimation }: Props) => {
-  const [attackSound] = useSound(attackMob);
-
-  // useEffect(() => {
-  //   if (activeAnimation) {
-  //     attackSound();
-  //   }
-  // }, [activeAnimation]);
-
+const BattleMobs = ({ mob, activeAnimation, userDamage }: Props) => {
   return (
     <div className="fight__mob">
       <div className="fight__mob-info">
@@ -36,10 +27,12 @@ const BattleMobs = ({ mob, activeAnimation }: Props) => {
           />
         </div>
       </div>
+
       <div className="fight__mob-sprite">
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}
+        <div>{userDamage}</div>
         <img
           className="fight__mob-img"
           src={`/media/mobs/${mob?.sprite}.png`}

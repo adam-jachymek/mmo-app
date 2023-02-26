@@ -65,6 +65,9 @@ model User {
   eqStamina Int? @default(0)
   eqDefence Int? @default(0)
 
+  minAttack Int? @default(0)
+  maxAttack Int? @default(0)
+
   mapId Int? @default(1)
   x Int? @default(2)
   y Int? @default(2)

@@ -24,6 +24,8 @@ export type User = {
   intelligence: number;
   x: number;
   y: number;
+  minAttack: number;
+  maxAttack: number;
 };
 
 export type ItemPrototype = {

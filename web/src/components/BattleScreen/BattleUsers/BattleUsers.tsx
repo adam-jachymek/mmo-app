@@ -9,9 +9,10 @@ import bite from "./audio/bite.mp3";
 type Props = {
   user: any;
   activeAnimation: string;
+  mobDamage: number;
 };
 
-const BattleUsers = ({ user, activeAnimation }: Props) => {
+const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
   const [playDamage] = useSound(bite);
 
   // useEffect(() => {
@@ -23,6 +24,7 @@ const BattleUsers = ({ user, activeAnimation }: Props) => {
   return (
     <div className="fight__player">
       <div className="fight__players-avatars">
+        <div>{mobDamage}</div>
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}

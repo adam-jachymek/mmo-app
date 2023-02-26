@@ -186,6 +186,10 @@ const Items = () => {
               data={[
                 { value: "POTION", label: "POTION" },
                 { value: "BAG", label: "BAG" },
+                { value: "MATERIAL", label: "MATERIAL" },
+                { value: "FOOD", label: "FOOD" },
+                { value: "OTHER", label: "OTHER" },
+                { value: "QUEST ITEM", label: "QUEST ITEM" },
               ]}
               onChange={(value) => itemsForm.setFieldValue("type", value)}
               value={itemsForm.values.type}

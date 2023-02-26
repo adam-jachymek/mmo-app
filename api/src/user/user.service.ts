@@ -1,6 +1,6 @@
 import { StatsUserDto } from './dto/stats.dto';
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ItemType, User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
 
@@ -61,8 +61,7 @@ export class UserService {
       /// STAMINA
       if (dto.stamina > 0) {
         const newMaxHp = Math.floor(
-          user.maxHp +
-            (user.stamina * user.hp) / 100,
+          user.maxHp + (1.5 * user.maxHp) / 100,
         );
 
         return await this.prisma.user.update({
@@ -72,6 +71,7 @@ export class UserService {
           data: {
             stamina: user.stamina + 1,
             maxHp: newMaxHp,
+            hp: newMaxHp,
             points: user.points - 1,
           },
         });
@@ -79,7 +79,7 @@ export class UserService {
 
       /// STRENGHT
       if (dto.strength > 0) {
-        return await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             id: userId,
           },
@@ -89,11 +89,74 @@ export class UserService {
           },
         });
       }
+
+      /// DEFENCE
+      if (dto.defence > 0) {
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            defence: user.defence + 1,
+            points: user.points - 1,
+          },
+        });
+      }
+
+      await this.updateUserAttack(userId);
     }
 
     delete user.hash;
 
     return user;
+  }
+
+  async updateUserAttack(userId: number) {
+    const equipedWeapon =
+      await this.prisma.item.findFirst({
+        where: {
+          userId: userId,
+          equip: true,
+          type: ItemType.WEAPON,
+        },
+        include: {
+          item: true,
+        },
+      });
+
+    const user =
+      await this.prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+    const equipedWeaponMinAttack =
+      equipedWeapon?.minAttack || 0;
+
+    const equipedWeaponMaxAttack =
+      equipedWeapon?.maxAttack || 0;
+
+    const minBaseAttack =
+      user.strength + equipedWeaponMinAttack;
+    const maxBaseAttack =
+      user.strength + equipedWeaponMaxAttack;
+
+    const minAttack = Math.floor(
+      (minBaseAttack * user.strength) / 2 / 100 +
+        minBaseAttack,
+    );
+
+    const maxAttack = Math.floor(
+      (maxBaseAttack * user.strength) / 100 +
+        maxBaseAttack,
+    );
+
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        minAttack: minAttack,
+        maxAttack: maxAttack,
+      },
+    });
   }
 
   async healUser(userId: number) {
@@ -136,7 +199,6 @@ export class UserService {
           points: 5 * level_count + user.points,
           exp: userExp,
           maxExp: nextLevelExpLimit,
-          maxHp: 20 * level_count + user.maxHp,
         },
       });
     }
