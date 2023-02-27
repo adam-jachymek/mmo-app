@@ -6,6 +6,7 @@ import { deleteItem, equipItem } from "api/endpoints";
 import { EquipItem, User } from "/types";
 import ConfirmModal from "../ConfirmModal";
 import { socket } from "api/socket";
+import { assets_url } from "config";
 
 import "./styles.sass";
 
@@ -68,7 +69,7 @@ const ItemModal = ({
           <BiTrash />
         </Button>
       </div>
-      <img src={`/media/items/${item?.sprite}.png`} className="modal__icon" />
+      <img src={`${assets_url}/${item?.sprite}`} className="modal__icon" />
       <div className="modal__info">
         <h3>{item?.name}</h3>
         <h4>{item?.level} lvl</h4>

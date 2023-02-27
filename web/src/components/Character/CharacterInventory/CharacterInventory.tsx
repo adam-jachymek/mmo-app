@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useMemo } from "react";
 import { Item } from "/types";
+import { assets_url } from "config";
 
 import "./styles.sass";
 
@@ -38,7 +39,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
         >
           {bag && (
             <img
-              src={`/media/items/${bag.item.sprite}.png`}
+              src={`${assets_url}/${bag.sprite}`}
               className="inventory__bag-icon"
             />
           )}
@@ -67,7 +68,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
         >
           {inventoryItem && (
             <img
-              src={`/media/items/${inventoryItem.item.sprite}.png`}
+              src={`${assets_url}/${inventoryItem.sprite}`}
               className="inventory__item-icon"
             />
           )}

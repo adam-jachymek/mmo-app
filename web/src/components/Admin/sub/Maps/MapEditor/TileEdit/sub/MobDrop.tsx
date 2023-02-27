@@ -10,6 +10,7 @@ import {
   updateActionItemDrop,
 } from "api/endpoints/actionItemDrop";
 import { getSelectData } from "../utils";
+import { assets_url } from "config";
 
 type Props = {
   SelectItem: any;
@@ -95,14 +96,11 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
         {dropList?.map((item: any, index: number) => (
           <li
             className="mob-drop__item"
-            style={{ marginTop: 10, marginBottom: 10, cursor: "pointer" }}
+            onClick={() => {
+              openItem(item);
+            }}
           >
-            <div
-              className="mob-drop__item-info"
-              onClick={() => {
-                openItem(item);
-              }}
-            >
+            <div className="mob-drop__item-info">
               <p className="mob-drop__item-info-item">
                 <label className="mob-drop__item-info-label">item: </label>
                 {item.name}
@@ -116,6 +114,10 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
                 {item.quantityMin} - {item.quantityMax}
               </p>
             </div>
+            <img
+              className="mob-drop__item-info-sprite"
+              src={`${assets_url}/${item.sprite}`}
+            />
           </li>
         ))}
       </ul>

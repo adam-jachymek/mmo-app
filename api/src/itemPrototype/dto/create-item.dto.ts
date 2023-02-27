@@ -18,10 +18,6 @@ export class CreateItemDto {
 
   @IsString()
   @IsOptional()
-  sprite?: string;
-
-  @IsString()
-  @IsOptional()
   description?: string;
 
   @IsNumber()

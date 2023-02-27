@@ -46,6 +46,22 @@ export class ItemPrototypeService {
     return items;
   }
 
+  async createSprite(
+    itemId: number,
+    sprite: Express.Multer.File,
+  ) {
+    return await this.prisma.itemPrototype.update(
+      {
+        where: {
+          id: itemId,
+        },
+        data: {
+          sprite: sprite.path,
+        },
+      },
+    );
+  }
+
   async editItemById(
     userId: number,
     itemsId: number,

@@ -6,7 +6,7 @@ export const createUser = async (values: {
   username: string;
   avatar: string;
 }) => {
-  const response = await api.post("/auth/signup", values);
+  const response = await api.post("auth/signup", values);
 
   localStorage.setItem("userToken", response.data.access_token);
 
@@ -17,7 +17,7 @@ export const loginUser = async (values: {
   email: string;
   password: string;
 }) => {
-  const response = await api.post("/auth/signin", values);
+  const response = await api.post("auth/signin", values);
 
   localStorage.setItem("userToken", response.data.access_token);
 
@@ -25,14 +25,14 @@ export const loginUser = async (values: {
 };
 
 export const getUser = async () => {
-  const response = await api.get("/users/me");
+  const response = await api.get("users/me");
 
   return response.data;
 };
 
 export const createItem = async (values: {
   name: string;
-  sprite?: string;
+  sprite?: string | Blob;
   description?: string;
   minStat?: number;
   maxStat?: number;
@@ -41,49 +41,69 @@ export const createItem = async (values: {
   quality?: string;
   actionAmount?: number;
 }) => {
-  const response = await api.post("/item_prototype/", values);
+  const response = await api.post("item_prototype", values);
 
   return response.data;
 };
 
 export const getItems = async () => {
-  const response = await api.get("/item/");
+  const response = await api.get("item");
 
   return response.data;
 };
 
 export const getItemsAdmin = async () => {
-  const response = await api.get("/item_prototype");
+  const response = await api.get("item_prototype");
+
+  return response.data;
+};
+
+export const createItemSprite = async (values: {
+  itemId: number;
+  name: string;
+  type: string;
+  sprite: string | Blob;
+}) => {
+  const formData = new FormData();
+
+  formData.append("name", values.name);
+  formData.append("type", values.type);
+  formData.append("sprite", values.sprite);
+
+  const response = await api.post(
+    `item_prototype/sprite/${values.itemId}`,
+    formData
+  );
 
   return response.data;
 };
 
 export const deletePrototypeItem = async (itemId: number) => {
-  const response = await api.delete(`/item_prototype/${itemId}`);
+  const response = await api.delete(`item_prototype/${itemId}`);
 
   return response.data;
 };
 
 export const deleteItem = async (itemId?: number) => {
-  const response = await api.delete(`/item/${itemId}`);
+  const response = await api.delete(`item/${itemId}`);
 
   return response.data;
 };
 
 export const generateItem = async (values: { itemPrototypeId: number }) => {
-  const response = await api.post("/item", values);
+  const response = await api.post("item", values);
 
   return response.data;
 };
 
 export const getMobs = async () => {
-  const response = await api.get("/mobs");
+  const response = await api.get("mobs");
 
   return response.data;
 };
 
 export const deleteMob = async (mobId: number) => {
-  const response = await api.delete(`/mobs/${mobId}`);
+  const response = await api.delete(`mobs/${mobId}`);
 
   return response.data;
 };

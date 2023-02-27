@@ -1,3 +1,4 @@
+import { itemUpload } from 'src/config/itemUpload.config';
 import {
   Body,
   Controller,
@@ -10,7 +11,9 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GetUser } from '../auth/decorator';
 import { Header } from 'src/auth/decorator/request-header';
@@ -20,6 +23,7 @@ import {
   CreateItemDto,
   EditItemDto,
 } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtGuard)
 @Controller('item_prototype')
@@ -51,13 +55,27 @@ export class ItemPrototypeController {
   }
 
   @Post()
-  createItems(
+  createItem(
     @GetUser('id') userId: number,
     @Body() dto: CreateItemDto,
   ) {
     return this.ItemPrototypeService.createItem(
       userId,
       dto,
+    );
+  }
+
+  @UseInterceptors(
+    FileInterceptor('sprite', itemUpload),
+  )
+  @Post('sprite/:id')
+  createSprite(
+    @Param('id', ParseIntPipe) itemId: number,
+    @UploadedFile() sprite: Express.Multer.File,
+  ) {
+    return this.ItemPrototypeService.createSprite(
+      itemId,
+      sprite,
     );
   }
 

@@ -1,3 +1,4 @@
+import { mapSpriteUpload } from './../config/mapSpriteUpload.config';
 import { MapSpritesService } from './mapSprites.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import {
@@ -16,7 +17,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerOptions } from 'src/config/multerOptions.config';
 
 @UseGuards(JwtGuard)
 @Controller('map_sprites')
@@ -36,7 +36,7 @@ export class MapSpritesController {
   }
 
   @UseInterceptors(
-    FileInterceptor('file', multerOptions),
+    FileInterceptor('file', mapSpriteUpload),
   )
   @Post()
   createSprite(

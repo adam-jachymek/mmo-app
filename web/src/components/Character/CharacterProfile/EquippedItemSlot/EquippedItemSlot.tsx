@@ -1,3 +1,4 @@
+import { assets_url } from "config";
 import { Item } from "/types";
 
 type Props = {
@@ -19,7 +20,7 @@ const EquippedItemSlot = ({ equippedItem, openItemModal }: Props) => {
           }}
         >
           <img
-            src={`/media/items/${equippedItem.sprite}.png`}
+            src={`${assets_url}/${equippedItem.sprite}`}
             className="profile__item-icon"
           />
         </div>

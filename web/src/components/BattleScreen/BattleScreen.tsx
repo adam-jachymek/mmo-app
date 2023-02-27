@@ -15,10 +15,12 @@ import useSounds from "../../hooks/useSounds";
 
 import { getItems } from "api/endpoints";
 import { useQuery } from "react-query";
+import { assets_url } from "config";
+
+import { isEmpty } from "lodash";
+import ItemModal from "../ItemModal";
 
 import "./styles.sass";
-import ItemModal from "../ItemModal";
-import { isEmpty } from "lodash";
 
 type Props = {
   currentUser: User;
@@ -142,7 +144,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
                     }
                   >
                     <img
-                      src={`/media/items/${item?.item?.sprite}.png`}
+                      src={`${assets_url}/${item?.item?.sprite}`}
                       className="inventory__bag-icon"
                       style={{ height: 64, width: 64 }}
                     />

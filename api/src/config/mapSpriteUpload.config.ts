@@ -10,7 +10,7 @@ import { Request } from 'express';
 var FTPStorage = require('multer-ftp');
 var FTP = require('ftp');
 
-export const multerOptions: MulterOptions = {
+export const mapSpriteUpload: MulterOptions = {
   limits: {
     fileSize: 1024 * 1024 * 50, // 50MB
   },

@@ -6,13 +6,30 @@ import {
   getItemsAdmin,
   generateItem,
   deletePrototypeItem,
+  createItemSprite,
 } from "api/endpoints";
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
-import { Switch, Select, TextInput, Textarea } from "@mantine/core";
+import {
+  Switch,
+  Select,
+  TextInput,
+  Textarea,
+  FileInput,
+  Modal,
+} from "@mantine/core";
 import { Button } from "@mantine/core";
+import { useState } from "react";
+import { assets_url } from "config";
 
 const Items = () => {
+  const [editModal, setEditModal] = useState({
+    visible: false,
+    itemId: 0,
+    name: "",
+    type: "",
+    sprite: "",
+  });
   const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
     "getItemsAdmin",
     getItemsAdmin
@@ -24,6 +41,12 @@ const Items = () => {
   );
 
   const { mutate: addItem } = useMutation(createItem, {
+    onSuccess: (response) => {
+      refetchItemsPrototype();
+    },
+  });
+
+  const { mutate: addSprite } = useMutation(createItemSprite, {
     onSuccess: (response) => {
       refetchItemsPrototype();
     },
@@ -65,65 +88,118 @@ const Items = () => {
     },
   });
 
-  return (
-    <div className="admin__section">
-      <h2 className="admin__title-items">Items Prototype</h2>
-      <form className="admin__form-items" onSubmit={itemsForm.handleSubmit}>
-        <TextInput
-          label="name"
-          required
-          className="admin__main-input"
-          name="name"
-          onChange={itemsForm.handleChange}
-          value={itemsForm.values.name}
-        />
-        <TextInput
-          label="sprite"
-          className="admin__main-input"
-          name="sprite"
-          onChange={itemsForm.handleChange}
-          value={itemsForm.values.sprite}
-        />
-        <Textarea
-          label="description"
-          className="admin__main-input admin__main-desc"
-          name="description"
-          onChange={itemsForm.handleChange}
-          value={itemsForm.values.description}
-        />
+  const handleSaveSprite = () => {
+    addSprite({
+      itemId: editModal.itemId,
+      name: editModal.name,
+      type: editModal.type,
+      sprite: editModal.sprite,
+    });
+    setEditModal({ ...editModal, visible: false });
+  };
 
-        <Switch
-          label="isEquipment"
-          size="md"
-          className="admin__switch"
-          onChange={(event: any) => {
-            itemsForm.setFieldValue(
-              "isEquipment",
-              event?.currentTarget.checked
-            );
-          }}
-          checked={itemsForm.values.isEquipment}
-        />
-        {itemsForm.values.isEquipment ? (
-          <div>
-            <div className="admin__main-input-flex">
-              <TextInput
-                label="minStat"
-                className="admin__main-input"
-                name="minStat"
-                type="number"
-                onChange={itemsForm.handleChange}
-                value={itemsForm.values.minStat}
-              />
-              <TextInput
-                label="maxStat"
-                className="admin__main-input"
-                name="maxStat"
-                type="number"
-                onChange={itemsForm.handleChange}
-                value={itemsForm.values.maxStat}
-              />
+  return (
+    <>
+      <div className="admin__section">
+        <h2 className="admin__title-items">Items Prototype</h2>
+        <form className="admin__form-items" onSubmit={itemsForm.handleSubmit}>
+          <TextInput
+            label="name"
+            required
+            className="admin__main-input"
+            name="name"
+            onChange={itemsForm.handleChange}
+            value={itemsForm.values.name}
+          />
+          <Textarea
+            label="description"
+            className="admin__main-input admin__main-desc"
+            name="description"
+            onChange={itemsForm.handleChange}
+            value={itemsForm.values.description}
+          />
+
+          <Switch
+            label="isEquipment"
+            size="md"
+            className="admin__switch"
+            onChange={(event: any) => {
+              itemsForm.setFieldValue(
+                "isEquipment",
+                event?.currentTarget.checked
+              );
+            }}
+            checked={itemsForm.values.isEquipment}
+          />
+          {itemsForm.values.isEquipment ? (
+            <div>
+              <div className="admin__main-input-flex">
+                <TextInput
+                  label="minStat"
+                  className="admin__main-input"
+                  name="minStat"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.minStat}
+                />
+                <TextInput
+                  label="maxStat"
+                  className="admin__main-input"
+                  name="maxStat"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.maxStat}
+                />
+              </div>
+              <div className="admin__main-input-flex">
+                <Select
+                  classNames={{
+                    root: "admin__input-select",
+                    label: "admin__input-select-label",
+                  }}
+                  label="type"
+                  searchable
+                  size="sm"
+                  clearable
+                  placeholder="Pick one"
+                  name="type"
+                  data={[
+                    { value: "HEAD", label: "HEAD" },
+                    { value: "CHEST", label: "CHEST" },
+                    { value: "WEAPON", label: "WEAPON" },
+                    { value: "OFFHAND", label: "OFFHAND" },
+                    { value: "LEGS", label: "LEGS" },
+                  ]}
+                  onChange={(value) => itemsForm.setFieldValue("type", value)}
+                  value={itemsForm.values.type}
+                />
+                <Select
+                  classNames={{
+                    root: "admin__input-select",
+                    label: "admin__input-select-label",
+                  }}
+                  label="quality"
+                  searchable
+                  clearable
+                  size="sm"
+                  placeholder="Pick one"
+                  name="type"
+                  data={[
+                    { value: "RANDOM", label: "RANDOM" },
+                    { value: "COMMON", label: "COMMON" },
+                    { value: "UNCOMMON", label: "UNCOMMON" },
+                    { value: "RARE", label: "RARE" },
+                    { value: "EPIC", label: "EPIC" },
+                    { value: "LEGENDARY", label: "LEGENDARY" },
+                  ]}
+                  onChange={(value) =>
+                    itemsForm.setFieldValue("quality", value)
+                  }
+                  value={itemsForm.values.quality}
+                />
+              </div>
             </div>
+          ) : (
             <div className="admin__main-input-flex">
               <Select
                 classNames={{
@@ -137,174 +213,165 @@ const Items = () => {
                 placeholder="Pick one"
                 name="type"
                 data={[
-                  { value: "HEAD", label: "HEAD" },
-                  { value: "CHEST", label: "CHEST" },
-                  { value: "WEAPON", label: "WEAPON" },
-                  { value: "OFFHAND", label: "OFFHAND" },
-                  { value: "LEGS", label: "LEGS" },
+                  { value: "POTION", label: "POTION" },
+                  { value: "BAG", label: "BAG" },
+                  { value: "MATERIAL", label: "MATERIAL" },
+                  { value: "FOOD", label: "FOOD" },
+                  { value: "OTHER", label: "OTHER" },
+                  { value: "QUEST ITEM", label: "QUEST ITEM" },
                 ]}
                 onChange={(value) => itemsForm.setFieldValue("type", value)}
                 value={itemsForm.values.type}
               />
-              <Select
-                classNames={{
-                  root: "admin__input-select",
-                  label: "admin__input-select-label",
-                }}
-                label="quality"
-                searchable
-                clearable
-                size="sm"
-                placeholder="Pick one"
-                name="type"
-                data={[
-                  { value: "RANDOM", label: "RANDOM" },
-                  { value: "COMMON", label: "COMMON" },
-                  { value: "UNCOMMON", label: "UNCOMMON" },
-                  { value: "RARE", label: "RARE" },
-                  { value: "EPIC", label: "EPIC" },
-                  { value: "LEGENDARY", label: "LEGENDARY" },
-                ]}
-                onChange={(value) => itemsForm.setFieldValue("quality", value)}
-                value={itemsForm.values.quality}
+              <TextInput
+                label="actionAmount"
+                className="admin__main-input"
+                name="actionAmount"
+                type="number"
+                onChange={itemsForm.handleChange}
+                value={itemsForm.values.actionAmount}
               />
             </div>
-          </div>
-        ) : (
-          <div className="admin__main-input-flex">
-            <Select
-              classNames={{
-                root: "admin__input-select",
-                label: "admin__input-select-label",
-              }}
-              label="type"
-              searchable
-              size="sm"
-              clearable
-              placeholder="Pick one"
-              name="type"
-              data={[
-                { value: "POTION", label: "POTION" },
-                { value: "BAG", label: "BAG" },
-                { value: "MATERIAL", label: "MATERIAL" },
-                { value: "FOOD", label: "FOOD" },
-                { value: "OTHER", label: "OTHER" },
-                { value: "QUEST ITEM", label: "QUEST ITEM" },
-              ]}
-              onChange={(value) => itemsForm.setFieldValue("type", value)}
-              value={itemsForm.values.type}
-            />
-            <TextInput
-              label="actionAmount"
-              className="admin__main-input"
-              name="actionAmount"
-              type="number"
-              onChange={itemsForm.handleChange}
-              value={itemsForm.values.actionAmount}
-            />
-          </div>
-        )}
-        <Button
-          className="admin__main-submit"
-          type="submit"
-          color="green"
-          size="md"
-        >
-          Add Item
-        </Button>
-      </form>
-      <table className="admin__item-list">
-        <tr className="admin__item-list-tr">
-          <th>Name</th>
-          <th>Min Stat</th>
-          <th>Max Stat</th>
-          <th>Eq</th>
-          <th>Type</th>
-          <th>Quality</th>
-          <th>Sprite</th>
-          <th>Action</th>
-        </tr>
-        {itemsPrototypeData?.map((prototype: ItemPrototype) => (
-          <tr key={prototype.id} className="admin__item">
-            <td>{prototype.name}</td>
-            <td>{prototype.minStat}</td>
-            <td>{prototype.maxStat}</td>
-            <td>{prototype.isEquipment?.toString()}</td>
-            <td>{prototype.type}</td>
-            <td>{prototype.quality}</td>
-            <td className="admin__item-icon">
-              <span>{prototype.sprite}</span>
-              {prototype.sprite && (
-                <img
-                  className="admin__item-img"
-                  src={`/media/items/${prototype.sprite}.png`}
-                />
-              )}
-            </td>
-            <td className="admin__item-list-button">
-              <Button
-                color="green"
-                size="xs"
-                onClick={() => {
-                  generate({ itemPrototypeId: prototype.id });
-                }}
-              >
-                Generate Item
-              </Button>
-              <Button
-                color="red"
-                size="xs"
-                onClick={() => {
-                  deletePrototype(prototype.id);
-                }}
-              >
-                Delete
-              </Button>
-            </td>
+          )}
+          <Button
+            className="admin__main-submit"
+            type="submit"
+            color="green"
+            size="md"
+          >
+            Add Item
+          </Button>
+        </form>
+        <table className="admin__item-list">
+          <tr className="admin__item-list-tr">
+            <th>Name</th>
+            <th>Min Stat</th>
+            <th>Max Stat</th>
+            <th>Eq</th>
+            <th>Type</th>
+            <th>Quality</th>
+            <th>Sprite</th>
+            <th>Action</th>
           </tr>
-        ))}
-      </table>
-      <h2 className="admin__title-items admin__title-generated">
-        Generated Items
-      </h2>
-      <table className="admin__item-list">
-        <tr className="admin__item-list-tr">
-          <th>Name</th>
-          <th>Min Attack</th>
-          <th>Max Attack</th>
-          <th>Stamina</th>
-          <th>Defence</th>
-          <th>Quality</th>
-          <th>Level</th>
-          <th>User</th>
-          <th>Action</th>
-        </tr>
-        {itemsData?.map((item: Item) => (
-          <tr key={item.id} className="admin__item">
-            <td>{item.item.name}</td>
-            <td>{item.minAttack}</td>
-            <td>{item.maxAttack}</td>
-            <td>{item.stamina}</td>
-            <td>{item.defence}</td>
-            <td>{item.quality}</td>
-            <td>{item.level}</td>
-            <td>{item.user.username}</td>
-            <td>
-              <Button
-                m="5px"
-                color="red"
-                size="xs"
-                onClick={() => {
-                  deleteUserItem(item.id);
-                }}
-              >
-                Delete
-              </Button>
-            </td>
+          {itemsPrototypeData?.map((prototype: ItemPrototype) => (
+            <tr key={prototype.id} className="admin__item">
+              <td>{prototype.name}</td>
+              <td>{prototype.minStat}</td>
+              <td>{prototype.maxStat}</td>
+              <td>{prototype.isEquipment?.toString()}</td>
+              <td>{prototype.type}</td>
+              <td>{prototype.quality}</td>
+              <td>
+                <div className="admin__item-icon">
+                  {prototype.sprite && (
+                    <img
+                      className="admin__item-img"
+                      src={`${assets_url}/${prototype.sprite}`}
+                    />
+                  )}
+                  <Button
+                    compact
+                    onClick={() =>
+                      setEditModal({
+                        ...editModal,
+                        itemId: prototype.id,
+                        name: prototype.name,
+                        type: prototype.type,
+                        visible: true,
+                      })
+                    }
+                  >
+                    {prototype.sprite ? "Edit" : "Add"}
+                  </Button>
+                </div>
+              </td>
+              <td className="admin__item-list-button">
+                <Button
+                  color="green"
+                  size="xs"
+                  onClick={() => {
+                    generate({ itemPrototypeId: prototype.id });
+                  }}
+                >
+                  Generate Item
+                </Button>
+                <Button
+                  color="red"
+                  size="xs"
+                  onClick={() => {
+                    deletePrototype(prototype.id);
+                  }}
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </table>
+        <h2 className="admin__title-items admin__title-generated">
+          Generated Items
+        </h2>
+        <table className="admin__item-list">
+          <tr className="admin__item-list-tr">
+            <th>Name</th>
+            <th>Min Attack</th>
+            <th>Max Attack</th>
+            <th>Stamina</th>
+            <th>Defence</th>
+            <th>Quality</th>
+            <th>Level</th>
+            <th>User</th>
+            <th>Action</th>
           </tr>
-        ))}
-      </table>
-    </div>
+          {itemsData?.map((item: Item) => (
+            <tr key={item.id} className="admin__item">
+              <td>{item.item.name}</td>
+              <td>{item.minAttack}</td>
+              <td>{item.maxAttack}</td>
+              <td>{item.stamina}</td>
+              <td>{item.defence}</td>
+              <td>{item.quality}</td>
+              <td>{item.level}</td>
+              <td>{item.user.username}</td>
+              <td>
+                <Button
+                  m="5px"
+                  color="red"
+                  size="xs"
+                  onClick={() => {
+                    deleteUserItem(item.id);
+                  }}
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </table>
+      </div>
+      <Modal
+        centered
+        opened={editModal.visible}
+        onClose={() => setEditModal({ ...editModal, visible: false })}
+        title="Sprite"
+      >
+        <div>
+          <FileInput
+            placeholder="Upload sprite"
+            onChange={(file: any) => {
+              setEditModal({ ...editModal, sprite: file });
+            }}
+          />
+          <Button
+            color="green"
+            style={{ marginTop: 20, width: "100%" }}
+            onClick={handleSaveSprite}
+          >
+            Save
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 };
 
