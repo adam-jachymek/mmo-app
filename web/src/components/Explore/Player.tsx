@@ -5,6 +5,7 @@ type Props = {
     id: number;
     username: string;
     avatar: string;
+    level: number;
     hp: number;
     maxHp: number;
     battleId: number | null;
@@ -47,6 +48,7 @@ const Player = ({ player, userId, tileX, tileY }: Props) => {
               className="explore__avatar"
               src={`/media/avatars/${player?.avatar}.png`}
             />
+            <div className="explore__level-player">{player?.level}</div>
           </div>
         </div>
       );

@@ -14,7 +14,7 @@ const ConfirmModal = ({
   onCancelAction,
 }: Props) => {
   return (
-    <Modal opened={isVisible} onClose={onCancelAction} title={title}>
+    <Modal opened={isVisible} onClose={onCancelAction} title={title} centered>
       <Button color="green" onClick={onConfirmAction}>
         CONFIRM
       </Button>

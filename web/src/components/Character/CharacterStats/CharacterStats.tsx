@@ -72,7 +72,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
             )}
           </span>
         </p>
-        <p className="stats__text">
+        {/* <p className="stats__text">
           <span>Dexterity:</span>
           <span className="stats__count">
             {user?.dexterity}
@@ -103,7 +103,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
               </button>
             )}
           </span>
-        </p>
+        </p> */}
         <p className="stats__text"></p>
         <p className="stats__text">
           Attack:{" "}

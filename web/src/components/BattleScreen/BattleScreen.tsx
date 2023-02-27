@@ -153,7 +153,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
               variant="outline"
               color="green"
               size="md"
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 20 }}
             >
               CLOSE
             </Button>
@@ -186,6 +186,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
           isVisible={itemModal.isVisible}
           item={itemModal.item}
           refetchItems={refetchItems}
+          hideAction
         />
       )}
     </>

@@ -10,6 +10,7 @@ type Props = {
       id: number;
       username: string;
       avatar: string;
+      level: number;
       hp: number;
       maxHp: number;
       battleId: number | null;

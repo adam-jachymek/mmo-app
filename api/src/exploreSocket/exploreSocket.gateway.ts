@@ -50,6 +50,7 @@ export class ExploreSocketGateway {
       id: user.id,
       username: user.username,
       avatar: user.avatar,
+      level: user.level,
       hp: user.hp,
       maxHp: user.maxHp,
       battleId: user.battleId,

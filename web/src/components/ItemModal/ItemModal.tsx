@@ -16,6 +16,7 @@ type Props = {
   item: EquipItem | undefined;
   refetchItems: () => void;
   user?: User;
+  hideAction?: boolean;
 };
 
 const ItemModal = ({
@@ -24,6 +25,7 @@ const ItemModal = ({
   item,
   refetchItems,
   user,
+  hideAction,
 }: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { mutate: equipThisItem } = useMutation(equipItem, {
@@ -87,16 +89,18 @@ const ItemModal = ({
         )}
       </div>
       <div className="modal__buttons">
-        <Button
-          variant="outline"
-          color="lime"
-          onClick={() => {
-            equipThisItem(item?.id);
-            handleCloseModal();
-          }}
-        >
-          {item?.equip ? "UNEQUIP" : "EQUIP"}
-        </Button>
+        {!hideAction && (
+          <Button
+            variant="outline"
+            color="lime"
+            onClick={() => {
+              equipThisItem(item?.id);
+              handleCloseModal();
+            }}
+          >
+            {item?.equip ? "UNEQUIP" : "EQUIP"}
+          </Button>
+        )}
         {item?.type === "POTION" && (
           <Button variant="outline" color="lime" onClick={handleCloseModal}>
             USE

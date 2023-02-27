@@ -11,11 +11,9 @@ import {
   NUMBER_OF_VISIBLE_TILES,
 } from "./utils";
 import { socket } from "api/socket";
+import Players from "./Players";
 
 import "./styles.sass";
-import { isEmpty } from "lodash";
-import Player from "./Players";
-import Players from "./Players";
 
 type Props = {
   user: User;
@@ -28,6 +26,7 @@ const Explore = ({ user }: Props) => {
         id: number;
         username: string;
         avatar: string;
+        level: number;
         hp: number;
         maxHp: number;
         battleId: number | null;
@@ -57,40 +56,6 @@ const Explore = ({ user }: Props) => {
         setPlayers(response);
       });
   }, [mapId, socket]);
-
-  const player = (tileX: number, tileY: number) => {
-    players?.map((player) => {
-      if (player.id !== user.id) {
-        if (tileX === player?.x && tileY === player?.y) {
-          console.log("render", player);
-          return (
-            <div className="explore__player">
-              <div className="explore__username">{player?.username}</div>
-              <div className="player__avatar-wrapper">
-                <RingProgress
-                  sections={[
-                    {
-                      value: (player?.hp / player?.maxHp) * 100,
-                      color: "red",
-                    },
-                  ]}
-                  rootColor="#373A40"
-                  roundCaps={false}
-                  style={{ position: "absolute", top: -4, left: -4 }}
-                  size={58}
-                  thickness={2}
-                />
-                <img
-                  className="explore__avatar"
-                  src={`/media/avatars/${player?.avatar}.png`}
-                />
-              </div>
-            </div>
-          );
-        }
-      }
-    });
-  };
 
   const renderMap = useMemo(() => {
     let tiles = [];
@@ -142,6 +107,7 @@ const Explore = ({ user }: Props) => {
                     className="explore__avatar"
                     src={`/media/avatars/${user?.avatar}.png`}
                   />
+                  <div className="explore__level">{user?.level}</div>
                 </div>
               </div>
             )}
@@ -150,7 +116,7 @@ const Explore = ({ user }: Props) => {
       }
     }
     return tiles;
-  }, [mapData, user, players, player]);
+  }, [mapData, user, players]);
 
   if (isFetching) {
     return <Loader />;
@@ -161,7 +127,7 @@ const Explore = ({ user }: Props) => {
       <div className="explore">
         <div className="explore__screen">
           <ul className="explore__tiles">
-            <div className="explore__protection"></div>
+            {/* <div className="explore__protection"></div> */}
             {renderMap}
           </ul>
         </div>
