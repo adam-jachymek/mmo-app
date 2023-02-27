@@ -66,16 +66,12 @@
   &__player
     display: flex
     margin-top: 120px
-    align-items: center
-    flex-direction: row-reverse
+    margin-bottom: 20px
+    gap: 20px
     justify-content: center
 
   &__player-info
-    width: 150px
-    height: 160px
-    border-radius: 10px
-    margin-left: 20px
-    margin-right: 20px
+    position: relative
 
   &__player-info-display
     display: flex
@@ -103,9 +99,12 @@
     font-size: 16px
 
   &__player-img
+    position: relative
     height: 150px
+    border-radius: 10px
 
   &__players-img
+    position: relative
     width: 110px
     height: 100px
     border: 2px solid #880808
@@ -120,15 +119,11 @@
 
   &__mob
     display: flex
-    flex-direction: row-reverse
     justify-content: center
+    gap: 20px
+    padding-top: 20px
 
   &__mob-info
-    margin-right: 10px
-    margin-top: 29px
-    width: 140px
-    height: 120px
-    border-radius: 10px
     position: relative
 
   &__mob-info-text-display
@@ -140,6 +135,18 @@
     margin: 0px
     padding: 1px
     font-size: 20px
+
+  &__user-damage
+    position: absolute
+    font-size: 22px
+    color: red
+    right: 0
+
+  &__mob-damage
+    position: absolute
+    font-size: 22px
+    color: red
+    left: 0
 
   &__mob-attack
     z-index: 10
@@ -161,14 +168,6 @@
     margin-top: 10px
 
   &__mob-sprite
-    width: 150px
-    display: flex
-    gap: 30px
-    margin-right: 30px
-    margin-top: 30px
-    align-items: flex-start
-    justify-content: flex-start
-    flex-direction: row-reverse
     position: relative
 
   &__mob-img
@@ -189,12 +188,6 @@
 
   &__players-avatars
     position: relative
-    display: flex
-    gap: 30px
-    margin-right: 20px
-    margin-bottom: 30px
-    align-items: flex-end
-    justify-content: flex-end
 
   &__button
     color: #fff
@@ -212,10 +205,45 @@
     &:hover
       background-color: #fd1e1e80
 
-
   &__modal
     text-align: center
 
   &__modal-title
-    margin: 0
+    margin-bottom: 20px
     padding: 0
+    font-size: 22px
+    font-weight: bold
+
+  &__modal-items-wrapper
+    display: flex
+    justify-content: center
+    gap: 10px
+    margin: 20px 0
+
+  &__modal-item-sprite
+    cursor: pointer
+    border: 2px solid #a7a7a7
+    border-radius: 5px
+    height: 70px
+    width: 70px
+
+
+.common
+  border-color: #ffffff
+  color: #ffffff
+
+.uncommon
+  border-color: #1EFF00
+  color: #1EFF00
+
+.rare
+  border-color: #0070FF
+  color: #0070FF
+
+.epic
+  border-color: #a335ee
+  color: #a335ee
+
+.legendary
+  border-color: #ff8000
+  color: #ff8000

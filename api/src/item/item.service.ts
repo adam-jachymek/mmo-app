@@ -1,11 +1,9 @@
-import { UserSocketGateway } from 'src/userSocket/userSocket.gateway';
 import { UserService } from 'src/user/user.service';
 import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import {
-  ItemPrototype,
   ItemQuality,
   ItemType,
   User,
@@ -15,6 +13,7 @@ import {
   CreateItemDto,
   EditItemDto,
 } from './dto';
+import { ItemQualityBonus } from './constants';
 
 @Injectable()
 export class ItemService {
@@ -107,6 +106,9 @@ export class ItemService {
           user.level,
         );
 
+      const generatedQuality =
+        this.generateQuality();
+
       return await this.prisma.item.create({
         data: {
           name: itemPrototype.name,
@@ -114,15 +116,15 @@ export class ItemService {
           level: generatedLevel,
           minAttack: this.generateItemStat(
             itemPrototype.minStat,
-            itemPrototype.quality,
+            generatedQuality,
           ),
           maxAttack: this.generateItemStat(
             itemPrototype.maxStat,
-            itemPrototype.quality,
+            generatedQuality,
           ),
           itemPrototypeId: dto.itemPrototypeId,
           isEquipment: true,
-          quality: itemPrototype.quality,
+          quality: generatedQuality,
           userId: user.id,
           type: itemPrototype.type,
         },
@@ -142,84 +144,39 @@ export class ItemService {
     });
   }
 
-  generateItemLevel(
-    quality: ItemQuality,
-    userLevel: number,
-  ) {
-    const calculateMinLevel = () => {
-      if (quality === ItemQuality.COMMON) {
-        return 1;
-      }
+  generateQuality = () => {
+    const random = Math.floor(
+      Math.random() * 100,
+    );
 
-      if (quality === ItemQuality.UNCOMMON) {
-        const minLevel = userLevel - 30;
-        if (minLevel < 1) {
-          return 1;
-        }
-        return minLevel;
-      }
-
-      if (quality === ItemQuality.RARE) {
-        const minLevel = userLevel - 20;
-        if (minLevel < 1) {
-          return 1;
-        }
-        return minLevel;
-      }
-
-      if (quality === ItemQuality.EPIC) {
-        const minLevel = userLevel - 10;
-        if (minLevel < 1) {
-          return 1;
-        }
-        return minLevel;
-      }
-
-      if (quality === ItemQuality.LEGENDARY) {
-        return userLevel;
-      }
-    };
-
-    const difference =
-      userLevel - calculateMinLevel();
-
-    let rand = Math.random();
-
-    rand = Math.floor(rand * difference);
-
-    rand = rand + calculateMinLevel();
-
-    return rand;
-  }
+    if (random <= 0.1) {
+      return ItemQuality.LEGENDARY;
+    }
+    if (random <= 1) {
+      return ItemQuality.EPIC;
+    }
+    if (random <= 5) {
+      return ItemQuality.RARE;
+    }
+    if (random <= 30) {
+      return ItemQuality.UNCOMMON;
+    }
+    if (random <= 100) {
+      return ItemQuality.COMMON;
+    }
+  };
 
   generateItemStat(
     stat: number,
     quality: ItemQuality,
   ) {
-    const qualityBonus = () => {
-      if (quality === ItemQuality.COMMON) {
-        return 0;
-      }
-
-      if (quality === ItemQuality.UNCOMMON) {
-        return 5;
-      }
-
-      if (quality === ItemQuality.RARE) {
-        return 10;
-      }
-
-      if (quality === ItemQuality.EPIC) {
-        return 15;
-      }
-
-      if (quality === ItemQuality.LEGENDARY) {
-        return 20;
-      }
-    };
-
     return Math.floor(
-      stat * (1 + qualityBonus() / 100),
+      stat *
+        (1 +
+          ItemQualityBonus[quality]
+            .statProcentMultiplier /
+            100) +
+        ItemQualityBonus[quality].statAdd,
     );
   }
 
@@ -334,5 +291,55 @@ export class ItemService {
         id: itemsId,
       },
     });
+  }
+
+  generateItemLevel(
+    quality: ItemQuality,
+    userLevel: number,
+  ) {
+    const calculateMinLevel = () => {
+      if (quality === ItemQuality.COMMON) {
+        return 1;
+      }
+
+      if (quality === ItemQuality.UNCOMMON) {
+        const minLevel = userLevel - 30;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.RARE) {
+        const minLevel = userLevel - 20;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.EPIC) {
+        const minLevel = userLevel - 10;
+        if (minLevel < 1) {
+          return 1;
+        }
+        return minLevel;
+      }
+
+      if (quality === ItemQuality.LEGENDARY) {
+        return userLevel;
+      }
+    };
+
+    const difference =
+      userLevel - calculateMinLevel();
+
+    let rand = Math.random();
+
+    rand = Math.floor(rand * difference);
+
+    rand = rand + calculateMinLevel();
+
+    return rand;
   }
 }

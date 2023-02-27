@@ -19,6 +19,7 @@ import { assets_url } from "config";
 
 import { isEmpty } from "lodash";
 import ItemModal from "../ItemModal";
+import classNames from "classnames";
 
 import "./styles.sass";
 
@@ -129,14 +130,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
             <h3 className="fight__modal-title">You Win!</h3>
             <p style={{ marginTop: 10 }}>You got: {mob?.giveExp} EXP</p>
             {!isEmpty(dropItems) && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: 10,
-                  marginBottom: 10,
-                }}
-              >
+              <div className="fight__modal-items-wrapper">
                 {dropItems?.map((item: any) => (
                   <div
                     onClick={() =>
@@ -145,8 +139,10 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
                   >
                     <img
                       src={`${assets_url}/${item?.item?.sprite}`}
-                      className="inventory__bag-icon"
-                      style={{ height: 64, width: 64 }}
+                      className={classNames(
+                        "fight__modal-item-sprite",
+                        item?.quality?.toLowerCase()
+                      )}
                     />
                   </div>
                 ))}
@@ -157,7 +153,6 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
               variant="outline"
               color="green"
               size="md"
-              style={{ marginTop: 10 }}
             >
               CLOSE
             </Button>

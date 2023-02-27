@@ -12,6 +12,7 @@ const BattleMobs = ({ mob, activeAnimation, userDamage }: Props) => {
   return (
     <div className="fight__mob">
       <div className="fight__mob-info">
+        <div className="fight__user-damage">{userDamage}</div>
         <div className="fight__mob-info-text-display">
           <h2 className="fight__mob-info-text">{mob?.name}</h2>
           <h3 className="fight__mob-info-text">Level: {mob?.level}</h3>
@@ -32,7 +33,6 @@ const BattleMobs = ({ mob, activeAnimation, userDamage }: Props) => {
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}
-        <div>{userDamage}</div>
         <img
           className="fight__mob-img"
           src={`/media/mobs/${mob?.sprite}.png`}

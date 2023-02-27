@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
 import ExploreButtons from "./ExploreButtons";
-import { Loader } from "@mantine/core";
+import { Loader, Progress, RingProgress } from "@mantine/core";
 import { User } from "/types";
 import { assets_url } from "config";
 import {
@@ -23,6 +23,10 @@ const Explore = ({ user }: Props) => {
   const { data: mapData, isFetching } = useQuery(["getMapById", mapId], () =>
     getMapById(mapId.toString())
   );
+
+  const ringHp = (user.hp / user.maxHp) * 100;
+
+  console.log("ringHp", ringHp);
 
   const renderMap = useMemo(() => {
     let tiles = [];
@@ -53,12 +57,24 @@ const Explore = ({ user }: Props) => {
               </div>
             )}
             {tile.x === user.x && tile.y === user.y && (
-              <div>
+              <div className="explore__player">
                 <div className="explore__username">{user.username}</div>
-                <img
-                  className="explore__avatar"
-                  src={`/media/avatars/${user?.avatar}.png`}
-                />
+                <div className="explore__avatar-wrapper">
+                  <RingProgress
+                    sections={[
+                      { value: (user.hp / user.maxHp) * 100, color: "red" },
+                    ]}
+                    rootColor="#373A40"
+                    roundCaps={false}
+                    style={{ position: "absolute", top: -4, left: -4 }}
+                    size={58}
+                    thickness={2}
+                  />
+                  <img
+                    className="explore__avatar"
+                    src={`/media/avatars/${user?.avatar}.png`}
+                  />
+                </div>
               </div>
             )}
           </li>
@@ -66,7 +82,7 @@ const Explore = ({ user }: Props) => {
       }
     }
     return tiles;
-  }, [mapData, user.x, user.y]);
+  }, [mapData, user]);
 
   if (isFetching) {
     return <Loader />;
@@ -77,7 +93,7 @@ const Explore = ({ user }: Props) => {
       <div className="explore">
         <div className="explore__screen">
           <ul className="explore__tiles">
-            <div className="explore__protection"></div>
+            {/* <div className="explore__protection"></div> */}
             {renderMap}
           </ul>
         </div>

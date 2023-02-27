@@ -24,7 +24,6 @@ const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
   return (
     <div className="fight__player">
       <div className="fight__players-avatars">
-        <div>{mobDamage}</div>
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}
@@ -34,6 +33,7 @@ const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
         />
       </div>
       <div className="fight__player-info">
+        <div className="fight__mob-damage">{mobDamage}</div>
         <div className="fight__player-info-display">
           <h2 className="fight__player-info-text">{user?.username}</h2>
           <h3 className="fight__player-info-text">Level: {user?.level}</h3>

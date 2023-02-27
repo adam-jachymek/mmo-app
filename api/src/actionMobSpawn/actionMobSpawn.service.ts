@@ -108,12 +108,6 @@ export class ActionMobSpawnService {
         },
         data: {
           ...dto,
-          mapTiles: {
-            deleteMany: {
-              actionMobSpawnId: actionMobSpawnId,
-            },
-            create: mapTilesData,
-          },
         },
       },
     );
