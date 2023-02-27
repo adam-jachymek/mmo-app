@@ -153,6 +153,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
               variant="outline"
               color="green"
               size="md"
+              style={{ marginTop: 10 }}
             >
               CLOSE
             </Button>
