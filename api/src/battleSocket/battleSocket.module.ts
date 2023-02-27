@@ -1,3 +1,4 @@
+import { ExploreSocketModule } from './../exploreSocket/exploreSocket.module';
 import { UserSocketModule } from './../userSocket/userSocket.module';
 import { Module } from '@nestjs/common';
 import { BattleSocketService } from './battleSocket.service';
@@ -9,7 +10,11 @@ import { BattleModule } from 'src/battle/battle.module';
     BattleSocketGateway,
     BattleSocketService,
   ],
-  imports: [BattleModule, UserSocketModule],
+  imports: [
+    BattleModule,
+    UserSocketModule,
+    ExploreSocketModule,
+  ],
   exports: [BattleSocketGateway],
 })
 export class BattleSocketModule {}

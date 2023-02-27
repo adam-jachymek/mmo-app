@@ -1,3 +1,5 @@
+import { ExploreSocketGateway } from './../exploreSocket/exploreSocket.gateway';
+import { ExploreSocketService } from './../exploreSocket/exploreSocket.service';
 import { BattleService } from 'src/battle/battle.service';
 import { ExploreService } from './../explore/explore.service';
 import {
@@ -18,6 +20,7 @@ export class UserSocketGateway {
     private readonly userService: UserService,
     private readonly exploreService: ExploreService,
     private readonly battleService: BattleService,
+    private readonly exploreSocket: ExploreSocketGateway,
   ) {}
 
   @SubscribeMessage('connectUser')
@@ -66,13 +69,15 @@ export class UserSocketGateway {
   ) {
     const userIdNumber = Number(userId);
 
-    await this.exploreService.moveUser(
-      userIdNumber,
-      axis,
-      direction,
-    );
+    const user =
+      await this.exploreService.moveUser(
+        userIdNumber,
+        axis,
+        direction,
+      );
 
     this.returnUser(userIdNumber);
+    this.exploreSocket.updatePlayer(user.mapId);
   }
 
   async returnUser(userId: number) {

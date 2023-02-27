@@ -1,3 +1,4 @@
+import { ExploreSocketModule } from './../exploreSocket/exploreSocket.module';
 import { BattleModule } from 'src/battle/battle.module';
 import { ExploreModule } from './../explore/explore.module';
 import {
@@ -17,6 +18,7 @@ import { UserModule } from 'src/user/user.module';
     UserModule,
     ExploreModule,
     BattleModule,
+    ExploreSocketModule,
   ],
   exports: [UserSocketGateway],
 })

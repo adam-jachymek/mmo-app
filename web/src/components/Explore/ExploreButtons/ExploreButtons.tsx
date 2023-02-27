@@ -4,9 +4,10 @@ import "./styles.sass";
 
 type Props = {
   user: any;
+  mapId: number;
 };
 
-const ExploreDpad = ({ user }: Props) => {
+const ExploreDpad = ({ user, mapId }: Props) => {
   return (
     <div className="explore-dpad">
       <div className="explore-dpad__wrapper">
@@ -23,9 +24,7 @@ const ExploreDpad = ({ user }: Props) => {
               direction: -1,
             });
           }}
-        >
-          {/* <img src="/media/explore/joystick-arrow-left.svg" /> */}
-        </button>
+        ></button>
         <button
           className="explore-dpad__right"
           style={{
@@ -39,9 +38,7 @@ const ExploreDpad = ({ user }: Props) => {
               direction: 1,
             });
           }}
-        >
-          {/* <img src="/media/explore/joystick-arrow-right.svg" /> */}
-        </button>
+        ></button>
         <button
           className="explore-dpad__down"
           style={{
@@ -55,9 +52,7 @@ const ExploreDpad = ({ user }: Props) => {
               direction: 1,
             });
           }}
-        >
-          {/* <img src="/media/explore/joystick-arrow-down.svg" /> */}
-        </button>
+        ></button>
         <button
           className="explore-dpad__up"
           style={{

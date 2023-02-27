@@ -15,12 +15,6 @@ type Props = {
 const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
   const [playDamage] = useSound(bite);
 
-  // useEffect(() => {
-  //   if (activeAnimation) {
-  //     playDamage();
-  //   }
-  // }, [activeAnimation]);
-
   return (
     <div className="fight__player">
       <div className="fight__players-avatars">

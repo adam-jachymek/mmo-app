@@ -1,3 +1,4 @@
+import { ExploreSocketGateway } from './../exploreSocket/exploreSocket.gateway';
 import { UserSocketGateway } from 'src/userSocket/userSocket.gateway';
 import {
   WebSocketGateway,
@@ -16,6 +17,7 @@ export class BattleSocketGateway {
   constructor(
     private readonly battleService: BattleService,
     private readonly userSocket: UserSocketGateway,
+    private readonly exploreSocket: ExploreSocketGateway,
   ) {}
 
   @SubscribeMessage('joinBattle')
@@ -125,6 +127,9 @@ export class BattleSocketGateway {
         playerAnimation,
         0,
         userAfterAttack.damage,
+      );
+      this.exploreSocket.updatePlayer(
+        userAfterAttack.user.mapId,
       );
     } else {
       this.youLost(battleId);

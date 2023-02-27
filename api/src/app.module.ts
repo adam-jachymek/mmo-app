@@ -1,3 +1,4 @@
+import { ExploreSocketModule } from './exploreSocket/exploreSocket.module';
 import { ActionItemDropModule } from './actionItemDrop/actionItemDrop.module';
 import { MapSpritesModule } from './mapSprites/mapSprites.module';
 import { Module } from '@nestjs/common';
@@ -43,6 +44,7 @@ import { ActionMobSpawnModule } from './actionMobSpawn/actionMobSpawn.module';
     MapSpritesModule,
     ActionMobSpawnModule,
     ActionItemDropModule,
+    ExploreSocketModule,
   ],
 })
 export class AppModule {}
