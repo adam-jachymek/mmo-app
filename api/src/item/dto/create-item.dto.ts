@@ -10,4 +10,8 @@ export class CreateItemDto {
   @IsNumber()
   @IsNotEmpty()
   itemPrototypeId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  maxLevel: number;
 }

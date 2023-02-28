@@ -1,5 +1,5 @@
 const calculateProgress = (progress: number, maxProgress: number) => {
-  return (progress / maxProgress) * 100;
+  return Math.floor((progress / maxProgress) * 100);
 };
 
 export default calculateProgress;

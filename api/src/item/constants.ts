@@ -6,19 +6,19 @@ export const ItemQualityBonus = {
     statProcentMultiplier: 0,
   },
   [ItemQuality.UNCOMMON]: {
-    statAdd: 1,
+    statAdd: 2,
     statProcentMultiplier: 5,
   },
   [ItemQuality.RARE]: {
-    statAdd: 2,
+    statAdd: 4,
     statProcentMultiplier: 10,
   },
   [ItemQuality.EPIC]: {
-    statAdd: 3,
+    statAdd: 6,
     statProcentMultiplier: 15,
   },
   [ItemQuality.LEGENDARY]: {
-    statAdd: 4,
+    statAdd: 8,
     statProcentMultiplier: 20,
   },
 };

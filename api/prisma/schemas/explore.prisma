@@ -1,0 +1,14 @@
+model Explore {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  msg String?
+  isItem Boolean
+  minLevel Int?
+  maxLevel Int?
+  sprite String?
+
+  @@map("explore")
+}

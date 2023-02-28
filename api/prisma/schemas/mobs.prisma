@@ -1,0 +1,65 @@
+import { ActionItemDrop } from "./items"
+import { Battle, MobsInBattle } from "./battle"
+import { MapTiles } from "./map"
+
+model Mob {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  sprite String?
+  hp Int?
+  attack Int?
+  defence Int?
+  giveExp Int?
+
+  mobSpawn MobSpawn[]
+  actionMob ActionMobSpawn[]
+
+  @@map("mobs")
+}
+
+model MobSpawn {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String?
+  level Int?
+  hp Int?
+  maxHp Int?
+  attack Int?
+  defence Int?
+  giveExp Int?
+  sprite String?
+  actionItemDropIds Int[]
+
+  mob Mob @relation(fields: [mobId], references: [id])
+  mobId Int
+
+  inBattle MobsInBattle[]
+  activeInBattle Battle[]
+
+  @@map("mobSpawn")
+}
+
+model ActionMobSpawn {
+  id        Int      @id @default(autoincrement())
+  mob Mob @relation(fields: [mobId], references: [id])
+  mobId Int
+  minLevel Int
+  maxLevel Int
+  spawnRate Int
+  drop ActionItemDrop[]
+  mapTiles ActionMobSpawnsOnTiles[]
+}
+
+model ActionMobSpawnsOnTiles {
+  actionMobSpawn  ActionMobSpawn @relation(fields: [actionMobSpawnId], references: [id], onDelete: Cascade)
+  actionMobSpawnId Int
+  mapTile MapTiles @relation(fields: [mapTileId], references: [id])
+  mapTileId Int
+
+  @@id([actionMobSpawnId, mapTileId])
+}

@@ -7,8 +7,11 @@ import {
   IsString,
 } from 'class-validator';
 import {
+  ArmorType,
   ItemQuality,
   ItemType,
+  MainType,
+  WeaponType,
 } from '@prisma/client';
 
 export class CreateItemDto {
@@ -22,27 +25,55 @@ export class CreateItemDto {
 
   @IsNumber()
   @IsOptional()
-  minStat?: number;
+  minAttack?: number;
 
   @IsNumber()
   @IsOptional()
-  maxStat?: number;
+  maxAttack?: number;
+
+  @IsNumber()
+  @IsOptional()
+  stamina?: number;
+
+  @IsNumber()
+  @IsOptional()
+  defence?: number;
+
+  @IsNumber()
+  @IsOptional()
+  strenght?: number;
+
+  @IsNumber()
+  @IsOptional()
+  dexterity?: number;
+
+  @IsNumber()
+  @IsOptional()
+  intelligence?: number;
 
   @IsBoolean()
   @IsOptional()
   isEquipment?: boolean;
 
+  @IsEnum(MainType)
+  @IsOptional()
+  mainType?: MainType;
+
+  @IsEnum(WeaponType)
+  @IsOptional()
+  weaponType?: WeaponType;
+
+  @IsEnum(ArmorType)
+  @IsOptional()
+  armorType?: ArmorType;
+
   @IsEnum(ItemType)
   @IsOptional()
-  type?: ItemType;
+  itemType?: ItemType;
 
   @IsEnum(ItemQuality)
   @IsOptional()
   quality?: ItemQuality;
-
-  @IsString()
-  @IsOptional()
-  actionName?: string;
 
   @IsNumber()
   @IsOptional()

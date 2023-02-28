@@ -1,0 +1,61 @@
+import { ActionItemDrop } from "./items"
+import { ActionMobSpawnsOnTiles } from "./mobs"
+
+model Map {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  minLevel Int?
+  maxLevel Int?
+  sprite String?
+  numberOfTiles Int?
+
+  tiles MapTiles[]
+
+  @@map("maps")
+}
+
+model MapTiles {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sprite String?
+  object String?
+  text String? @default("")
+  blocked Boolean? @default(false)
+  x Int
+  y Int
+  action_name String?
+  action Json?
+
+  teleportFrom ActionTeleport? @relation(name: "teleportFrom")
+  teleportTo ActionTeleport? @relation(name: "teleportTo")
+
+  actionItemDrop ActionItemDrop[]
+
+  actionMobSpawns ActionMobSpawnsOnTiles[]
+
+  map Map? @relation(fields: [mapId], references: [id])
+  mapId Int
+
+  @@map("mapTiles")
+}
+
+model MapSprites {
+  id    Int   @id @default(autoincrement())
+  name String
+  category String
+  sprite String
+}
+
+model ActionTeleport {
+  tile MapTiles? @relation(name: "teleportFrom", fields: [tileId], references: [id])
+  tileId Int @id
+  toTile MapTiles? @relation(name: "teleportTo", fields: [toTileId], references: [id])
+  toTileId Int @unique
+
+  @@map("actionTeleport")
+}

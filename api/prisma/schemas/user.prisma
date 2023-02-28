@@ -1,0 +1,59 @@
+import { Item } from "./items"
+import { Battle, UsersInBattle } from "./battle"
+import { Guild } from "./guild"
+
+enum GuildRole {
+  PENDING
+  MEMBER
+  MOD
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email String @unique
+  hash  String
+
+  username String? @unique
+
+  hp Int? @default(100)
+  maxHp Int? @default(100)
+  level Int? @default(1)
+  exp Int? @default(0)
+  maxExp Int? @default(100)
+  points Int? @default(5)
+  gold Int? @default(0)
+  avatar String?
+
+  stamina Int? @default(10)
+  strength Int? @default(10)
+  defence Int? @default(10)
+  dexterity Int? @default(10)
+  intelligence Int? @default(10)
+
+  totalStamina Int? @default(0)
+  totalDefence Int? @default(0)
+  totalStrength Int? @default(0)
+
+  minAttack Int? @default(0)
+  maxAttack Int? @default(0)
+
+  mapId Int? @default(1)
+  x Int? @default(2)
+  y Int? @default(2)
+
+  battleId Int?
+
+  items Item[]
+  inBattle UsersInBattle[]
+  activeInBattle Battle[]
+
+  guild Guild? @relation(fields: [guildId], references: [id])
+  guildId Int?
+  guildRole GuildRole?
+
+  @@map("users")
+}

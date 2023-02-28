@@ -12,26 +12,22 @@ type Props = {
   openItemModal: (item: Item) => void;
 };
 
-const findEquipedItem = (itemsData: any, itemType: string) => {
-  return itemsData.find(
-    (item: Item) => item.equip === true && item.type === itemType
-  );
-};
-
 const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
   const equippedItems = useMemo(() => {
-    const head = findEquipedItem(itemsData, "HEAD");
+    const head = itemsData.find(
+      (item: Item) => item.armorType === "HEAD" && item.equip === true
+    );
     const chest = itemsData.find(
-      (item: Item) => item.type === "CHEST" && item.equip === true
+      (item: Item) => item.armorType === "CHEST" && item.equip === true
     );
     const weapon = itemsData.find(
-      (item: Item) => item.type === "WEAPON" && item.equip === true
+      (item: Item) => item.mainType === "WEAPON" && item.equip === true
     );
     const offhand = itemsData.find(
-      (item: Item) => item.type === "OFFHAND" && item.equip === true
+      (item: Item) => item.armorType === "OFFHAND" && item.equip === true
     );
     const legs = itemsData.find(
-      (item: Item) => item.type === "LEGS" && item.equip === true
+      (item: Item) => item.armorType === "LEGS" && item.equip === true
     );
 
     return {
@@ -52,7 +48,7 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
             openItemModal={openItemModal}
           />
           <EquippedItemSlot
-            equippedItem={equippedItems.offhand}
+            equippedItem={equippedItems.chest}
             openItemModal={openItemModal}
           />
           <EquippedItemSlot
@@ -76,7 +72,7 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
         </div>
         <div className="profile__eq-slots">
           <EquippedItemSlot
-            equippedItem={equippedItems.chest}
+            equippedItem={equippedItems.offhand}
             openItemModal={openItemModal}
           />
           <EquippedItemSlot

@@ -330,11 +330,11 @@ export class BattleService {
         minMobAttack /
           (1 +
             activeUser.defence /
-              (260 + activeUser.defence)),
+              (260 + activeUser.totalDefence)),
         maxMobAttack /
           (1 +
             activeUser.defence /
-              (260 + activeUser.defence)),
+              (260 + activeUser.totalDefence)),
       );
 
     if (userId === activeUser.id) {
@@ -373,7 +373,10 @@ export class BattleService {
           const createdItem =
             await this.itemService.createItem(
               activeUser,
-              { itemPrototypeId: id },
+              {
+                itemPrototypeId: id,
+                maxLevel: activeMob.level,
+              },
             );
           return createdItem.id;
         },

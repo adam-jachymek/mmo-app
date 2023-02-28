@@ -1,6 +1,10 @@
 import { StatsUserDto } from './dto/stats.dto';
 import { Injectable } from '@nestjs/common';
-import { ItemType, User } from '@prisma/client';
+import {
+  ItemType,
+  MainType,
+  User,
+} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { EditUserDto } from './dto';
 
@@ -88,6 +92,7 @@ export class UserService {
             points: user.points - 1,
           },
         });
+        await this.updateUserAttack(userId);
       }
 
       /// DEFENCE
@@ -102,13 +107,48 @@ export class UserService {
           },
         });
       }
-
-      await this.updateUserAttack(userId);
+      await this.updateUserArmor(userId);
     }
 
     delete user.hash;
 
     return user;
+  }
+
+  async updateUserArmor(userId: number) {
+    const equipedArmors =
+      await this.prisma.item.findMany({
+        where: {
+          userId: userId,
+          equip: true,
+          mainType: MainType.ARMOR,
+        },
+        include: {
+          item: true,
+        },
+      });
+
+    let totalDefence = 0;
+
+    for (
+      let i = 0;
+      i < equipedArmors.length;
+      i++
+    ) {
+      totalDefence += equipedArmors[i].defence;
+    }
+
+    const user =
+      await this.prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        totalDefence: user.defence + totalDefence,
+      },
+    });
   }
 
   async updateUserAttack(userId: number) {
@@ -117,7 +157,7 @@ export class UserService {
         where: {
           userId: userId,
           equip: true,
-          type: ItemType.WEAPON,
+          mainType: MainType.WEAPON,
         },
         include: {
           item: true,

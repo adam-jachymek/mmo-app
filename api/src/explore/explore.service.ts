@@ -43,7 +43,7 @@ export class ExploreService {
         },
       });
 
-    if (!tile || tile.blocked) {
+    if (!tile || tile.blocked || user.battleId) {
       return;
     }
 

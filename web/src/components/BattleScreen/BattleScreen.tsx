@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { User } from "/types";
+import { Item, User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
 import BattleMobs from "./BattleMobs";
@@ -33,7 +33,10 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   let navigate = useNavigate();
   const { id: paramsBattleId } = useParams();
   const [openModal, setOpenModal] = useState(false);
-  const [itemModal, setItemModal] = useState({ isVisible: false, item: {} });
+  const [itemModal, setItemModal] = useState<{
+    isVisible: boolean;
+    item: Item | undefined;
+  }>({ isVisible: false, item: undefined });
   const [lostModal, setLostModal] = useState(false);
   const [battle, setBattle] = useState<any>({});
   const [music, { stop: stopMusic }] = useSound(battleMusic);

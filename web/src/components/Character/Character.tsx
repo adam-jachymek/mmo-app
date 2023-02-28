@@ -19,7 +19,7 @@ type Props = {
 };
 
 const Character = ({ user, currentUser, refetchUser }: Props) => {
-  const [activeItem, setActiveItem] = useState<EquipItem>();
+  const [activeItem, setActiveItem] = useState<Item>();
   const [showStats, setShowStats] = useState(false);
 
   const {

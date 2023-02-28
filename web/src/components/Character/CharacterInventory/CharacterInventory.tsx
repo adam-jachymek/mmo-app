@@ -17,7 +17,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
   const inventory = itemsData?.filter((item: Item) => !item.equip);
 
   const bags = itemsData?.filter(
-    (item: Item) => item.type === "BAG" && item.equip
+    (item: Item) => item.itemType === "BAG" && item.equip
   );
 
   const numberOfExtraSlots = bags.reduce(

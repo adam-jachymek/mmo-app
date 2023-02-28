@@ -16,12 +16,12 @@ export type User = {
   mapId: number;
   points: number;
   stamina: number;
-  eqStamina: number;
   strength: number;
-  eqDefence: number;
   defence: number;
   dexterity: number;
   intelligence: number;
+  totalDefence: number;
+  totalStamina: number;
   x: number;
   y: number;
   minAttack: number;
@@ -32,11 +32,10 @@ export type ItemPrototype = {
   id: number;
   name: string;
   description: string;
-  type: string;
+  mainType: string;
   sprite: string;
-  minStat: number;
-  maxStat: number;
-  isEquipment: string;
+  minAttack: number;
+  maxAttack: number;
   quality: string;
   actionAmount: number;
 };
@@ -53,9 +52,17 @@ export type Item = {
   quality: string;
   level: number;
   stamina: number;
+  strength: number;
   defence: number;
+  dexterity: number;
+  intelligence: number;
+  mainType: string;
+  weaponType: string;
+  armorType: string;
+  itemType: string;
   type: string;
   equip: boolean;
+  actionAmount: number;
   sprite: string;
 };
 
@@ -98,7 +105,6 @@ export type EquipItem = {
   name?: string;
   minAttack?: number;
   maxAttack?: number;
-  isEquipment?: boolean;
   type?: string;
   level?: number;
   quality?: string;

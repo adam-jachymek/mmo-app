@@ -1,0 +1,44 @@
+import { User } from "./user"
+import { MobSpawn } from "./mobs"
+
+model Battle {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  usersInBattle UsersInBattle[]
+  mobsInBattle MobsInBattle[]
+  activeUser   User? @relation(fields: [activeUserId], references: [id])
+  activeUserId Int?
+  activeMob    MobSpawn? @relation(fields: [activeMobId], references: [id])
+  activeMobId  Int?
+  userTurn     Boolean?
+  battleEnded  Boolean?
+  youWin       Boolean?
+  itemDropIds  Int[]
+  youLost      Boolean?
+
+  @@map("battle")
+}
+
+model UsersInBattle {
+  battle       Battle @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  battleId     Int
+  user         User   @relation(fields: [userId], references: [id])
+  userId       Int
+  assignedAt   DateTime @default(now())
+  turn         Boolean?
+
+  @@id([battleId, userId])
+}
+
+model MobsInBattle {
+  battle       Battle     @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  battleId     Int
+  mob          MobSpawn @relation(fields: [mobId], references: [id], onDelete: Cascade)
+  mobId        Int
+  assignedAt   DateTime @default(now())
+  turn         Boolean?
+
+  @@id([battleId, mobId])
+}

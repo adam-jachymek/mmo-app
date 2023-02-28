@@ -1,4 +1,5 @@
 import api from "./axios";
+import { Item } from "/types";
 
 export const createUser = async (values: {
   email: string;
@@ -30,17 +31,7 @@ export const getUser = async () => {
   return response.data;
 };
 
-export const createItem = async (values: {
-  name: string;
-  sprite?: string | Blob;
-  description?: string;
-  minStat?: number;
-  maxStat?: number;
-  isEquipment?: boolean;
-  type?: string;
-  quality?: string;
-  actionAmount?: number;
-}) => {
+export const createItem = async (values: {}) => {
   const response = await api.post("item_prototype", values);
 
   return response.data;
@@ -48,6 +39,12 @@ export const createItem = async (values: {
 
 export const getItems = async () => {
   const response = await api.get("item");
+
+  return response.data;
+};
+
+export const getAllGeneratedItems = async () => {
+  const response = await api.get("item/admin");
 
   return response.data;
 };
@@ -90,7 +87,10 @@ export const deleteItem = async (itemId?: number) => {
   return response.data;
 };
 
-export const generateItem = async (values: { itemPrototypeId: number }) => {
+export const generateItem = async (values: {
+  itemPrototypeId: number;
+  maxLevel: number;
+}) => {
   const response = await api.post("item", values);
 
   return response.data;

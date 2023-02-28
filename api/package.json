@@ -52,6 +52,7 @@
     "nestjs-ftp": "^0.1.13",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
+    "prisma-import": "^1.0.4",
     "queue": "^6.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -103,5 +104,11 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "import": {
+      "schemas": "./prisma/schemas/*.prisma",
+      "output": "./prisma/schema.prisma"
+    }
   }
 }

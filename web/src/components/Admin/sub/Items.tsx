@@ -7,6 +7,7 @@ import {
   generateItem,
   deletePrototypeItem,
   createItemSprite,
+  getAllGeneratedItems,
 } from "api/endpoints";
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
@@ -17,12 +18,14 @@ import {
   Textarea,
   FileInput,
   Modal,
+  Input,
 } from "@mantine/core";
 import { Button } from "@mantine/core";
 import { useState } from "react";
 import { assets_url } from "config";
 
 const Items = () => {
+  const [maxLevel, setMaxLevel] = useState<number>(1);
   const [editModal, setEditModal] = useState({
     visible: false,
     itemId: 0,
@@ -37,7 +40,7 @@ const Items = () => {
 
   const { data: itemsData, refetch: refetchItems } = useQuery(
     "getItems",
-    getItems
+    getAllGeneratedItems
   );
 
   const { mutate: addItem } = useMutation(createItem, {
@@ -74,12 +77,18 @@ const Items = () => {
     initialValues: {
       name: "",
       sprite: "",
-      description: "",
-      minStat: 5,
-      maxStat: 10,
-      isEquipment: true,
-      type: "",
-      quality: "RANDOM",
+      description: undefined,
+      minAttack: undefined,
+      maxAttack: undefined,
+      mainType: "WEAPON",
+      weaponType: undefined,
+      armorType: undefined,
+      itemType: undefined,
+      stamina: undefined,
+      defence: undefined,
+      strength: undefined,
+      dexterity: undefined,
+      intelligence: undefined,
       actionAmount: 0,
     },
     onSubmit: (values, { resetForm }) => {
@@ -118,100 +127,159 @@ const Items = () => {
             onChange={itemsForm.handleChange}
             value={itemsForm.values.description}
           />
-
-          <Switch
-            label="isEquipment"
-            size="md"
-            className="admin__switch"
-            onChange={(event: any) => {
-              itemsForm.setFieldValue(
-                "isEquipment",
-                event?.currentTarget.checked
-              );
-            }}
-            checked={itemsForm.values.isEquipment}
-          />
-          {itemsForm.values.isEquipment ? (
-            <div>
-              <div className="admin__main-input-flex">
-                <TextInput
-                  label="minStat"
-                  className="admin__main-input"
-                  name="minStat"
-                  type="number"
-                  onChange={itemsForm.handleChange}
-                  value={itemsForm.values.minStat}
-                />
-                <TextInput
-                  label="maxStat"
-                  className="admin__main-input"
-                  name="maxStat"
-                  type="number"
-                  onChange={itemsForm.handleChange}
-                  value={itemsForm.values.maxStat}
-                />
-              </div>
-              <div className="admin__main-input-flex">
-                <Select
-                  classNames={{
-                    root: "admin__input-select",
-                    label: "admin__input-select-label",
-                  }}
-                  label="type"
-                  searchable
-                  size="sm"
-                  clearable
-                  placeholder="Pick one"
-                  name="type"
-                  data={[
-                    { value: "HEAD", label: "HEAD" },
-                    { value: "CHEST", label: "CHEST" },
-                    { value: "WEAPON", label: "WEAPON" },
-                    { value: "OFFHAND", label: "OFFHAND" },
-                    { value: "LEGS", label: "LEGS" },
-                  ]}
-                  onChange={(value) => itemsForm.setFieldValue("type", value)}
-                  value={itemsForm.values.type}
-                />
-                <Select
-                  classNames={{
-                    root: "admin__input-select",
-                    label: "admin__input-select-label",
-                  }}
-                  label="quality"
-                  searchable
-                  clearable
-                  size="sm"
-                  placeholder="Pick one"
-                  name="type"
-                  data={[
-                    { value: "RANDOM", label: "RANDOM" },
-                    { value: "COMMON", label: "COMMON" },
-                    { value: "UNCOMMON", label: "UNCOMMON" },
-                    { value: "RARE", label: "RARE" },
-                    { value: "EPIC", label: "EPIC" },
-                    { value: "LEGENDARY", label: "LEGENDARY" },
-                  ]}
-                  onChange={(value) =>
-                    itemsForm.setFieldValue("quality", value)
-                  }
-                  value={itemsForm.values.quality}
-                />
-              </div>
-            </div>
-          ) : (
+          <div>
             <div className="admin__main-input-flex">
               <Select
                 classNames={{
                   root: "admin__input-select",
                   label: "admin__input-select-label",
                 }}
-                label="type"
+                label="main type"
+                searchable
+                size="sm"
+                placeholder="Pick one"
+                name="type"
+                data={[
+                  { value: "WEAPON", label: "WEAPON" },
+                  { value: "ARMOR", label: "ARMOR" },
+                  { value: "ITEM", label: "ITEM" },
+                ]}
+                onChange={(value) => itemsForm.setFieldValue("mainType", value)}
+                value={itemsForm.values.mainType}
+              />
+            </div>
+            {itemsForm.values.mainType === "WEAPON" && (
+              <>
+                <div className="admin__main-input-flex">
+                  <Select
+                    classNames={{
+                      root: "admin__input-select",
+                      label: "admin__input-select-label",
+                    }}
+                    label="weapon type"
+                    searchable
+                    size="sm"
+                    clearable
+                    placeholder="Pick one"
+                    name="weaponType"
+                    data={[
+                      { value: "MELEE", label: "MELEE" },
+                      { value: "MAGIC", label: "MAGIC" },
+                      { value: "RANGE", label: "RANGE" },
+                    ]}
+                    onChange={(value) =>
+                      itemsForm.setFieldValue("weaponType", value)
+                    }
+                    value={itemsForm.values.weaponType}
+                  />
+                </div>
+                <div className="admin__main-input-flex">
+                  <TextInput
+                    label="min attack"
+                    className="admin__main-input"
+                    name="minAttack"
+                    type="number"
+                    onChange={itemsForm.handleChange}
+                    value={itemsForm.values.minAttack}
+                  />
+                  <TextInput
+                    label="max attack"
+                    className="admin__main-input"
+                    name="maxAttack"
+                    type="number"
+                    onChange={itemsForm.handleChange}
+                    value={itemsForm.values.maxAttack}
+                  />
+                </div>
+              </>
+            )}
+
+            {itemsForm.values.mainType === "ARMOR" && (
+              <>
+                <div className="admin__main-input-flex">
+                  <Select
+                    classNames={{
+                      root: "admin__input-select",
+                      label: "admin__input-select-label",
+                    }}
+                    label="armor type"
+                    searchable
+                    size="sm"
+                    clearable
+                    placeholder="Pick one"
+                    name="armorType"
+                    data={[
+                      { value: "HEAD", label: "HEAD" },
+                      { value: "CHEST", label: "CHEST" },
+                      { value: "OFFHAND", label: "OFFHAND" },
+                      { value: "LEGS", label: "LEGS" },
+                    ]}
+                    onChange={(value) =>
+                      itemsForm.setFieldValue("armorType", value)
+                    }
+                    value={itemsForm.values.armorType}
+                  />
+                </div>
+              </>
+            )}
+            {itemsForm.values.mainType !== "ITEM" && (
+              <div className="admin__main-input-flex">
+                <TextInput
+                  label="stamina"
+                  className="admin__main-input"
+                  name="stamina"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.stamina}
+                />
+                <TextInput
+                  label="defence"
+                  className="admin__main-input"
+                  name="defence"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.defence}
+                />
+                <TextInput
+                  label="strength"
+                  className="admin__main-input"
+                  name="strength"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.strength}
+                />
+                <TextInput
+                  label="dexterity"
+                  className="admin__main-input"
+                  name="dexterity"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.dexterity}
+                />
+                <TextInput
+                  label="intelligence"
+                  className="admin__main-input"
+                  name="intelligence"
+                  type="number"
+                  onChange={itemsForm.handleChange}
+                  value={itemsForm.values.intelligence}
+                />
+              </div>
+            )}
+          </div>
+          {itemsForm.values.mainType === "ITEM" && (
+            <div className="admin__main-input-flex">
+              <Select
+                classNames={{
+                  root: "admin__input-select",
+                  label: "admin__input-select-label",
+                }}
+                label="item type"
                 searchable
                 size="sm"
                 clearable
                 placeholder="Pick one"
-                name="type"
+                name="itemType"
                 data={[
                   { value: "POTION", label: "POTION" },
                   { value: "BAG", label: "BAG" },
@@ -220,8 +288,8 @@ const Items = () => {
                   { value: "OTHER", label: "OTHER" },
                   { value: "QUEST ITEM", label: "QUEST ITEM" },
                 ]}
-                onChange={(value) => itemsForm.setFieldValue("type", value)}
-                value={itemsForm.values.type}
+                onChange={(value) => itemsForm.setFieldValue("itemType", value)}
+                value={itemsForm.values.itemType}
               />
               <TextInput
                 label="actionAmount"
@@ -245,22 +313,18 @@ const Items = () => {
         <table className="admin__item-list">
           <tr className="admin__item-list-tr">
             <th>Name</th>
-            <th>Min Stat</th>
-            <th>Max Stat</th>
-            <th>Eq</th>
+            <th>Min Attack</th>
+            <th>Max Attack</th>
             <th>Type</th>
-            <th>Quality</th>
             <th>Sprite</th>
             <th>Action</th>
           </tr>
           {itemsPrototypeData?.map((prototype: ItemPrototype) => (
             <tr key={prototype.id} className="admin__item">
               <td>{prototype.name}</td>
-              <td>{prototype.minStat}</td>
-              <td>{prototype.maxStat}</td>
-              <td>{prototype.isEquipment?.toString()}</td>
-              <td>{prototype.type}</td>
-              <td>{prototype.quality}</td>
+              <td>{prototype.minAttack}</td>
+              <td>{prototype.maxAttack}</td>
+              <td>{prototype.mainType}</td>
               <td>
                 <div className="admin__item-icon">
                   {prototype.sprite && (
@@ -276,7 +340,7 @@ const Items = () => {
                         ...editModal,
                         itemId: prototype.id,
                         name: prototype.name,
-                        type: prototype.type,
+                        type: prototype.mainType,
                         visible: true,
                       })
                     }
@@ -285,16 +349,27 @@ const Items = () => {
                   </Button>
                 </div>
               </td>
-              <td className="admin__item-list-button">
-                <Button
-                  color="green"
-                  size="xs"
-                  onClick={() => {
-                    generate({ itemPrototypeId: prototype.id });
-                  }}
-                >
-                  Generate Item
-                </Button>
+              <td>
+                <div className="admin__item-list-button">
+                  <Input
+                    placeholder="max level"
+                    type="number"
+                    value={maxLevel}
+                    onChange={(e) => setMaxLevel(Number(e.target.value))}
+                  />
+                  <Button
+                    color="green"
+                    size="xs"
+                    onClick={() => {
+                      generate({
+                        itemPrototypeId: prototype.id,
+                        maxLevel: maxLevel,
+                      });
+                    }}
+                  >
+                    Generate Item
+                  </Button>
+                </div>
                 <Button
                   color="red"
                   size="xs"

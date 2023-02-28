@@ -1,0 +1,113 @@
+import { User } from "./user"
+import { MapTiles } from "./map"
+import { ActionMobSpawn } from "./mobs"
+
+enum MainType {
+  WEAPON
+  ARMOR
+  ITEM
+}
+
+enum WeaponType {
+  MELEE
+  MAGIC
+  RANGE
+}
+
+enum ArmorType {
+  HEAD
+  CHEST
+  OFFHAND
+  LEGS
+}
+
+enum ItemType {
+  POTION
+  BAG
+  MATERIAL
+  FOOD
+  QUEST
+  OTHER
+}
+
+enum ItemQuality {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model ItemPrototype {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String?
+  sprite  String?
+  description String?
+  mainType MainType?
+  weaponType WeaponType?
+  armorType ArmorType?
+  itemType ItemType?
+  quality ItemQuality?
+  minAttack Int?
+  maxAttack Int?
+  stamina Int?
+  defence Int?
+  strenght Int?
+  dexterity Int?
+  intelligence Int?
+  actionAmount Int?
+
+  items Item[]
+  actionItemDrop ActionItemDrop[]
+
+  @@map("itemPrototypes")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String?
+  sprite  String?
+  description String?
+  mainType MainType?
+  weaponType WeaponType?
+  armorType ArmorType?
+  itemType ItemType?
+  quality ItemQuality?
+  minAttack Int?
+  maxAttack Int?
+  stamina Int?
+  defence Int?
+  strenght Int?
+  dexterity Int?
+  intelligence Int?
+  actionAmount Int?
+  level Int?
+  equip Boolean? @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  item ItemPrototype @relation(fields: [itemPrototypeId], references: [id])
+  itemPrototypeId Int
+
+  @@map("items")
+}
+
+model ActionItemDrop {
+  id        Int      @id @default(autoincrement())
+  actionMobSpawn ActionMobSpawn? @relation(fields: [actionMobSpawnId], references: [id])
+  actionMobSpawnId Int?
+  mapTile MapTiles? @relation(fields: [mapTileId], references: [id])
+  mapTileId Int?
+  item ItemPrototype @relation(fields: [itemId], references: [id])
+  itemId Int
+  dropRate Int
+  quantityMin Int
+  quantityMax Int
+}

@@ -3,7 +3,7 @@ import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { deleteItem, equipItem } from "api/endpoints";
-import { EquipItem, User } from "/types";
+import { EquipItem, Item, User } from "/types";
 import ConfirmModal from "../ConfirmModal";
 import { socket } from "api/socket";
 import { assets_url } from "config";
@@ -13,7 +13,7 @@ import "./styles.sass";
 type Props = {
   handleCloseModal: () => void;
   isVisible: boolean;
-  item: EquipItem | undefined;
+  item: Item | undefined;
   refetchItems: () => void;
   user?: User;
   hideAction?: boolean;
@@ -74,17 +74,29 @@ const ItemModal = ({
       <img src={`${assets_url}/${item?.sprite}`} className="modal__icon" />
       <div className="modal__info">
         <h3>{item?.name}</h3>
-        <h4>{item?.level} lvl</h4>
+        {item?.mainType === "ARMOR" ||
+          (item?.mainType === "WEAPON" && <h4>{item?.level} lvl</h4>)}
+        {item?.itemType === "BAG" && <h4>SLOTS: {item?.actionAmount}</h4>}
         <h4 className={item?.quality?.toLowerCase()}>{item?.quality}</h4>
-        {item?.type === "WEAPON" && (
+        {item?.mainType === "WEAPON" && (
           <p>
             Attack: {item?.minAttack} - {item?.maxAttack}
           </p>
         )}
-        {item?.type === "HEAD" && (
-          <div>
-            <p>Stamina: {item?.stamina}</p>
-            <p>Defence: {item?.defence}</p>
+        {item?.mainType === "ARMOR" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            {item.stamina && <p>Stamina: {item?.stamina}</p>}
+            {item.defence && <p>Defence: {item?.defence}</p>}
+            {item.strength && <p>Strength: {item?.strength}</p>}
+            {item.dexterity && <p>Dexterity: {item?.dexterity}</p>}
+            {item.intelligence && <p>Intelligence: {item?.intelligence}</p>}
           </div>
         )}
       </div>

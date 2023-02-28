@@ -112,7 +112,7 @@ const CharacterStats = ({ user, refetchUser }: Props) => {
           </span>
         </p>
         <p className="stats__text">
-          Armor: <span className="stats__count">{user.defence}</span>
+          Armor: <span className="stats__count">{user.totalDefence}</span>
         </p>
       </div>
     </div>

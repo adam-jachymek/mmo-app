@@ -6,6 +6,7 @@ import {
 import {
   ItemQuality,
   ItemType,
+  MainType,
   User,
 } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -66,44 +67,22 @@ export class ItemService {
         },
       });
 
+    const baseItem = {
+      itemPrototypeId: dto.itemPrototypeId,
+      name: itemPrototype.name,
+      description: itemPrototype.description,
+      sprite: itemPrototype.sprite,
+      userId: user.id,
+      mainType: itemPrototype.mainType,
+    };
+
     if (
-      itemPrototype.type === ItemType.HEAD ||
-      itemPrototype.type === ItemType.CHEST ||
-      itemPrototype.type === ItemType.LEGS
+      itemPrototype.mainType === MainType.ARMOR
     ) {
       const generatedLevel =
         this.generateItemLevel(
           itemPrototype.quality,
-          user.level,
-        );
-
-      return await this.prisma.item.create({
-        data: {
-          name: itemPrototype.name,
-          sprite: itemPrototype.sprite,
-          level: generatedLevel,
-          stamina: this.generateItemStat(
-            itemPrototype.maxStat,
-            itemPrototype.quality,
-          ),
-          defence: this.generateItemStat(
-            itemPrototype.maxStat,
-            itemPrototype.quality,
-          ),
-          isEquipment: true,
-          quality: itemPrototype.quality,
-          itemPrototypeId: dto.itemPrototypeId,
-          userId: user.id,
-          type: itemPrototype.type,
-        },
-      });
-    }
-
-    if (itemPrototype.type === ItemType.WEAPON) {
-      const generatedLevel =
-        this.generateItemLevel(
-          itemPrototype.quality,
-          user.level,
+          dto.maxLevel,
         );
 
       const generatedQuality =
@@ -111,34 +90,89 @@ export class ItemService {
 
       return await this.prisma.item.create({
         data: {
-          name: itemPrototype.name,
-          sprite: itemPrototype.sprite,
+          ...baseItem,
+          level: generatedLevel,
+          stamina: this.generateItemStat(
+            itemPrototype.stamina,
+            generatedQuality,
+          ),
+          defence: this.generateItemStat(
+            itemPrototype.defence,
+            generatedQuality,
+          ),
+          strenght: this.generateItemStat(
+            itemPrototype.strenght,
+            generatedQuality,
+          ),
+          dexterity: this.generateItemStat(
+            itemPrototype.dexterity,
+            generatedQuality,
+          ),
+          intelligence: this.generateItemStat(
+            itemPrototype.intelligence,
+            generatedQuality,
+          ),
+          quality: generatedQuality,
+          armorType: itemPrototype.armorType,
+        },
+      });
+    }
+
+    if (
+      itemPrototype.mainType === MainType.WEAPON
+    ) {
+      const generatedLevel =
+        this.generateItemLevel(
+          itemPrototype.quality,
+          dto.maxLevel,
+        );
+
+      const generatedQuality =
+        this.generateQuality();
+
+      return await this.prisma.item.create({
+        data: {
+          ...baseItem,
           level: generatedLevel,
           minAttack: this.generateItemStat(
-            itemPrototype.minStat,
+            itemPrototype.minAttack,
             generatedQuality,
           ),
           maxAttack: this.generateItemStat(
-            itemPrototype.maxStat,
+            itemPrototype.maxAttack,
             generatedQuality,
           ),
-          itemPrototypeId: dto.itemPrototypeId,
-          isEquipment: true,
+          stamina: this.generateItemStat(
+            itemPrototype.stamina,
+            generatedQuality,
+          ),
+          defence: this.generateItemStat(
+            itemPrototype.defence,
+            generatedQuality,
+          ),
+          strenght: this.generateItemStat(
+            itemPrototype.strenght,
+            generatedQuality,
+          ),
+          dexterity: this.generateItemStat(
+            itemPrototype.dexterity,
+            generatedQuality,
+          ),
+          intelligence: this.generateItemStat(
+            itemPrototype.intelligence,
+            generatedQuality,
+          ),
           quality: generatedQuality,
-          userId: user.id,
-          type: itemPrototype.type,
+          weaponType: itemPrototype.weaponType,
         },
       });
     }
 
     return await this.prisma.item.create({
       data: {
-        name: itemPrototype.name,
-        sprite: itemPrototype.sprite,
-        itemPrototypeId: dto.itemPrototypeId,
-        userId: user.id,
-        type: itemPrototype.type,
-        actionName: itemPrototype.actionName,
+        ...baseItem,
+        mainType: itemPrototype.mainType,
+        itemType: itemPrototype.itemType,
         actionAmount: itemPrototype.actionAmount,
       },
     });
@@ -170,6 +204,10 @@ export class ItemService {
     stat: number,
     quality: ItemQuality,
   ) {
+    if (!stat) {
+      return;
+    }
+
     return Math.floor(
       stat *
         (1 +
@@ -203,33 +241,41 @@ export class ItemService {
       await this.prisma.item.findFirst({
         where: {
           equip: true,
-          type: item.type,
+          mainType: item.mainType,
+          weaponType: item.weaponType,
+          armorType: item.armorType,
         },
         include: {
           item: true,
         },
       });
 
-    if (
-      equipedItem !== null &&
-      item.isEquipment
-    ) {
-      await this.prisma.item.update({
-        where: {
-          id: equipedItem.id,
-        },
-        data: {
-          equip: false,
-        },
-      });
-      await this.userService.updateUserAttack(
-        userId,
-      );
+    if (equipedItem !== null) {
+      if (
+        item.mainType === MainType.WEAPON ||
+        item.mainType === MainType.ARMOR
+      ) {
+        await this.prisma.item.update({
+          where: {
+            id: equipedItem.id,
+          },
+          data: {
+            equip: false,
+          },
+        });
+        await this.userService.updateUserAttack(
+          userId,
+        );
+        await this.userService.updateUserArmor(
+          userId,
+        );
+      }
     }
 
     if (
-      item.isEquipment ||
-      item.type === ItemType.BAG
+      item.mainType === MainType.WEAPON ||
+      item.mainType === MainType.ARMOR ||
+      item.itemType === ItemType.BAG
     ) {
       await this.prisma.item.update({
         where: {
@@ -241,6 +287,9 @@ export class ItemService {
       });
 
       await this.userService.updateUserAttack(
+        userId,
+      );
+      await this.userService.updateUserArmor(
         userId,
       );
     }
@@ -295,7 +344,7 @@ export class ItemService {
 
   generateItemLevel(
     quality: ItemQuality,
-    userLevel: number,
+    maxLevel: number,
   ) {
     const calculateMinLevel = () => {
       if (quality === ItemQuality.COMMON) {
@@ -303,7 +352,7 @@ export class ItemService {
       }
 
       if (quality === ItemQuality.UNCOMMON) {
-        const minLevel = userLevel - 30;
+        const minLevel = maxLevel - 30;
         if (minLevel < 1) {
           return 1;
         }
@@ -311,7 +360,7 @@ export class ItemService {
       }
 
       if (quality === ItemQuality.RARE) {
-        const minLevel = userLevel - 20;
+        const minLevel = maxLevel - 20;
         if (minLevel < 1) {
           return 1;
         }
@@ -319,7 +368,7 @@ export class ItemService {
       }
 
       if (quality === ItemQuality.EPIC) {
-        const minLevel = userLevel - 10;
+        const minLevel = maxLevel - 10;
         if (minLevel < 1) {
           return 1;
         }
@@ -327,18 +376,18 @@ export class ItemService {
       }
 
       if (quality === ItemQuality.LEGENDARY) {
-        return userLevel;
+        return maxLevel;
       }
+      return 1;
     };
 
-    const difference =
-      userLevel - calculateMinLevel();
+    const difference = maxLevel - 1;
 
     let rand = Math.random();
 
     rand = Math.floor(rand * difference);
 
-    rand = rand + calculateMinLevel();
+    rand = rand + 1;
 
     return rand;
   }
