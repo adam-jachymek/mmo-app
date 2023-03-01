@@ -32,6 +32,20 @@ export class MobService {
     return mob;
   }
 
+  async createSprite(
+    mobId: number,
+    sprite: Express.Multer.File,
+  ) {
+    return await this.prisma.mob.update({
+      where: {
+        id: mobId,
+      },
+      data: {
+        sprite: sprite.path,
+      },
+    });
+  }
+
   async editMobById(
     mobId: number,
     dto: EditMobDto,

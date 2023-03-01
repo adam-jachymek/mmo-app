@@ -1,0 +1,10 @@
+import { MapTiles } from "./map"
+
+model Npc {
+  id      Int      @id @default(autoincrement())
+  name    String
+  avatar  String
+  text    String[]
+  mapTile MapTiles? @relation(fields: [mapTileId], references: [id])
+  mapTileId Int?
+}

@@ -1,6 +1,7 @@
 import { Progress } from "@mantine/core";
 import { Mob } from "/types";
 import BattleAnimations from "../BattleAnimations";
+import { assets_url } from "config";
 
 type Props = {
   mob: Mob;
@@ -33,10 +34,7 @@ const BattleMobs = ({ mob, activeAnimation, userDamage }: Props) => {
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}
-        <img
-          className="fight__mob-img"
-          src={`/media/mobs/${mob?.sprite}.png`}
-        />
+        <img className="fight__mob-img" src={`${assets_url}/${mob?.sprite}`} />
       </div>
     </div>
   );

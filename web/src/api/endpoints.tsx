@@ -75,6 +75,21 @@ export const createItemSprite = async (values: {
   return response.data;
 };
 
+export const createMobSprite = async (values: {
+  mobId: number;
+  name: string;
+  sprite: string | Blob;
+}) => {
+  const formData = new FormData();
+
+  formData.append("name", values.name);
+  formData.append("sprite", values.sprite);
+
+  const response = await api.post(`mobs/sprite/${values.mobId}`, formData);
+
+  return response.data;
+};
+
 export const deletePrototypeItem = async (itemId: number) => {
   const response = await api.delete(`item_prototype/${itemId}`);
 

@@ -239,6 +239,7 @@ export class UserService {
           points: 5 * level_count + user.points,
           exp: userExp,
           maxExp: nextLevelExpLimit,
+          maxHp: { increment: 20 },
         },
       });
     }

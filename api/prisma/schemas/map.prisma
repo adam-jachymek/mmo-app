@@ -1,5 +1,6 @@
 import { ActionItemDrop } from "./items"
 import { ActionMobSpawnsOnTiles } from "./mobs"
+import { Npc } from "./npc"
 
 model Map {
   id        Int      @id @default(autoincrement())
@@ -35,8 +36,9 @@ model MapTiles {
   teleportTo ActionTeleport? @relation(name: "teleportTo")
 
   actionItemDrop ActionItemDrop[]
-
   actionMobSpawns ActionMobSpawnsOnTiles[]
+
+  npc Npc[]
 
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int

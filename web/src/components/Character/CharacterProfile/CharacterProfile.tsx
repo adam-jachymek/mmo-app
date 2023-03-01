@@ -103,7 +103,7 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
             value={calculateProgress(user?.exp, user?.maxExp)}
           />
           <span className="profile__progress-amount">
-            {calculateProgress(user?.exp, user?.maxExp)}
+            {user?.exp} / {user?.maxExp}
           </span>
         </div>
       </div>

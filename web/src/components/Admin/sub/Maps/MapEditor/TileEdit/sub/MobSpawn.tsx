@@ -66,6 +66,7 @@ const MobSpawn = ({
     onSuccess: () => {
       refetchTiles();
       refetchSpawnMobs();
+      setMultiSelectTiles([]);
     },
   });
 
@@ -79,6 +80,7 @@ const MobSpawn = ({
     onSuccess: () => {
       refetchTiles();
       refetchSpawnMobs();
+      setMultiSelectTiles([]);
     },
   });
 
@@ -88,6 +90,7 @@ const MobSpawn = ({
       onSuccess: () => {
         refetchTiles();
         refetchSpawnMobs();
+        setMultiSelectTiles([]);
       },
     }
   );
