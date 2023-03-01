@@ -24,6 +24,12 @@ const Object = ({ tileForm, SelectItem, allSprites }: Props) => {
   return (
     <>
       <label className="admin__main-label">Object</label>
+      {tileForm.values.object && (
+        <img
+          style={{ height: 100, marginBottom: 10, marginTop: 10 }}
+          src={`${assets_url}/${tileForm.values.object}`}
+        />
+      )}
       <Select
         placeholder="Pick one"
         name="object"
@@ -37,12 +43,6 @@ const Object = ({ tileForm, SelectItem, allSprites }: Props) => {
         maxDropdownHeight={400}
         nothingFound="No objects available"
       />
-      {tileForm.values.object && (
-        <img
-          style={{ height: 100, marginBottom: 10 }}
-          src={`${assets_url}/${tileForm.values.object}`}
-        />
-      )}
     </>
   );
 };

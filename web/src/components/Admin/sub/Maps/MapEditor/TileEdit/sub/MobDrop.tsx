@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Select, Slider } from "@mantine/core";
+import { Button, Collapse, Input, Modal, Select, Slider } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getItemsAdmin } from "api/endpoints";
@@ -19,6 +19,7 @@ type Props = {
 
 const MobDrop = ({ SelectItem, actionMobId }: Props) => {
   const [openModal, setOpenModal] = useState(false);
+  const [showLootList, setShowLootList] = useState(false);
 
   const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
     "getItemsAdmin",
@@ -92,38 +93,52 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
 
   return (
     <div className="mob-drop">
-      <ul>
-        {dropList?.map((item: any, index: number) => (
-          <li
-            className="mob-drop__item"
-            onClick={() => {
-              openItem(item);
-            }}
-          >
-            <div className="mob-drop__item-info">
-              <p className="mob-drop__item-info-item">
-                <label className="mob-drop__item-info-label">item: </label>
-                {item.name}
-              </p>
-              <p className="mob-drop__item-info-item">
-                <label className="mob-drop__item-info-label">drop rate: </label>
-                {item.dropRate}%
-              </p>
-              <p className="mob-drop__item-info-item">
-                <label className="mob-drop__item-info-label">quantity: </label>
-                {item.quantityMin} - {item.quantityMax}
-              </p>
-            </div>
-            <img
-              className="mob-drop__item-info-sprite"
-              src={`${assets_url}/${item.sprite}`}
-            />
-          </li>
-        ))}
-      </ul>
+      <Button
+        onClick={() => setShowLootList(!showLootList)}
+        style={{ marginTop: 10, width: "100%" }}
+        compact
+      >
+        show loot: {dropList?.length}
+      </Button>
+      <Collapse in={showLootList}>
+        <ul>
+          {dropList?.map((item: any, index: number) => (
+            <li
+              className="mob-drop__item"
+              onClick={() => {
+                openItem(item);
+              }}
+            >
+              <div className="mob-drop__item-info">
+                <p className="mob-drop__item-info-item">
+                  <label className="mob-drop__item-info-label">item: </label>
+                  {item.name}
+                </p>
+                <p className="mob-drop__item-info-item">
+                  <label className="mob-drop__item-info-label">
+                    drop rate:{" "}
+                  </label>
+                  {item.dropRate}%
+                </p>
+                <p className="mob-drop__item-info-item">
+                  <label className="mob-drop__item-info-label">
+                    quantity:{" "}
+                  </label>
+                  {item.quantityMin} - {item.quantityMax}
+                </p>
+              </div>
+              <img
+                className="mob-drop__item-info-sprite"
+                src={`${assets_url}/${item.sprite}`}
+              />
+            </li>
+          ))}
+        </ul>
+      </Collapse>
       <Button
         className="mob-drop__add-button"
         compact
+        color="green"
         onClick={() => {
           setOpenModal(true);
         }}

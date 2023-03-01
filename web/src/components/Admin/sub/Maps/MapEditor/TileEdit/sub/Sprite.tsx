@@ -34,6 +34,12 @@ const Sprite = ({ allSprites, tileForm, SelectItem }: Props) => {
   return (
     <>
       <label className="admin__main-label">Sprite</label>
+      {tileForm.values.sprite && (
+        <img
+          style={{ height: 100, marginTop: 10, marginBottom: 10 }}
+          src={`${assets_url}/${tileForm.values.sprite}`}
+        />
+      )}
       <Select
         placeholder="Pick one"
         name="Category"
@@ -60,12 +66,6 @@ const Sprite = ({ allSprites, tileForm, SelectItem }: Props) => {
         maxDropdownHeight={400}
         nothingFound="No sprites available"
       />
-      {tileForm.values.sprite && (
-        <img
-          style={{ height: 100, marginBottom: 10 }}
-          src={`${assets_url}/${tileForm.values.sprite}`}
-        />
-      )}
     </>
   );
 };

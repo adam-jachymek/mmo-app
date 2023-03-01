@@ -84,7 +84,6 @@ const TileEdit = ({
       object: editTile?.object,
       text: editTile?.text,
       blocked: editTile?.blocked,
-      action_name: editTile?.action_name,
     },
     onSubmit: (values, { resetForm }) => {
       const deleteEmptyValues = (values: any) => {
@@ -129,15 +128,7 @@ const TileEdit = ({
 
   return (
     <div className="settings">
-      <form
-        style={{ width: "480px" }}
-        className="admin__form-items"
-        onSubmit={tileForm.handleSubmit}
-      >
-        <p>id: {editTile?.id}</p>
-        <p>
-          x: {editTile?.x} y: {editTile?.y}
-        </p>
+      <form className="admin__form-items" onSubmit={tileForm.handleSubmit}>
         <div className="settings__form">
           <div className="settings__panel">
             <Sprite
@@ -165,20 +156,6 @@ const TileEdit = ({
               disabled={tileForm.values.blocked}
               onChange={tileForm.handleChange}
               value={tileForm.values.text}
-            />
-          </div>
-
-          <div className="settings__panel">
-            <label className="admin__main-label">Mob Spawn</label>
-            {tileForm.values.action_name === "TELEPORT" && (
-              <Teleport tileForm={tileForm} mapData={mapData} />
-            )}
-            <MobSpawn
-              SelectItem={SelectItem}
-              tileId={editTile?.id}
-              multiSelectTiles={multiSelectTiles}
-              setMultiSelectTiles={setMultiSelectTiles}
-              refetchTiles={refetchTiles}
             />
           </div>
         </div>

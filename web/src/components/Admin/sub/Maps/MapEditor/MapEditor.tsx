@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { isEmpty } from "lodash";
 
 import "./styles.sass";
+import RightPanel from "./TileEdit/sub/RightPanel";
 
 type Props = {
   user: User;
@@ -143,6 +144,13 @@ const MapEditor = ({ user }: Props) => {
   return (
     <>
       <div className="map-editor">
+        <TileEdit
+          editTile={selectedTile}
+          refetchTiles={refetchTiles}
+          multiSelect={multiSelect}
+          multiSelectTiles={multiSelectTiles}
+          setMultiSelectTiles={setMultiSelectTiles}
+        />
         <div className="map-editor__wrapper">
           <div className="map-editor__top-bar">
             <Switch
@@ -171,10 +179,18 @@ const MapEditor = ({ user }: Props) => {
                 </Button>
               </>
             )}
+            {selectedTile && (
+              <>
+                <p>id: {selectedTile?.id}</p>
+                <p>
+                  x: {selectedTile?.x} y: {selectedTile?.y}
+                </p>
+              </>
+            )}
           </div>
           <ul className="map-editor__tiles">{renderMap}</ul>
         </div>
-        <TileEdit
+        <RightPanel
           editTile={selectedTile}
           refetchTiles={refetchTiles}
           multiSelect={multiSelect}
