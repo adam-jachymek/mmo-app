@@ -282,6 +282,7 @@ const Items = () => {
                 name="itemType"
                 data={[
                   { value: "POTION", label: "POTION" },
+                  { value: "GOLD", label: "GOLD" },
                   { value: "BAG", label: "BAG" },
                   { value: "MATERIAL", label: "MATERIAL" },
                   { value: "FOOD", label: "FOOD" },

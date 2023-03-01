@@ -36,7 +36,7 @@ const TopNavBar = ({ user, currentUser, refetchUser }: Props) => {
 
   return (
     <div className="header">
-      <div className="header__info">1200</div>
+      <div className="header__info">{user.gold}</div>
       <img className="header__gold-icon" src="/media/items/gold.png" />
       <Button
         compact

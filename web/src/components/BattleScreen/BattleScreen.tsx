@@ -96,6 +96,11 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
     setItemModal({ ...itemModal, isVisible: false });
   };
 
+  const dropItemsUndefined = dropItems?.reduce(
+    (acc: any, curr: any) => (curr === undefined ? acc + 1 : acc),
+    0
+  );
+
   return (
     <>
       <div className="fight">
@@ -131,24 +136,33 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
         {battle?.mobs?.map((mob: any) => (
           <div className="fight__modal">
             <h3 className="fight__modal-title">You Win!</h3>
-            <p style={{ marginTop: 10 }}>You got: {mob?.giveExp} EXP</p>
+            <p style={{ marginTop: 10 }}>{mob?.giveExp} EXP</p>
+            {dropItemsUndefined > 0 && (
+              <p style={{ marginTop: 10 }}>{dropItemsUndefined} gold</p>
+            )}
             {!isEmpty(dropItems) && (
               <div className="fight__modal-items-wrapper">
-                {dropItems?.map((item: any) => (
-                  <div
-                    onClick={() =>
-                      setItemModal({ isVisible: true, item: item })
-                    }
-                  >
-                    <img
-                      src={`${assets_url}/${item?.item?.sprite}`}
-                      className={classNames(
-                        "fight__modal-item-sprite",
-                        item?.quality?.toLowerCase()
-                      )}
-                    />
-                  </div>
-                ))}
+                {dropItems?.map((item: any) => {
+                  if (item === undefined) {
+                    return;
+                  }
+
+                  return (
+                    <div
+                      onClick={() =>
+                        setItemModal({ isVisible: true, item: item })
+                      }
+                    >
+                      <img
+                        src={`${assets_url}/${item?.item?.sprite}`}
+                        className={classNames(
+                          "fight__modal-item-sprite",
+                          item?.quality?.toLowerCase()
+                        )}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             )}
             <Button

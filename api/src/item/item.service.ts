@@ -67,6 +67,19 @@ export class ItemService {
         },
       });
 
+    if (
+      itemPrototype.itemType === ItemType.GOLD
+    ) {
+      return await this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          gold: { increment: 1 },
+        },
+      });
+    }
+
     const baseItem = {
       itemPrototypeId: dto.itemPrototypeId,
       name: itemPrototype.name,

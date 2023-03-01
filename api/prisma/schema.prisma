@@ -122,6 +122,7 @@ enum ArmorType {
 }
 
 enum ItemType {
+  GOLD
   POTION
   BAG
   MATERIAL

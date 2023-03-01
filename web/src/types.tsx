@@ -15,6 +15,7 @@ export type User = {
   battleId?: number;
   mapId: number;
   points: number;
+  gold: number;
   stamina: number;
   strength: number;
   defence: number;

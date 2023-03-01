@@ -62,14 +62,16 @@ const ItemModal = ({
       onClose={handleCloseModal}
     >
       <div className="modal__delete">
-        <Button
-          onClick={toggleDeleteModal}
-          variant="outline"
-          color="red"
-          uppercase
-        >
-          <BiTrash />
-        </Button>
+        {!hideAction && (
+          <Button
+            onClick={toggleDeleteModal}
+            variant="outline"
+            color="red"
+            uppercase
+          >
+            <BiTrash />
+          </Button>
+        )}
       </div>
       <img src={`${assets_url}/${item?.sprite}`} className="modal__icon" />
       <div className="modal__info">
