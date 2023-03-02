@@ -60,6 +60,7 @@ const NpcEditor = () => {
             <td>{npc.name}</td>
             <td>
               <img
+                alt="avatar"
                 style={{ width: 60, height: 60 }}
                 src={`${assets_url}/${npc.avatar}`}
               />

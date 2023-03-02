@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Loader, TextInput } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import classNames from "classnames";
@@ -14,6 +14,7 @@ type Props = {
 
 const Register = ({ refetchUser }: Props) => {
   const [avatar, setAvatar] = useState("");
+  const [alphaCode, setAlphaCode] = useState("");
 
   const { mutate: registerValues } = useMutation(createUser, {
     onSuccess: () => {
@@ -33,7 +34,7 @@ const Register = ({ refetchUser }: Props) => {
       ),
     password: Yup.string()
       .required("Password is required")
-      .min(10, "Minimum 10 characters!"),
+      .min(6, "Minimum 6 characters!"),
     passwordConfirmation: Yup.string()
       .required("Please retype your password.")
       .oneOf([Yup.ref("password")], "Your passwords do not match."),
@@ -50,8 +51,12 @@ const Register = ({ refetchUser }: Props) => {
     validationSchema: SignupSchema,
 
     onSubmit: (values) => {
-      const submitValues = { ...values, avatar: avatar };
-      registerValues(submitValues);
+      if (alphaCode === "adam") {
+        const submitValues = { ...values, avatar: avatar };
+        registerValues(submitValues);
+      } else {
+        alert("wrong alpha code");
+      }
     },
   });
 
@@ -60,7 +65,16 @@ const Register = ({ refetchUser }: Props) => {
       <h3>Create Account</h3>
       <form onSubmit={register.handleSubmit}>
         <TextInput
+          label="Alpha Code"
+          required
+          className="register__input"
+          name="email"
+          onChange={(e) => setAlphaCode(e.target.value)}
+          value={alphaCode}
+        />
+        <TextInput
           label="Email"
+          required
           className="register__input"
           name="email"
           onChange={register.handleChange}
@@ -71,6 +85,7 @@ const Register = ({ refetchUser }: Props) => {
         )}
         <TextInput
           label="Password"
+          required
           className="register__input"
           type="password"
           name="password"
@@ -81,6 +96,7 @@ const Register = ({ refetchUser }: Props) => {
           <div className="register__error">{register.errors.password}</div>
         )}
         <TextInput
+          required
           label="Password Confirmation"
           className="register__input"
           type="password"
@@ -95,6 +111,7 @@ const Register = ({ refetchUser }: Props) => {
             </div>
           )}
         <TextInput
+          required
           label="Username"
           className="register__input"
           type="text"
@@ -108,6 +125,7 @@ const Register = ({ refetchUser }: Props) => {
         <h2 className="register__avatar">Choose your avatar</h2>
         <div className="register__avatars">
           <img
+            alt="avatar"
             className={classNames({ register__border: avatar === "male" })}
             onClick={() => {
               setAvatar("male");
@@ -115,6 +133,7 @@ const Register = ({ refetchUser }: Props) => {
             src="/media/avatars/male.png"
           />
           <img
+            alt="avatar"
             className={classNames({ register__border: avatar === "female" })}
             onClick={() => {
               setAvatar("female");

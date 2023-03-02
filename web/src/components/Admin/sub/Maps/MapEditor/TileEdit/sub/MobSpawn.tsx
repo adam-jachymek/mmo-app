@@ -15,6 +15,7 @@ import {
 } from "api/endpoints/actionMobSpawn";
 import { isEmpty } from "lodash";
 import { getSelectData } from "../utils";
+import { assets_url } from "config";
 
 type Props = {
   SelectItem: any;
@@ -48,11 +49,7 @@ const MobSpawn = ({
     enabled: Boolean(tileId),
   });
 
-  const {
-    data: spawnManyMobs,
-    isFetching: fetchingManySpawnMobs,
-    refetch: refetchManySpawnMobs,
-  } = useQuery(
+  const { data: spawnManyMobs, isFetching: fetchingManySpawnMobs } = useQuery(
     ["getManyActionMobSpawn", multiSelectTiles],
     () => getManyActionMobSpawn(multiSelectTiles),
     {
@@ -137,7 +134,7 @@ const MobSpawn = ({
       ...mobsData?.find((mob: any) => mobSpawn?.mobId === mob?.id),
       ...mobSpawn,
     }));
-  }, [mobsData, spawnMobs, spawnMobsToMap]);
+  }, [mobsData, spawnMobsToMap]);
 
   const calculateMaxSpawnRate = useMemo(() => {
     const spawnRateSum = mobList?.reduce(
@@ -224,7 +221,11 @@ const MobSpawn = ({
                 </Button>
               </p>
             </div>
-
+            <img
+              alt="sprite"
+              className="mob-drop__item-info-sprite"
+              src={`${assets_url}/${mob.sprite}`}
+            />
             <MobDrop SelectItem={SelectItem} actionMobId={mob.id} />
           </li>
         ))}

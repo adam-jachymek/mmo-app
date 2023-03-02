@@ -21,17 +21,11 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
   const [openModal, setOpenModal] = useState(false);
   const [showLootList, setShowLootList] = useState(false);
 
-  const { data: itemsPrototypeData, refetch: refetchItemsPrototype } = useQuery(
-    "getItemsAdmin",
-    getItemsAdmin
-  );
+  const { data: itemsPrototypeData } = useQuery("getItemsAdmin", getItemsAdmin);
 
-  const {
-    data: dropItems,
-    isFetching: fetchingDropItems,
-    refetch: refetchDropItems,
-  } = useQuery(["getActionDropItem", actionMobId], () =>
-    getActionDropItem(actionMobId)
+  const { data: dropItems, refetch: refetchDropItems } = useQuery(
+    ["getActionDropItem", actionMobId],
+    () => getActionDropItem(actionMobId)
   );
 
   const { mutate: createItemDrop } = useMutation(createActionItemDrop, {
@@ -128,6 +122,7 @@ const MobDrop = ({ SelectItem, actionMobId }: Props) => {
                 </p>
               </div>
               <img
+                alt="sprite"
                 className="mob-drop__item-info-sprite"
                 src={`${assets_url}/${item.sprite}`}
               />

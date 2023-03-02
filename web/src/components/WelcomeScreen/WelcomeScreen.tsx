@@ -22,7 +22,11 @@ const WelcomeScreen = ({ refetchUser }: Props) => {
 
   return (
     <div className="welcome">
-      <img className="welcome__logo" src="/media/logo150.png" />
+      <img
+        alt="welcome-logo"
+        className="welcome__logo"
+        src="/media/logo150.png"
+      />
       {form()}
       {!isRegister ? (
         <Button onClick={() => setRegister(true)} type="submit">

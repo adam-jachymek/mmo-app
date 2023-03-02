@@ -1,15 +1,9 @@
 import { useMutation, useQuery } from "react-query";
-import {
-  getMobs,
-  deleteMob,
-  createMob,
-  getMap,
-  createMobSprite,
-} from "api/endpoints";
+import { getMobs, deleteMob, createMob, createMobSprite } from "api/endpoints";
 import { useFormik } from "formik";
 
 import { Button, FileInput, Input, Modal } from "@mantine/core";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { assets_url } from "config";
 
 const Mobs = () => {
@@ -21,8 +15,6 @@ const Mobs = () => {
   });
 
   const { data: mobsData, refetch: refetchMobs } = useQuery("getMobs", getMobs);
-
-  const { data: mapData, refetch: refetchMaps } = useQuery("getMap", getMap);
 
   const { mutate: addMob } = useMutation(createMob, {
     onSuccess: (response) => {
@@ -41,15 +33,6 @@ const Mobs = () => {
       refetchMobs();
     },
   });
-
-  const maps = useMemo(() => {
-    const maps = mapData?.map((map: any) => ({
-      value: map.id.toString(),
-      label: map.name,
-    }));
-
-    return maps;
-  }, [mapData]);
 
   const mobsForm = useFormik({
     initialValues: {
@@ -145,6 +128,7 @@ const Mobs = () => {
                 <div className="admin__item-icon">
                   {mob.sprite && (
                     <img
+                      alt="sprite"
                       className="admin__item-img"
                       src={`${assets_url}/${mob.sprite}`}
                     />

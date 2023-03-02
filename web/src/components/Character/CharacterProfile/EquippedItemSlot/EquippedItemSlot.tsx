@@ -20,6 +20,7 @@ const EquippedItemSlot = ({ equippedItem, openItemModal }: Props) => {
           }}
         >
           <img
+            alt="item-sprite"
             src={`${assets_url}/${equippedItem.sprite}`}
             className="profile__item-icon"
           />

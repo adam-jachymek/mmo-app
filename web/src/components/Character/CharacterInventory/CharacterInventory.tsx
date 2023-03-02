@@ -39,6 +39,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
         >
           {bag && (
             <img
+              alt="bag-sprite"
               src={`${assets_url}/${bag.sprite}`}
               className="inventory__bag-icon"
             />
@@ -47,7 +48,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
       );
     }
     return items;
-  }, [inventory]);
+  }, [bags, openItemModal]);
 
   const numberOfSlots = DEFAULT_NUMBER_OF_SLOTS + numberOfExtraSlots;
 
@@ -68,6 +69,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
         >
           {inventoryItem && (
             <img
+              alt="item-icon"
               src={`${assets_url}/${inventoryItem.sprite}`}
               className="inventory__item-icon"
             />
@@ -77,7 +79,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
     }
 
     return items;
-  }, [inventory]);
+  }, [inventory, numberOfSlots, openItemModal]);
 
   return (
     <>

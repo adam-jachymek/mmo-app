@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { getItems } from "api/endpoints";
 import { Loader } from "@mantine/core";
-import { EquipItem, User, Item } from "/types";
+import { User, Item } from "/types";
 import ItemModal from "../ItemModal";
 import CharacterStats from "./CharacterStats";
 import CharacterInventory from "./CharacterInventory";

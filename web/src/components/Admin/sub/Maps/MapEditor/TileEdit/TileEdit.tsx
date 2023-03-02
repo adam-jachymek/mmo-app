@@ -2,22 +2,18 @@ import {
   Avatar,
   Button,
   Group,
-  Select,
   Text,
   Textarea,
   Switch,
   Loader,
 } from "@mantine/core";
 import { useFormik } from "formik";
-import { forwardRef, useEffect, useMemo, useState } from "react";
+import { forwardRef, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
-import { getMap } from "api/endpoints";
 import { editTileById, updateManyTiles } from "api/endpoints/tiles";
 import { Tile } from "/types";
 import { getAllSprites } from "api/endpoints/sprites";
 import { assets_url } from "config";
-import MobSpawn from "./sub/MobSpawn";
-import Teleport from "./sub/Teleport";
 import Sprite from "./sub/Sprite";
 import Object from "./sub/Object";
 
@@ -57,11 +53,6 @@ const TileEdit = ({
   const { data: allSprites, isFetching: fetchingSprites } = useQuery(
     "getAllSprites",
     getAllSprites
-  );
-
-  const { data: mapData, isFetching: fetchingMaps } = useQuery(
-    "getMap",
-    getMap
   );
 
   const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
@@ -120,9 +111,10 @@ const TileEdit = ({
     if (tileForm.values.blocked) {
       tileForm.setFieldValue("action_name", undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tileForm.values.blocked]);
 
-  if (fetchingMaps || fetchingSprites) {
+  if (fetchingSprites) {
     return <Loader />;
   }
 

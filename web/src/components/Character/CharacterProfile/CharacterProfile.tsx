@@ -58,8 +58,9 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
         </div>
         <div className="profile__center">
           <div className="profile__info">
-            <span className="profile__guild">Avengers</span>
+            {/* <span className="profile__guild">Avengers</span> */}
             <img
+              alt="profile-avatar"
               className="profile__avatar"
               src={`/media/avatars/${user?.avatar}.png`}
             />

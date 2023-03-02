@@ -151,6 +151,7 @@ const Spirtes = () => {
               <td>{sprite.category}</td>
               <td>
                 <img
+                  alt="sprite"
                   style={{ width: 64, height: 64 }}
                   src={`${assets_url}/${sprite.sprite}`}
                 />

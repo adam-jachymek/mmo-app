@@ -5,10 +5,7 @@ import { Button } from "@mantine/core";
 import "./styles.sass";
 
 const Players = () => {
-  const { data: usersData, refetch: refetchUser } = useQuery(
-    "getUsers",
-    getUsers
-  );
+  const { data: usersData } = useQuery("getUsers", getUsers);
 
   return (
     <div className="players">
