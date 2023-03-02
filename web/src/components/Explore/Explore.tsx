@@ -132,7 +132,7 @@ const Explore = ({ user }: Props) => {
             {tile.object && (
               <div className="explore__icon">
                 <img
-                  style={{ width: 64, height: 64 }}
+                  style={{ width: 80, height: 80 }}
                   src={`${assets_url}/${tile.object}`}
                 />
               </div>
