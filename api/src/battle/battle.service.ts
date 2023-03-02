@@ -325,16 +325,15 @@ export class BattleService {
     const minMobAttack = activeMob.attack / 2;
     const maxMobAttack = activeMob.attack;
 
+    const totalDefence =
+      1 +
+      activeUser.totalDefence /
+        (200 + activeUser.totalDefence);
+
     const generatedDamage =
       this.generateRandomDamage(
-        minMobAttack /
-          (1 +
-            activeUser.defence /
-              (260 + activeUser.totalDefence)),
-        maxMobAttack /
-          (1 +
-            activeUser.defence /
-              (260 + activeUser.totalDefence)),
+        minMobAttack / totalDefence,
+        maxMobAttack / totalDefence,
       );
 
     if (userId === activeUser.id) {

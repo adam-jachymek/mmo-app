@@ -14,6 +14,7 @@ import { socket } from "api/socket";
 import Players from "./Players";
 
 import "./styles.sass";
+import TextDisplay from "./TextDisplay";
 
 type Props = {
   user: User;
@@ -35,6 +36,7 @@ const Explore = ({ user }: Props) => {
       }
     ]
   >();
+  const [showText, setShowText] = useState(false);
 
   const mapId = user.mapId;
 
@@ -56,6 +58,24 @@ const Explore = ({ user }: Props) => {
         setPlayers(response);
       });
   }, [mapId, socket]);
+
+  const npc = {
+    name: "John",
+    avatar: `/media/avatars/npc.jpg`,
+    text: [
+      "Hi! I'm John.",
+      "I'm first test NPC in the game.",
+      "Nice to meet you!",
+    ],
+  };
+
+  useEffect(() => {
+    if ((user.x === 7 && user.y === 3) || (user.x === 6 && user.y === 2)) {
+      setShowText(true);
+    } else {
+      setShowText(false);
+    }
+  }, [user.x, user.y]);
 
   const renderMap = useMemo(() => {
     let tiles = [];
@@ -111,6 +131,17 @@ const Explore = ({ user }: Props) => {
                 </div>
               </div>
             )}
+            {tile.x === 7 && tile.y === 2 && (
+              <div
+                onClick={() => setShowText(true)}
+                className="explore__player"
+              >
+                <div className="explore__username">{npc.name}</div>
+                <div className="explore__avatar-wrapper">
+                  <img className="explore__avatar" src={npc.avatar} />
+                </div>
+              </div>
+            )}
           </li>
         );
       }
@@ -131,9 +162,13 @@ const Explore = ({ user }: Props) => {
             {renderMap}
           </ul>
         </div>
-        <div className="explore__body">
-          <ExploreButtons user={user} mapId={mapId} />
-        </div>
+        {showText ? (
+          <TextDisplay text={npc.text} delay={30} setShowText={setShowText} />
+        ) : (
+          <div className="explore__body">
+            <ExploreButtons user={user} mapId={mapId} />
+          </div>
+        )}
       </div>
     </>
   );

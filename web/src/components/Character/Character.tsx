@@ -26,7 +26,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
     data: itemsData,
     refetch: refetchItems,
     isFetching,
-  } = useQuery(["getItems", currentUser?.id], getItems);
+  } = useQuery(["getItems", user?.id], getItems);
 
   if (isFetching) {
     return <Loader />;

@@ -14,20 +14,20 @@ type Props = {
 
 const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
   const equippedItems = useMemo(() => {
-    const head = itemsData.find(
-      (item: Item) => item.armorType === "HEAD" && item.equip === true
+    const head = itemsData?.find(
+      (item: Item) => item?.armorType === "HEAD" && item?.equip === true
     );
-    const chest = itemsData.find(
-      (item: Item) => item.armorType === "CHEST" && item.equip === true
+    const chest = itemsData?.find(
+      (item: Item) => item?.armorType === "CHEST" && item?.equip === true
     );
-    const weapon = itemsData.find(
-      (item: Item) => item.mainType === "WEAPON" && item.equip === true
+    const weapon = itemsData?.find(
+      (item: Item) => item?.mainType === "WEAPON" && item?.equip === true
     );
-    const offhand = itemsData.find(
-      (item: Item) => item.armorType === "OFFHAND" && item.equip === true
+    const offhand = itemsData?.find(
+      (item: Item) => item?.armorType === "OFFHAND" && item?.equip === true
     );
-    const legs = itemsData.find(
-      (item: Item) => item.armorType === "LEGS" && item.equip === true
+    const legs = itemsData?.find(
+      (item: Item) => item?.armorType === "LEGS" && item?.equip === true
     );
 
     return {
