@@ -1,3 +1,6 @@
+import { DialogOptionModule } from './dialogOptions/dialogOptions.module';
+import { DialogModule } from './dialog/dialog.module';
+import { NpcModule } from './npc/npc.module';
 import { ExploreSocketModule } from './exploreSocket/exploreSocket.module';
 import { ActionItemDropModule } from './actionItemDrop/actionItemDrop.module';
 import { MapSpritesModule } from './mapSprites/mapSprites.module';
@@ -45,6 +48,9 @@ import { ActionMobSpawnModule } from './actionMobSpawn/actionMobSpawn.module';
     ActionMobSpawnModule,
     ActionItemDropModule,
     ExploreSocketModule,
+    NpcModule,
+    DialogModule,
+    DialogOptionModule,
   ],
 })
 export class AppModule {}

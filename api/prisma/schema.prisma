@@ -253,7 +253,8 @@ model MapTiles {
   actionItemDrop  ActionItemDrop[]
   actionMobSpawns ActionMobSpawnsOnTiles[]
 
-  npc Npc[]
+  npc   Npc? @relation(fields: [npcId], references: [id])
+  npcId Int?
 
   map   Map? @relation(fields: [mapId], references: [id])
   mapId Int
@@ -348,12 +349,29 @@ model ActionMobSpawnsOnTiles {
 //
 
 model Npc {
-  id        Int       @id @default(autoincrement())
-  name      String
-  avatar    String
-  text      String[]
-  mapTile   MapTiles? @relation(fields: [mapTileId], references: [id])
-  mapTileId Int?
+  id      Int        @id @default(autoincrement())
+  name    String
+  avatar  String
+  dialog  Dialog[]
+  mapTile MapTiles[]
+}
+
+model Dialog {
+  id      Int            @id @default(autoincrement())
+  name    String?
+  text    String?
+  isStart Boolean?
+  isEnd   Boolean?
+  npc     Npc?           @relation(fields: [npcId], references: [id])
+  npcId   Int?
+  options DialogOption[]
+}
+
+model DialogOption {
+  id       Int     @id @default(autoincrement())
+  text     String
+  dialog   Dialog? @relation(fields: [dialogId], references: [id])
+  dialogId Int?
 }
 
 //

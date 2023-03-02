@@ -38,7 +38,8 @@ model MapTiles {
   actionItemDrop ActionItemDrop[]
   actionMobSpawns ActionMobSpawnsOnTiles[]
 
-  npc Npc[]
+  npc     Npc? @relation(fields: [npcId], references: [id])
+  npcId   Int?
 
   map Map? @relation(fields: [mapId], references: [id])
   mapId Int

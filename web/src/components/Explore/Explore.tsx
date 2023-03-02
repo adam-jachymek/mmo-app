@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
-import ExploreButtons from "./ExploreButtons";
 import { Loader, Progress, RingProgress } from "@mantine/core";
 import { User } from "/types";
 import { assets_url } from "config";
@@ -11,6 +10,7 @@ import {
   NUMBER_OF_VISIBLE_TILES,
 } from "./utils";
 import { socket } from "api/socket";
+import ExploreButtons from "./ExploreButtons";
 import Players from "./Players";
 
 import "./styles.sass";
@@ -66,6 +66,38 @@ const Explore = ({ user }: Props) => {
       "Hi! I'm John.",
       "I'm first test NPC in the game.",
       "Nice to meet you!",
+    ],
+    dialogs: [
+      {
+        id: 1,
+        text: "How can I help you?",
+        options: [
+          {
+            option: "I want to sell something.",
+            dialogId: 2,
+          },
+          {
+            option: "Do you have any quest?",
+            dialogId: 3,
+          },
+          {
+            option: "Missclick, Goodbye",
+            dialogId: 5,
+          },
+        ],
+      },
+      { id: 2, text: "I don't have anything to sell." },
+      {
+        id: 3,
+        text: "You can kill rats and bring me their's fur.",
+        options: [
+          { option: "How much fur do you need?", dialogId: 4 },
+          { option: "Where I can find rats to kill?", dialogId: 6 },
+        ],
+      },
+      { id: 4, text: "I need only 5." },
+      { id: 6, text: "They should be in the grass nearby." },
+      { id: 5, text: "Goodbye." },
     ],
   };
 
@@ -132,10 +164,7 @@ const Explore = ({ user }: Props) => {
               </div>
             )}
             {tile.x === 7 && tile.y === 2 && (
-              <div
-                onClick={() => setShowText(true)}
-                className="explore__player"
-              >
+              <div className="explore__player">
                 <div className="explore__username">{npc.name}</div>
                 <div className="explore__avatar-wrapper">
                   <img className="explore__avatar" src={npc.avatar} />

@@ -62,22 +62,6 @@ const Maps = () => {
             onChange={mapForm.handleChange}
             value={mapForm.values.name}
           />
-          {/* <label className="admin__main-label">Min Level</label>
-          <Input
-            className="admin__main-input"
-            name="minLevel"
-            type="number"
-            onChange={mapForm.handleChange}
-            value={mapForm.values.minLevel}
-          />
-          <label className="admin__main-label">Max Level</label>
-          <Input
-            className="admin__main-input"
-            name="maxLevel"
-            type="number"
-            onChange={mapForm.handleChange}
-            value={mapForm.values.maxLevel}
-          /> */}
           <Button m="30px" type="submit" color="green" size="md">
             Add Map
           </Button>

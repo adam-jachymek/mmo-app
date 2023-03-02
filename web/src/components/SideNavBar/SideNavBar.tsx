@@ -54,6 +54,15 @@ const SideNavBar = () => {
             >
               Map Sprites
             </li>
+            <li onClick={() => navigate("/admin/npc")} className="navbar__li">
+              Npc
+            </li>
+            <li
+              onClick={() => navigate("/admin/dialogs")}
+              className="navbar__li"
+            >
+              Dialogs
+            </li>
             <li onClick={() => navigate("/players")} className="navbar__li">
               Players
             </li>

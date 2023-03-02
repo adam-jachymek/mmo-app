@@ -24,6 +24,8 @@ import WelcomeScreen from "./components/WelcomeScreen";
 import { User } from "./types";
 import Spirtes from "./components/Admin/sub/Sprites";
 import MapEditor from "./components/Admin/sub/Maps/MapEditor";
+import NpcEditor from "./components/Admin/sub/Npc";
+import DialogEditor from "./components/Admin/sub/Dialog";
 
 const AppRouter = () => {
   const [user, setUser] = useState<User>();
@@ -123,6 +125,8 @@ const AppRouter = () => {
           />
           <Route path="/admin/mobs" element={<Mobs />} />
           <Route path="/admin/sprites" element={<Spirtes />} />
+          <Route path="/admin/npc" element={<NpcEditor />} />
+          <Route path="/admin/dialogs" element={<DialogEditor />} />
           <Route path="/players" element={<Players />} />
           <Route
             path="/guild"

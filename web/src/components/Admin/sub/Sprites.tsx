@@ -96,7 +96,6 @@ const Spirtes = () => {
           placeholder="Select category"
           nothingFound="Nothing found"
           searchable
-          // creatable
           getCreateLabel={(query) => `+ Create ${query}`}
           onCreate={(query) => {
             const item = { value: query, label: query };
