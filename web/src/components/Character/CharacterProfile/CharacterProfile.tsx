@@ -18,8 +18,6 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
       (item: Item) => item?.equip === true
     );
 
-    console.log("allEquippedItems", allEquippedItems);
-
     const head = allEquippedItems?.find(
       (item: Item) => item?.armorType === "HEAD"
     );
@@ -44,8 +42,6 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
       legs,
     };
   }, [itemsData]);
-
-  console.log("itemsData", itemsData);
 
   return (
     <div className="profile">
