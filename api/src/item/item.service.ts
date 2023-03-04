@@ -241,9 +241,6 @@ export class ItemService {
           id: itemId,
           userId: userId,
         },
-        include: {
-          item: true,
-        },
       },
     );
 
