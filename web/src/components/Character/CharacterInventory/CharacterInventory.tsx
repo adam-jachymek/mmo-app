@@ -32,6 +32,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
       const bag = bags[i];
       items.push(
         <li
+          key={bag?.id}
           onClick={() => {
             bag && openItemModal(bag);
           }}
@@ -59,6 +60,7 @@ const CharacterInventory = ({ itemsData, openItemModal }: Props) => {
       const inventoryItem = inventory[i];
       items.push(
         <li
+          key={inventoryItem?.id}
           onClick={() => {
             inventoryItem && openItemModal(inventoryItem);
           }}

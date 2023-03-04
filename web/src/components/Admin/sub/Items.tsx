@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "react-query";
 import {
   createItem,
-  getItems,
   deleteItem,
   getItemsAdmin,
   generateItem,
@@ -12,7 +11,6 @@ import {
 import { Item, ItemPrototype } from "/types";
 import { useFormik } from "formik";
 import {
-  Switch,
   Select,
   TextInput,
   Textarea,
@@ -330,6 +328,7 @@ const Items = () => {
                 <div className="admin__item-icon">
                   {prototype.sprite && (
                     <img
+                      alt="item-sprite"
                       className="admin__item-img"
                       src={`${assets_url}/${prototype.sprite}`}
                     />

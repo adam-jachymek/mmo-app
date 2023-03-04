@@ -14,20 +14,24 @@ type Props = {
 
 const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
   const equippedItems = useMemo(() => {
-    const head = itemsData?.find(
-      (item: Item) => item?.armorType === "HEAD" && item?.equip === true
+    const allEquippedItems = itemsData?.filter(
+      (item: Item) => item?.equip === true
     );
-    const chest = itemsData?.find(
-      (item: Item) => item?.armorType === "CHEST" && item?.equip === true
+
+    const head = allEquippedItems?.find(
+      (item: Item) => item?.armorType === "HEAD"
     );
-    const weapon = itemsData?.find(
-      (item: Item) => item?.mainType === "WEAPON" && item?.equip === true
+    const chest = allEquippedItems?.find(
+      (item: Item) => item?.armorType === "CHEST"
     );
-    const offhand = itemsData?.find(
-      (item: Item) => item?.armorType === "OFFHAND" && item?.equip === true
+    const weapon = allEquippedItems?.find(
+      (item: Item) => item?.mainType === "WEAPON"
     );
-    const legs = itemsData?.find(
-      (item: Item) => item?.armorType === "LEGS" && item?.equip === true
+    const offhand = allEquippedItems?.find(
+      (item: Item) => item?.armorType === "OFFHAND"
+    );
+    const legs = allEquippedItems?.find(
+      (item: Item) => item?.armorType === "LEGS"
     );
 
     return {
@@ -58,7 +62,6 @@ const CharacterProfile = ({ user, itemsData, openItemModal }: Props) => {
         </div>
         <div className="profile__center">
           <div className="profile__info">
-            {/* <span className="profile__guild">Avengers</span> */}
             <img
               alt="profile-avatar"
               className="profile__avatar"

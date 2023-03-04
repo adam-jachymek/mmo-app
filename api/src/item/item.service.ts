@@ -257,6 +257,7 @@ export class ItemService {
           mainType: item.mainType,
           weaponType: item.weaponType,
           armorType: item.armorType,
+          itemType: item.itemType,
         },
         include: {
           item: true,
@@ -276,9 +277,11 @@ export class ItemService {
             equip: false,
           },
         });
+
         await this.userService.updateUserAttack(
           userId,
         );
+
         await this.userService.updateUserArmor(
           userId,
         );
@@ -290,14 +293,15 @@ export class ItemService {
       item.mainType === MainType.ARMOR ||
       item.itemType === ItemType.BAG
     ) {
-      await this.prisma.item.update({
-        where: {
-          id: itemId,
-        },
-        data: {
-          equip: !item.equip,
-        },
-      });
+      const itemUpdated =
+        await this.prisma.item.update({
+          where: {
+            id: itemId,
+          },
+          data: {
+            equip: !item.equip,
+          },
+        });
 
       await this.userService.updateUserAttack(
         userId,
@@ -305,6 +309,8 @@ export class ItemService {
       await this.userService.updateUserArmor(
         userId,
       );
+
+      return itemUpdated;
     }
   }
 
@@ -341,14 +347,7 @@ export class ItemService {
     userId: number,
     itemsId: number,
   ) {
-    const items =
-      await this.prisma.item.findUnique({
-        where: {
-          id: itemsId,
-        },
-      });
-
-    await this.prisma.item.delete({
+    return await this.prisma.item.delete({
       where: {
         id: itemsId,
       },
