@@ -132,6 +132,7 @@ const Explore = ({ user }: Props) => {
             {tile.object && (
               <div className="explore__icon">
                 <img
+                  alt="icon"
                   style={{ width: 80, height: 80 }}
                   src={`${assets_url}/${tile.object}`}
                 />
@@ -156,6 +157,7 @@ const Explore = ({ user }: Props) => {
                     value={(user.hp / user.maxHp) * 100}
                   />
                   <img
+                    alt="avatar"
                     className="explore__avatar"
                     src={`/media/avatars/${user?.avatar}.png`}
                   />
@@ -167,8 +169,21 @@ const Explore = ({ user }: Props) => {
               <div className="explore__player">
                 <div className="explore__username">{npc.name}</div>
                 <div className="explore__avatar-wrapper">
-                  <img className="explore__avatar" src={npc.avatar} />
+                  <img
+                    className="explore__avatar"
+                    src={npc.avatar}
+                    alt="avatar"
+                  />
                 </div>
+              </div>
+            )}
+            {tile.layer2 && (
+              <div className="explore__icon">
+                <img
+                  alt="icon"
+                  style={{ width: 80, height: 80 }}
+                  src={`${assets_url}/${tile.layer2}`}
+                />
               </div>
             )}
           </li>
@@ -176,7 +191,7 @@ const Explore = ({ user }: Props) => {
       }
     }
     return tiles;
-  }, [mapData, user, players]);
+  }, [user, mapData, players, npc.name, npc.avatar]);
 
   if (isFetching) {
     return <Loader />;

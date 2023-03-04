@@ -73,6 +73,7 @@ const TileEdit = ({
       tileId: editTile?.id?.toString(),
       sprite: editTile?.sprite,
       object: editTile?.object,
+      layer2: editTile?.layer2,
       text: editTile?.text,
       blocked: editTile?.blocked,
     },

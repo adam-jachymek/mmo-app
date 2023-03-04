@@ -121,6 +121,7 @@ export type Tile = {
   id?: number;
   sprite?: string;
   object?: string;
+  layer2?: string;
   text?: string;
   action_name?: string;
   x?: number;

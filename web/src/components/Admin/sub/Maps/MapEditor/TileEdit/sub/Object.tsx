@@ -23,7 +23,7 @@ const Object = ({ tileForm, SelectItem, allSprites }: Props) => {
 
   return (
     <>
-      <label className="admin__main-label">Object</label>
+      <label className="admin__main-label">Layer 1</label>
       {tileForm.values.object && (
         <img
           style={{ height: 100, marginBottom: 10, marginTop: 10 }}
@@ -39,6 +39,26 @@ const Object = ({ tileForm, SelectItem, allSprites }: Props) => {
         data={objectSelect}
         onChange={(value) => tileForm.setFieldValue("object", value)}
         value={tileForm.values.object}
+        searchable
+        maxDropdownHeight={400}
+        nothingFound="No objects available"
+      />
+      <label className="admin__main-label">Layer 2</label>
+      {tileForm.values.layer2 && (
+        <img
+          style={{ height: 100, marginBottom: 10, marginTop: 10 }}
+          src={`${assets_url}/${tileForm.values.layer2}`}
+        />
+      )}
+      <Select
+        placeholder="Pick one"
+        name="layer2"
+        itemComponent={SelectItem}
+        style={{ margin: 10 }}
+        clearable
+        data={objectSelect}
+        onChange={(value) => tileForm.setFieldValue("layer2", value)}
+        value={tileForm.values.layer2}
         searchable
         maxDropdownHeight={400}
         nothingFound="No objects available"

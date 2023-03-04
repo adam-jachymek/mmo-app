@@ -25,6 +25,7 @@ model MapTiles {
 
   sprite String?
   object String?
+  layer2 String?
   text String? @default("")
   blocked Boolean? @default(false)
   x Int

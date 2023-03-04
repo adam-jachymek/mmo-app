@@ -1,8 +1,5 @@
 import {
   IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -15,6 +12,10 @@ export class EditTileDto {
   @IsString()
   @IsOptional()
   object?: string;
+
+  @IsString()
+  @IsOptional()
+  layer2?: string;
 
   @IsBoolean()
   @IsOptional()

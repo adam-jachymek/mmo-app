@@ -63,9 +63,9 @@ const MapEditor = ({ user }: Props) => {
             backgroundSize: "cover",
           }}
           className={classNames("map-editor__tile", {
-            active:
-              tile.id === selectedTile?.id ||
-              multiSelectTiles.includes(tile.id),
+            // active:
+            //   tile.id === selectedTile?.id ||
+            //   multiSelectTiles.includes(tile.id),
           })}
           onClick={() => {
             if (multiSelect) {
@@ -87,6 +87,14 @@ const MapEditor = ({ user }: Props) => {
               <img
                 style={{ width: 42, height: 42 }}
                 src={`${assets_url}/${tile.object}`}
+              />
+            </div>
+          )}
+          {tile.layer2 && (
+            <div className="map-editor__icon">
+              <img
+                style={{ width: 42, height: 42 }}
+                src={`${assets_url}/${tile.layer2}`}
               />
             </div>
           )}
@@ -123,6 +131,13 @@ const MapEditor = ({ user }: Props) => {
               )}
             </>
           )}
+          <div
+            className={classNames({
+              active:
+                tile.id === selectedTile?.id ||
+                multiSelectTiles.includes(tile.id),
+            })}
+          ></div>
         </li>
       );
     }
