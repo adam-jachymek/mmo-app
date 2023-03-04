@@ -235,15 +235,17 @@ export class ItemService {
     userId: number,
     itemId: number,
   ) {
-    const item =
-      await this.prisma.item.findUnique({
+    const item = await this.prisma.item.findFirst(
+      {
         where: {
           id: itemId,
+          userId: userId,
         },
         include: {
           item: true,
         },
-      });
+      },
+    );
 
     if (item.userId !== userId)
       throw new ForbiddenException(
@@ -258,6 +260,7 @@ export class ItemService {
           weaponType: item.weaponType,
           armorType: item.armorType,
           itemType: item.itemType,
+          userId: userId,
         },
         include: {
           item: true,
