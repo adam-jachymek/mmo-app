@@ -76,6 +76,17 @@ export class ItemController {
     );
   }
 
+  @Post('delete-many')
+  deleteManyItemsByIds(
+    @GetUser('id') userId: number,
+    @Body() values: { itemsIds: number[] },
+  ) {
+    return this.ItemService.deleteManyItemsByIds(
+      userId,
+      values.itemsIds,
+    );
+  }
+
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   deleteItemById(

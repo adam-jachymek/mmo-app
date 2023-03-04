@@ -46,6 +46,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
               />
               <CharacterInventory
                 itemsData={itemsData}
+                refetchItems={refetchItems}
                 openItemModal={setActiveItem}
               />
             </div>
@@ -63,6 +64,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
           {!showStats ? (
             <CharacterInventory
               itemsData={itemsData}
+              refetchItems={refetchItems}
               openItemModal={setActiveItem}
             />
           ) : (

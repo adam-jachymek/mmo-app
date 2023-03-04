@@ -354,6 +354,18 @@ export class ItemService {
     });
   }
 
+  async deleteManyItemsByIds(
+    userId: number,
+    itemsIds: number[],
+  ) {
+    return await this.prisma.item.deleteMany({
+      where: {
+        id: { in: itemsIds },
+        userId: userId,
+      },
+    });
+  }
+
   generateItemLevel(
     quality: ItemQuality,
     maxLevel: number,

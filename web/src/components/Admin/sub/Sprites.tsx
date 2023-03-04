@@ -67,7 +67,6 @@ const Spirtes = () => {
         },
         file: values.sprite,
       });
-      resetForm();
     },
   });
 

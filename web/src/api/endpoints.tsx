@@ -234,6 +234,12 @@ export const equipItem = async (itemId?: number) => {
   return response.data;
 };
 
+export const deleteManyItemsByIds = async (itemsIds?: number[]) => {
+  const response = await api.post(`item/delete-many`, { itemsIds });
+
+  return response.data;
+};
+
 export const getUsers = async () => {
   const response = await api.get("/users");
 
