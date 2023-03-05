@@ -19,13 +19,13 @@ import PartyNavBar from "./components/Party";
 import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
-import MobileMenu from "./components/MobileMenu";
 import WelcomeScreen from "./components/WelcomeScreen";
 import { User } from "./types";
 import Spirtes from "./components/Admin/sub/Sprites";
 import MapEditor from "./components/Admin/sub/Maps/MapEditor";
 import NpcEditor from "./components/Admin/sub/Npc";
 import DialogEditor from "./components/Admin/sub/Dialog";
+import MenuCollapse from "./components/MenuCollapse/MenuCollapse";
 
 const AppRouter = () => {
   const [user, setUser] = useState<User>();
@@ -146,7 +146,7 @@ const AppRouter = () => {
             element={<Battle currentUser={currentUser} />}
           />
         </Routes>
-        <MobileMenu />
+        <MenuCollapse />
       </>
     );
   }

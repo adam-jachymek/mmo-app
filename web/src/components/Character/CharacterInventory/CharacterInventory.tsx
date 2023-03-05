@@ -32,8 +32,6 @@ const CharacterInventory = ({
 
   const allItemsInInventory = inventory.map((item: Item) => item.id);
 
-  console.log("multiItemsIds", multiItemsIds);
-
   useEffect(() => {
     setMultiItemsIds([]);
   }, [multiSelect]);

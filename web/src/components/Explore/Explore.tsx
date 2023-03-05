@@ -101,13 +101,11 @@ const Explore = ({ user }: Props) => {
     ],
   };
 
-  useEffect(() => {
+  const showJonhText = () => {
     if ((user.x === 7 && user.y === 3) || (user.x === 6 && user.y === 2)) {
       setShowText(true);
-    } else {
-      setShowText(false);
     }
-  }, [user.x, user.y]);
+  };
 
   const renderMap = useMemo(() => {
     let tiles = [];
@@ -210,7 +208,7 @@ const Explore = ({ user }: Props) => {
           <TextDisplay text={npc.text} delay={30} setShowText={setShowText} />
         ) : (
           <div className="explore__body">
-            <ExploreButtons user={user} mapId={mapId} />
+            <ExploreButtons user={user} showJonhText={showJonhText} />
           </div>
         )}
       </div>

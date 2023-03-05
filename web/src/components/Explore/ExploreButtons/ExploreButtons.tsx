@@ -1,22 +1,23 @@
+import { Button } from "@mantine/core";
 import { socket } from "api/socket";
 
 import "./styles.sass";
 
 type Props = {
   user: any;
-  mapId: number;
+  showJonhText: any;
 };
 
-const ExploreDpad = ({ user, mapId }: Props) => {
+const ExploreDpad = ({ user, showJonhText }: Props) => {
   return (
-    <div className="explore-dpad">
-      <div className="explore-dpad__wrapper">
-        <button
+    <div className="explore-buttons">
+      <div className="explore-buttons__dpad">
+        <Button
           style={{
             backgroundImage: "url(/media/explore/joystick-arrow-left.svg)",
             backgroundSize: "cover",
           }}
-          className="explore-dpad__left"
+          className="explore-buttons__left button"
           onClick={() => {
             socket.emit("moveUser", {
               userId: user.id,
@@ -24,9 +25,9 @@ const ExploreDpad = ({ user, mapId }: Props) => {
               direction: -1,
             });
           }}
-        ></button>
-        <button
-          className="explore-dpad__right"
+        ></Button>
+        <Button
+          className="explore-buttons__right button"
           style={{
             backgroundImage: "url(/media/explore/joystick-arrow-right.svg)",
             backgroundSize: "cover",
@@ -38,9 +39,9 @@ const ExploreDpad = ({ user, mapId }: Props) => {
               direction: 1,
             });
           }}
-        ></button>
-        <button
-          className="explore-dpad__down"
+        ></Button>
+        <Button
+          className="explore-buttons__down button"
           style={{
             backgroundImage: "url(/media/explore/joystick-arrow-down.svg)",
             backgroundSize: "cover",
@@ -52,9 +53,9 @@ const ExploreDpad = ({ user, mapId }: Props) => {
               direction: 1,
             });
           }}
-        ></button>
-        <button
-          className="explore-dpad__up"
+        ></Button>
+        <Button
+          className="explore-buttons__up button"
           style={{
             backgroundImage: "url(/media/explore/joystick-arrow-up.svg)",
             backgroundSize: "cover",
@@ -66,9 +67,29 @@ const ExploreDpad = ({ user, mapId }: Props) => {
               direction: -1,
             });
           }}
-        >
-          {/* <img src="/media/explore/joystick-arrow-up.svg" /> */}
-        </button>
+        ></Button>
+      </div>
+      <div className="explore-buttons__ab">
+        <Button
+          className="explore-buttons__a button"
+          variant="subtle"
+          style={{
+            backgroundImage: "url(/media/explore/button-a.png)",
+            backgroundSize: "cover",
+          }}
+          onClick={() => {
+            showJonhText();
+          }}
+        ></Button>
+        <Button
+          className="explore-buttons__b button"
+          variant="subtle"
+          style={{
+            backgroundImage: "url(/media/explore/button-b.png)",
+            backgroundSize: "cover",
+          }}
+          onClick={() => {}}
+        ></Button>
       </div>
     </div>
   );

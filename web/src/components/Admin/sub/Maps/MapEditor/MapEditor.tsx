@@ -133,7 +133,7 @@ const MapEditor = ({ user }: Props) => {
           )}
           <div
             className={classNames({
-              active:
+              "active-tile":
                 tile.id === selectedTile?.id ||
                 multiSelectTiles.includes(tile.id),
             })}
