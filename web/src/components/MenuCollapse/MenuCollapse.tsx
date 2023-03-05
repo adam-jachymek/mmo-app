@@ -24,8 +24,12 @@ const MenuCollapse = () => {
         className="menu__menu-button"
         color="#000"
       >
-        {/* Menu */}
-        <ImMenu3 size="20px" />
+        <span
+          style={{ fontSize: "15px", fontWeight: "bold", color: "#C1C2C5" }}
+        >
+          MENU
+        </span>
+        <ImMenu3 size="23px" color="#C1C2C5" />
       </button>
       <Collapse in={menuCollapse}>
         <div className="menu__wrapper">
@@ -36,7 +40,7 @@ const MenuCollapse = () => {
             variant="outline"
             leftIcon={<MdOutlineExplore size="20px" />}
           >
-            explore
+            EXPLORE
           </Button>
           <Button
             onClick={() => handleButton("character")}
@@ -45,7 +49,7 @@ const MenuCollapse = () => {
             variant="outline"
             leftIcon={<MdOutlineInventory2 size="20px" />}
           >
-            inventory
+            INVENTORY
           </Button>
         </div>
       </Collapse>
