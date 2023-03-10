@@ -73,7 +73,7 @@ const Explore = ({ user }: Props) => {
         text: "How can I help you?",
         options: [
           {
-            option: "I want to sell something.",
+            option: "I want to buy something.",
             dialogId: 2,
           },
           {

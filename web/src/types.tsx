@@ -123,7 +123,6 @@ export type Tile = {
   object?: string;
   layer2?: string;
   text?: string;
-  action_name?: string;
   x?: number;
   y?: number;
   actionMobSpawn?: [
@@ -140,21 +139,29 @@ export type Tile = {
       ];
     }
   ];
-  action?: {
-    teleport?: { mapId: string; newMapX: number; newMapY: number };
-    mobSpawn?: [
-      {
-        mobId: string;
-        minLevel: number;
-        maxLevel: number;
-        spawnRate: number;
-        drop: [
-          {
-            itemId: number;
-            dropRate: number;
-          }
-        ];
-      }
-    ];
-  };
+};
+
+export type NPC = {
+  id: number;
+  name: string;
+  avatar: string;
+  dialog: Dialog[];
+};
+
+export type Dialog = {
+  id: number;
+  isEnd: boolean;
+  isStart: boolean;
+  name: string;
+  npcId: number;
+  text: string[];
+  options: DialogOption[];
+};
+
+export type DialogOption = {
+  id: number;
+  text: string;
+  dialogId: number;
+  nextDialog: Dialog;
+  nextDialogId?: number;
 };

@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
@@ -7,21 +8,9 @@ import {
 } from 'class-validator';
 
 export class DialogDto {
-  @IsString()
-  @IsOptional()
-  name: string;
-
-  @IsString()
+  @IsArray()
   @IsNotEmpty()
-  text: string;
-
-  @IsBoolean()
-  @IsOptional()
-  isStart: boolean;
-
-  @IsBoolean()
-  @IsOptional()
-  isEnd: boolean;
+  text: string[];
 
   @IsNumber()
   @IsOptional()

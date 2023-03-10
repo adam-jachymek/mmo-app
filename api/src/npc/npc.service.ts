@@ -9,7 +9,15 @@ export class NpcService {
   getAllNpcs() {
     return this.prisma.npc.findMany({
       include: {
-        dialog: true,
+        dialog: {
+          include: {
+            options: {
+              include: {
+                nextDialog: true,
+              },
+            },
+          },
+        },
       },
     });
   }

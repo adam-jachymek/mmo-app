@@ -15,6 +15,7 @@ export const getDialogOptionsByDialogId = async (dialogId: number) => {
 export const createDialogOption = async (values: {
   text: string;
   dialogId?: number;
+  nextDialogId?: number;
 }) => {
   const response = await api.post("dialog-option", values);
 

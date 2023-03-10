@@ -11,13 +11,13 @@ model Npc {
 
 model Dialog {
   id      Int      @id @default(autoincrement())
-  name    String?
-  text    String?
+  text    String[]
   isStart Boolean?
   isEnd   Boolean?
   npc     Npc? @relation(fields: [npcId], references: [id])
   npcId   Int?
   options DialogOption[]
+  triggerOption DialogOption? @relation(name: "nextDialog")
 }
 
 model DialogOption {
@@ -25,4 +25,6 @@ model DialogOption {
   text    String
   dialog  Dialog? @relation(fields: [dialogId], references: [id])
   dialogId  Int?
+  nextDialog  Dialog? @relation(name: "nextDialog", fields: [nextDialogId], references: [id])
+  nextDialogId Int? @unique
 }

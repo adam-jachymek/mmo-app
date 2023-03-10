@@ -7,13 +7,21 @@ export const getAllDialogs = async () => {
 };
 
 export const createDialog = async (values: {
-  name?: string;
-  text: string;
-  isStart?: boolean;
-  isEnd?: boolean;
+  text: string[];
   npcId?: number;
 }) => {
   const response = await api.post("dialog", values);
+
+  return response.data;
+};
+
+export const editDialogById = async (data: {
+  dialogId: number;
+  values: {
+    text: string[];
+  };
+}) => {
+  const response = await api.patch(`dialog/${data.dialogId}`, data.values);
 
   return response.data;
 };

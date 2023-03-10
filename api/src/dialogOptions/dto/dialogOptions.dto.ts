@@ -1,5 +1,4 @@
 import {
-  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -9,13 +8,13 @@ import {
 export class DialogOptionDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsOptional()
   text: string;
 
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   dialogId: number;
+
+  @IsNumber()
+  @IsOptional()
+  nextDialogId: number;
 }
