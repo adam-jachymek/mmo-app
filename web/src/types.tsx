@@ -122,6 +122,7 @@ export type Tile = {
   sprite?: string;
   object?: string;
   layer2?: string;
+  layer3?: string;
   text?: string;
   x?: number;
   y?: number;

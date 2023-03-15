@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Group,
-  Text,
-  Textarea,
-  Switch,
-  Loader,
-} from "@mantine/core";
+import { Avatar, Button, Group, Text, Switch, Loader } from "@mantine/core";
 import { useFormik } from "formik";
 import { forwardRef, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -74,6 +66,7 @@ const TileEdit = ({
       sprite: editTile?.sprite,
       object: editTile?.object,
       layer2: editTile?.layer2,
+      layer3: editTile?.layer3,
       text: editTile?.text,
       blocked: editTile?.blocked,
     },
@@ -112,7 +105,6 @@ const TileEdit = ({
     if (tileForm.values.blocked) {
       tileForm.setFieldValue("action_name", undefined);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tileForm.values.blocked]);
 
   if (fetchingSprites) {
@@ -136,19 +128,11 @@ const TileEdit = ({
             />
             <Switch
               label="Blocked"
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 30 }}
               checked={tileForm.values.blocked}
               onChange={(event) =>
                 tileForm.setFieldValue("blocked", event.currentTarget.checked)
               }
-            />
-            <label className="admin__main-label">Text</label>
-            <Textarea
-              className="admin__main-input"
-              name="text"
-              disabled={tileForm.values.blocked}
-              onChange={tileForm.handleChange}
-              value={tileForm.values.text}
             />
           </div>
         </div>

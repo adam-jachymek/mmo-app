@@ -184,6 +184,15 @@ const Explore = ({ user }: Props) => {
                 />
               </div>
             )}
+            {tile.layer3 && (
+              <div className="explore__icon">
+                <img
+                  alt="icon"
+                  style={{ width: 80, height: 80 }}
+                  src={`${assets_url}/${tile.layer3}`}
+                />
+              </div>
+            )}
           </li>
         );
       }

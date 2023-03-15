@@ -17,6 +17,10 @@ export class EditTileDto {
   @IsOptional()
   layer2?: string;
 
+  @IsString()
+  @IsOptional()
+  layer3?: string;
+
   @IsBoolean()
   @IsOptional()
   blocked?: boolean;
