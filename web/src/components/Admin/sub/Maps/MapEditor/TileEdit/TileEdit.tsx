@@ -13,6 +13,7 @@ type Props = {
   editTile?: Tile;
   refetchTiles: () => void;
   multiSelect: boolean;
+  setMultiSelect: (arg: boolean) => void;
   multiSelectTiles: number[];
   setMultiSelectTiles: (tiles: number[]) => void;
 };
@@ -27,6 +28,7 @@ const TileEdit = ({
   editTile,
   refetchTiles,
   multiSelect,
+  setMultiSelect,
   multiSelectTiles,
   setMultiSelectTiles,
 }: Props) => {
@@ -90,7 +92,7 @@ const TileEdit = ({
           ids: multiSelectTiles,
           values: nonEmptyValues,
         });
-        setMultiSelectTiles([]);
+        setMultiSelect(false);
         return;
       }
 

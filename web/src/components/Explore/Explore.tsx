@@ -67,38 +67,6 @@ const Explore = ({ user }: Props) => {
       "I'm first test NPC in the game.",
       "Nice to meet you!",
     ],
-    dialogs: [
-      {
-        id: 1,
-        text: "How can I help you?",
-        options: [
-          {
-            option: "I want to buy something.",
-            dialogId: 2,
-          },
-          {
-            option: "Do you have any quest?",
-            dialogId: 3,
-          },
-          {
-            option: "Missclick, Goodbye",
-            dialogId: 5,
-          },
-        ],
-      },
-      { id: 2, text: "I don't have anything to sell." },
-      {
-        id: 3,
-        text: "You can kill rats and bring me their's fur.",
-        options: [
-          { option: "How much fur do you need?", dialogId: 4 },
-          { option: "Where I can find rats to kill?", dialogId: 6 },
-        ],
-      },
-      { id: 4, text: "I need only 5." },
-      { id: 6, text: "They should be in the grass nearby." },
-      { id: 5, text: "Goodbye." },
-    ],
   };
 
   const showJonhText = () => {

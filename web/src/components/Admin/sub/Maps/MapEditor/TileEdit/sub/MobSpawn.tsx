@@ -21,6 +21,7 @@ type Props = {
   SelectItem: any;
   tileId?: number;
   multiSelectTiles: number[];
+  setMultiSelect: (arg: boolean) => void;
   setMultiSelectTiles: any;
   refetchTiles: any;
 };
@@ -29,6 +30,7 @@ const MobSpawn = ({
   SelectItem,
   tileId,
   multiSelectTiles,
+  setMultiSelect,
   setMultiSelectTiles,
   refetchTiles,
 }: Props) => {
@@ -122,6 +124,7 @@ const MobSpawn = ({
       }
       if (multiSelectTiles) {
         createMobSpawn({ values, tilesIds: multiSelectTiles });
+        setMultiSelect(false);
         return;
       }
     },

@@ -167,6 +167,7 @@ const MapEditor = ({ user }: Props) => {
           editTile={selectedTile}
           refetchTiles={refetchTiles}
           multiSelect={multiSelect}
+          setMultiSelect={setMultiSelect}
           multiSelectTiles={multiSelectTiles}
           setMultiSelectTiles={setMultiSelectTiles}
         />
@@ -213,6 +214,7 @@ const MapEditor = ({ user }: Props) => {
           editTile={selectedTile}
           refetchTiles={refetchTiles}
           multiSelect={multiSelect}
+          setMultiSelect={setMultiSelect}
           multiSelectTiles={multiSelectTiles}
           setMultiSelectTiles={setMultiSelectTiles}
         />

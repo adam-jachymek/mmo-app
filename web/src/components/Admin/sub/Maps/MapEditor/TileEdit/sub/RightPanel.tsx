@@ -8,6 +8,7 @@ type Props = {
   editTile?: Tile;
   refetchTiles: () => void;
   multiSelect: boolean;
+  setMultiSelect: (arg: boolean) => void;
   multiSelectTiles: number[];
   setMultiSelectTiles: (tiles: number[]) => void;
 };
@@ -22,6 +23,7 @@ const RightPanel = ({
   editTile,
   refetchTiles,
   multiSelect,
+  setMultiSelect,
   multiSelectTiles,
   setMultiSelectTiles,
 }: Props) => {
@@ -47,6 +49,7 @@ const RightPanel = ({
             SelectItem={SelectItem}
             tileId={editTile?.id}
             multiSelectTiles={multiSelectTiles}
+            setMultiSelect={setMultiSelect}
             setMultiSelectTiles={setMultiSelectTiles}
             refetchTiles={refetchTiles}
           />
