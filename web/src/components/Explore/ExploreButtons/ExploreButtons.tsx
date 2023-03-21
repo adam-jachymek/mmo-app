@@ -1,5 +1,6 @@
 import { Button } from "@mantine/core";
 import { socket } from "api/socket";
+import { useEffect, useState } from "react";
 
 import "./styles.sass";
 
@@ -9,6 +10,80 @@ type Props = {
 };
 
 const ExploreDpad = ({ user, showJonhText }: Props) => {
+  const [isMoving, setIsMoving] = useState(false);
+
+  const [movingData, setMovingData] = useState({
+    axis: "",
+    direction: 0,
+  });
+
+  useEffect(() => {
+    let intervalId: string | number | NodeJS.Timeout | undefined;
+
+    if (isMoving) {
+      intervalId = setInterval(() => {
+        socket.emit("moveUser", {
+          userId: user.id,
+          axis: movingData.axis,
+          direction: movingData.direction,
+        });
+      }, 200);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [isMoving, movingData]);
+
+  const handleKeyDown = (event: any, axis: string, direction: number) => {
+    if (event.repeat) {
+      return;
+    }
+    setMovingData({ axis: axis, direction: direction });
+    setIsMoving(true);
+  };
+
+  const handleKeyUp = () => {
+    setIsMoving(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.code === "KeyD") {
+          handleKeyDown(e, "x", 1);
+        }
+        if (e.code === "KeyA") {
+          handleKeyDown(e, "x", -1);
+        }
+        if (e.code === "KeyW") {
+          handleKeyDown(e, "y", -1);
+        }
+        if (e.code === "KeyS") {
+          handleKeyDown(e, "y", 1);
+        }
+      },
+      false
+    );
+    window.addEventListener(
+      "keyup",
+      (e) => {
+        if (e.code === "KeyD") {
+          handleKeyUp();
+        }
+        if (e.code === "KeyA") {
+          handleKeyUp();
+        }
+        if (e.code === "KeyW") {
+          handleKeyUp();
+        }
+        if (e.code === "KeyS") {
+          handleKeyUp();
+        }
+      },
+      false
+    );
+  }, [window]);
+
   return (
     <div className="explore-buttons">
       <div className="explore-buttons__dpad">
@@ -18,26 +93,25 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
             backgroundSize: "cover",
           }}
           className="explore-buttons__left button"
-          onClick={() => {
-            socket.emit("moveUser", {
-              userId: user.id,
-              axis: "x",
-              direction: -1,
-            });
+          onMouseDown={(e) => {
+            handleKeyDown(e, "x", -1);
+          }}
+          onMouseUp={() => {
+            handleKeyUp();
           }}
         ></Button>
+
         <Button
           className="explore-buttons__right button"
           style={{
             backgroundImage: "url(/media/explore/joystick-arrow-right.svg)",
             backgroundSize: "cover",
           }}
-          onClick={() => {
-            socket.emit("moveUser", {
-              userId: user.id,
-              axis: "x",
-              direction: 1,
-            });
+          onMouseDown={(e) => {
+            handleKeyDown(e, "x", 1);
+          }}
+          onMouseUp={() => {
+            handleKeyUp();
           }}
         ></Button>
         <Button
@@ -46,12 +120,11 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
             backgroundImage: "url(/media/explore/joystick-arrow-down.svg)",
             backgroundSize: "cover",
           }}
-          onClick={() => {
-            socket.emit("moveUser", {
-              userId: user.id,
-              axis: "y",
-              direction: 1,
-            });
+          onMouseDown={(e) => {
+            handleKeyDown(e, "y", 1);
+          }}
+          onMouseUp={() => {
+            handleKeyUp();
           }}
         ></Button>
         <Button
@@ -60,12 +133,11 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
             backgroundImage: "url(/media/explore/joystick-arrow-up.svg)",
             backgroundSize: "cover",
           }}
-          onClick={() => {
-            socket.emit("moveUser", {
-              userId: user.id,
-              axis: "y",
-              direction: -1,
-            });
+          onMouseDown={(e) => {
+            handleKeyDown(e, "y", -1);
+          }}
+          onMouseUp={() => {
+            handleKeyUp();
           }}
         ></Button>
       </div>

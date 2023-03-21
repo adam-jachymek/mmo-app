@@ -11,6 +11,7 @@ export class NpcService {
       include: {
         dialog: {
           include: {
+            next: true,
             options: {
               include: {
                 nextDialog: true,

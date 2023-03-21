@@ -157,6 +157,7 @@ export type Dialog = {
   npcId: number;
   text: string[];
   options: DialogOption[];
+  next: Dialog;
 };
 
 export type DialogOption = {

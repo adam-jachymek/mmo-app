@@ -213,7 +213,6 @@ const MapEditor = ({ user }: Props) => {
         <RightPanel
           editTile={selectedTile}
           refetchTiles={refetchTiles}
-          multiSelect={multiSelect}
           setMultiSelect={setMultiSelect}
           multiSelectTiles={multiSelectTiles}
           setMultiSelectTiles={setMultiSelectTiles}

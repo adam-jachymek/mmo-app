@@ -1,5 +1,4 @@
 import { MapTiles } from "./map"
-import { MapTiles } from "map"
 
 model Npc {
   id      Int      @id @default(autoincrement())
@@ -18,6 +17,9 @@ model Dialog {
   npcId   Int?
   options DialogOption[]
   triggerOption DialogOption? @relation(name: "nextDialog")
+  nextDialog Dialog? @relation(name: "next")
+  next  Dialog? @relation(name: "next", fields: [nextId], references: [id])
+  nextId Int? @unique
 }
 
 model DialogOption {

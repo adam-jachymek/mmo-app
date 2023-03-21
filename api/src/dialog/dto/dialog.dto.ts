@@ -9,8 +9,12 @@ import {
 
 export class DialogDto {
   @IsArray()
-  @IsNotEmpty()
+  @IsOptional()
   text: string[];
+
+  @IsNumber()
+  @IsOptional()
+  nextId: number;
 
   @IsNumber()
   @IsOptional()

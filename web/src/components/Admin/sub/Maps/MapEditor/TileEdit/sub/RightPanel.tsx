@@ -7,7 +7,6 @@ import MobSpawn from "./MobSpawn";
 type Props = {
   editTile?: Tile;
   refetchTiles: () => void;
-  multiSelect: boolean;
   setMultiSelect: (arg: boolean) => void;
   multiSelectTiles: number[];
   setMultiSelectTiles: (tiles: number[]) => void;
@@ -22,7 +21,6 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
 const RightPanel = ({
   editTile,
   refetchTiles,
-  multiSelect,
   setMultiSelect,
   multiSelectTiles,
   setMultiSelectTiles,

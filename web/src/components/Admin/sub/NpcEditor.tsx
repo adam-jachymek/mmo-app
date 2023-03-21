@@ -1,18 +1,7 @@
-import {
-  Button,
-  Select,
-  Input,
-  Loader,
-  Collapse,
-  FileInput,
-} from "@mantine/core";
+import { Button, Select, Input, Loader, FileInput } from "@mantine/core";
 import { useFormik } from "formik";
 import { useMutation, useQuery } from "react-query";
-import {
-  createDialog,
-  editDialogById,
-  getAllDialogs,
-} from "api/endpoints/dialog";
+import { createDialog, editDialogById } from "api/endpoints/dialog";
 import { useState } from "react";
 import { createNpc, getAllNpcs } from "api/endpoints/npc";
 import { createDialogOption } from "api/endpoints/options";
@@ -23,9 +12,11 @@ const NpcEditor = () => {
   const [addToDialog, setAddToDialog] = useState<{
     optionsDialogId: number | null;
     paragraphDialogId: number | null;
+    nextDialogDialogId: number | null;
   }>({
     optionsDialogId: null,
     paragraphDialogId: null,
+    nextDialogDialogId: null,
   });
 
   const {
@@ -33,8 +24,6 @@ const NpcEditor = () => {
     isFetching: isFetchingNPCs,
     refetch: refetchNpc,
   } = useQuery("getAllNpcs", getAllNpcs);
-
-  console.log("npcData", npcData);
 
   const { mutate: addNpc } = useMutation(createNpc, {
     onSuccess: (response) => {
@@ -59,6 +48,8 @@ const NpcEditor = () => {
       refetchNpc();
     },
   });
+
+  console.log("npcData", npcData);
 
   const npcForm = useFormik({
     initialValues: {
@@ -97,6 +88,20 @@ const NpcEditor = () => {
       editDialog({
         dialogId: values.dialogId,
         values: { text: [...values.previousText, values.text] },
+      });
+      resetForm();
+    },
+  });
+
+  const addNextDialogForm = useFormik({
+    initialValues: {
+      dialogId: 0,
+      nextId: 0,
+    },
+    onSubmit: (values, { resetForm }) => {
+      editDialog({
+        dialogId: values.dialogId,
+        values: { nextId: values.nextId },
       });
       resetForm();
     },
@@ -147,10 +152,18 @@ const NpcEditor = () => {
                       />
                     </div>
                   ))}
+                  {dialog?.next && (
+                    <Input.Wrapper label="Next dialog">
+                      <Input
+                        style={{ width: 600, marginBottom: 10 }}
+                        value={dialog?.next?.text[0]}
+                      />
+                    </Input.Wrapper>
+                  )}
                   {addToDialog.paragraphDialogId === dialog.id && (
                     <div className="admin__dialog-add-paragraph">
                       <form onSubmit={dialogEditForm.handleSubmit}>
-                        <Input.Wrapper label=" New paragraph">
+                        <Input.Wrapper label="New paragraph">
                           <Input
                             name="text"
                             style={{ width: "100%", marginBottom: 10 }}
@@ -177,7 +190,6 @@ const NpcEditor = () => {
                           >
                             Add Paragraph
                           </Button>
-
                           <Button
                             onClick={() =>
                               setAddToDialog({
@@ -253,6 +265,58 @@ const NpcEditor = () => {
                       </div>
                     </form>
                   )}
+                  {addToDialog.nextDialogDialogId === dialog.id && (
+                    <form
+                      className="admin__add-dialog-option"
+                      onSubmit={addNextDialogForm.handleSubmit}
+                    >
+                      <Select
+                        className="admin__add-dialog-option-select"
+                        placeholder="Pick one"
+                        label="Next dialog"
+                        name="Category"
+                        data={dialogSelect(npc.dialog)}
+                        clearable
+                        onChange={(value) => {
+                          addNextDialogForm.setFieldValue("nextId", value);
+                        }}
+                        searchable
+                        maxDropdownHeight={400}
+                        nothingFound="No NPCs available"
+                      />
+                      <div className="admin__add-dialog-option-buttons">
+                        <Button
+                          onClick={() => {
+                            addNextDialogForm.setFieldValue(
+                              "dialogId",
+                              dialog.id
+                            );
+                          }}
+                          style={{ width: "50%" }}
+                          type="submit"
+                          color="green"
+                          compact
+                        >
+                          Add next dialog
+                        </Button>
+                        <Button
+                          onClick={() =>
+                            setAddToDialog({
+                              ...addToDialog,
+                              nextDialogDialogId: null,
+                            })
+                          }
+                          style={{ width: "50%" }}
+                          type="submit"
+                          color="red"
+                          compact
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+
                   {!Object.values(addToDialog).includes(dialog.id) && (
                     <div className="admin__dialog-buttons">
                       <Button
@@ -266,6 +330,18 @@ const NpcEditor = () => {
                         }
                       >
                         Add paragraph
+                      </Button>
+                      <Button
+                        className="admin__add-paragraph-option-button"
+                        compact
+                        onClick={() =>
+                          setAddToDialog({
+                            ...addToDialog,
+                            nextDialogDialogId: dialog.id,
+                          })
+                        }
+                      >
+                        Add next dialog
                       </Button>
                       <Button
                         compact

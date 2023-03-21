@@ -18,7 +18,8 @@ export const createDialog = async (values: {
 export const editDialogById = async (data: {
   dialogId: number;
   values: {
-    text: string[];
+    text?: string[];
+    nextId?: number;
   };
 }) => {
   const response = await api.patch(`dialog/${data.dialogId}`, data.values);
