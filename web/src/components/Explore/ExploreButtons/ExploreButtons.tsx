@@ -93,6 +93,12 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
             backgroundSize: "cover",
           }}
           className="explore-buttons__left button"
+          onTouchStart={(e) => {
+            handleKeyDown(e, "x", -1);
+          }}
+          onTouchEnd={(e) => {
+            handleKeyUp();
+          }}
           onMouseDown={(e) => {
             handleKeyDown(e, "x", -1);
           }}
@@ -113,6 +119,12 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
           onMouseUp={() => {
             handleKeyUp();
           }}
+          onTouchStart={(e) => {
+            handleKeyDown(e, "x", 1);
+          }}
+          onTouchEnd={() => {
+            handleKeyUp();
+          }}
         ></Button>
         <Button
           className="explore-buttons__down button"
@@ -126,6 +138,12 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
           onMouseUp={() => {
             handleKeyUp();
           }}
+          onTouchStart={(e) => {
+            handleKeyDown(e, "y", 1);
+          }}
+          onTouchEnd={() => {
+            handleKeyUp();
+          }}
         ></Button>
         <Button
           className="explore-buttons__up button"
@@ -137,6 +155,12 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
             handleKeyDown(e, "y", -1);
           }}
           onMouseUp={() => {
+            handleKeyUp();
+          }}
+          onTouchStart={(e) => {
+            handleKeyDown(e, "y", -1);
+          }}
+          onTouchEnd={() => {
             handleKeyUp();
           }}
         ></Button>
