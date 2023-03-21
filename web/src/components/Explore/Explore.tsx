@@ -117,7 +117,6 @@ const Explore = ({ user }: Props) => {
                   <Progress
                     classNames={{ root: "explore__player-hp" }}
                     color="red"
-                    animate
                     radius="xs"
                     size="sm"
                     value={(user.hp / user.maxHp) * 100}

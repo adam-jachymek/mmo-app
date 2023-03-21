@@ -5,23 +5,55 @@ import useSound from "use-sound";
 import damage from "./audio/damage.mp3";
 import monsterBite from "./audio/monster-bite.mp3";
 import bite from "./audio/bite.mp3";
+import { motion } from "framer-motion";
 
 type Props = {
+  battle: any;
   user: any;
   activeAnimation: string;
   mobDamage: number;
 };
 
-const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
+const BattleUsers = ({ battle, user, activeAnimation, mobDamage }: Props) => {
   const [playDamage] = useSound(bite);
 
+  const userAnimation = () => {
+    if (battle.userDamage) {
+      return { y: [0, -10, 0] };
+    }
+    if (activeAnimation) {
+      return { x: [0, 10, 0], opacity: [1, 0.5, 1] };
+    }
+    if (battle.youLost) {
+      return { opacity: [1, 0] };
+    }
+    return {};
+  };
+
   return (
-    <div className="fight__player">
+    <motion.div
+      animate={{
+        y: [100, 0],
+        scale: 1,
+        rotate: 0,
+      }}
+      transition={{
+        ease: "linear",
+        duration: 1,
+      }}
+      className="fight__player"
+    >
       <div className="fight__players-avatars">
         {activeAnimation && (
           <BattleAnimations activeAnimation={activeAnimation} />
         )}
-        <img
+        <motion.img
+          animate={userAnimation()}
+          transition={{
+            ease: "linear",
+            duration: 0.2,
+            opacity: { duration: 1 },
+          }}
           className="fight__player-img"
           src={`/media/avatars/${user.avatar}.png`}
         />
@@ -49,7 +81,7 @@ const BattleUsers = ({ user, activeAnimation, mobDamage }: Props) => {
           </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
