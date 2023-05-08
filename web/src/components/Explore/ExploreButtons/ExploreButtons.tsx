@@ -21,13 +21,11 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
     let intervalId: string | number | NodeJS.Timeout | undefined;
 
     if (isMoving) {
-      intervalId = setInterval(() => {
-        socket.emit("moveUser", {
-          userId: user.id,
-          axis: movingData.axis,
-          direction: movingData.direction,
-        });
-      }, 200);
+      socket.emit("moveUser", {
+        userId: user.id,
+        axis: movingData.axis,
+        direction: movingData.direction,
+      });
     }
 
     return () => clearInterval(intervalId);
