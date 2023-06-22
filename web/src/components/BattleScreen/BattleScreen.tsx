@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { Item, User } from "/types";
+import { Battle, BattleMob, BattleUser, Item, User } from "/types";
 import { Modal, Button } from "@mantine/core";
 import { socket } from "api/socket";
 import BattleMobs from "./BattleMobs";
@@ -38,7 +38,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
     item: Item | undefined;
   }>({ isVisible: false, item: undefined });
   const [lostModal, setLostModal] = useState(false);
-  const [battle, setBattle] = useState<any>({});
+  const [battle, setBattle] = useState<Battle>();
   const [music, { stop: stopMusic }] = useSound(battleMusic);
   const [playWin] = useSound(youwin);
   const [playWasted] = useSound(wasted);
@@ -67,8 +67,8 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
 
   useEffect(() => {
     battleId &&
-      socket.on(battleId.toString(), (response) => {
-        setBattle(response);
+      socket.on(battleId.toString(), (battleResponse: Battle) => {
+        setBattle(battleResponse);
       });
   }, [battleId, socket]);
 
@@ -90,7 +90,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
     socket.emit("endBattle", { battleId: battleId, userId: currentUser.id });
   };
 
-  useSounds(battle.mobAnimation || battle.playerAnimation);
+  useSounds(battle?.mobAnimation || battle?.playerAnimation);
 
   const handleCloseItemModal = () => {
     setItemModal({ ...itemModal, isVisible: false });
@@ -104,16 +104,18 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
   return (
     <>
       <div className="fight">
-        {battle?.mobs?.map((mob: any) => (
+        {battle?.mobs?.map((mob: BattleMob) => (
           <BattleMobs
+            key={mob.id}
             battle={battle}
             mob={mob}
             activeAnimation={battle.mobAnimation}
             userDamage={battle.userDamage}
           />
         ))}
-        {battle?.users?.map((user: any) => (
+        {battle?.users?.map((user: BattleUser) => (
           <BattleUsers
+            key={user.id}
             battle={battle}
             user={user}
             activeAnimation={battle.playerAnimation}
@@ -136,7 +138,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
         onClose={closeModal}
       >
         {battle?.mobs?.map((mob: any) => (
-          <div className="fight__modal">
+          <div key={mob.id} className="fight__modal">
             <h3 className="fight__modal-title">You Win!</h3>
             <p style={{ marginTop: 10 }}>{mob?.giveExp} EXP</p>
             {dropItemsUndefined > 0 && (
@@ -151,6 +153,7 @@ const BattleScreen = ({ currentUser, refetchUser, propsBattleId }: Props) => {
 
                   return (
                     <div
+                      key={item.id}
                       onClick={() =>
                         setItemModal({ isVisible: true, item: item })
                       }

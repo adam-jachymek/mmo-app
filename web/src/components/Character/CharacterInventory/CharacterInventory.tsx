@@ -2,13 +2,13 @@ import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 import { Item } from "/types";
 import { assets_url } from "config";
-
-import "./styles.sass";
 import { Button, Switch } from "@mantine/core";
 import { useMutation } from "react-query";
 import { deleteManyItemsByIds } from "api/endpoints";
 import ConfirmModal from "components/ConfirmModal";
 import { isEmpty } from "lodash";
+
+import "./styles.sass";
 
 const NUMBER_OF_BAG_SLOTS = 5;
 const DEFAULT_NUMBER_OF_SLOTS = 10;
@@ -30,7 +30,11 @@ const CharacterInventory = ({
 
   const inventory = itemsData?.filter((item: Item) => !item.equip);
 
-  const allItemsInInventory = inventory.map((item: Item) => item.id);
+  console.log("inventory", inventory);
+
+  const allItemsInInventory = inventory?.map((item: Item) => item.id);
+
+  console.log("allItemsInInventory", allItemsInInventory);
 
   useEffect(() => {
     setMultiItemsIds([]);

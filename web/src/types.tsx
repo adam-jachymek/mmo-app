@@ -167,3 +167,53 @@ export type DialogOption = {
   nextDialog: Dialog;
   nextDialogId?: number;
 };
+
+export type PlayerOnTheMap = {
+  id: number;
+  username: string;
+  level: number;
+  avatar: string;
+  hp: number;
+  maxHp: number;
+  battleId: number | null;
+  x: number;
+  y: number;
+};
+
+export type BattleMob = {
+  id: number;
+  level: number;
+  name: string;
+  sprite: string;
+  hp: number;
+  maxHp: number;
+  giveExp: number;
+};
+
+export type BattleUser = {
+  id: number;
+  username: string;
+  hp: number;
+  maxHp: number;
+  level: number;
+  exp: number;
+  maxExp: number;
+  avatar: string;
+};
+
+export type Battle = {
+  id: number;
+  activeUser: number;
+  activeMob: number;
+  battleEnded: boolean;
+  itemDropIds: number[];
+  mobDamage: number | null;
+  mobs: BattleMob[];
+  userDamage: number | null;
+  userTurn: boolean;
+  users: BattleUser[];
+  youLost: boolean | null;
+  youWin: boolean | null;
+  mobAnimation: string;
+  playerAnimation: string;
+};

@@ -1,14 +1,14 @@
 import { Progress } from "@mantine/core";
-import { Mob } from "/types";
+import { BattleMob } from "/types";
 import BattleAnimations from "../BattleAnimations";
 import { assets_url } from "config";
 import { motion } from "framer-motion";
 
 type Props = {
   battle: any;
-  mob: Mob;
+  mob: BattleMob;
   activeAnimation: string;
-  userDamage: number;
+  userDamage: number | null;
 };
 
 const BattleMobs = ({ battle, mob, activeAnimation, userDamage }: Props) => {

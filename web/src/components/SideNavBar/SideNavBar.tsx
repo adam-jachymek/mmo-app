@@ -1,5 +1,4 @@
 import { GiCrossedSwords, GiCharacter } from "react-icons/gi";
-import { TiHomeOutline } from "react-icons/ti";
 import { AiOutlineQuestion } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -18,18 +17,12 @@ const SideNavBar = () => {
         <div className="navbar">
           <img src="/media/logo150.png" />
           <ul className="navbar__ul">
-            {/* <li onClick={() => navigate("/")} className="navbar__li">
-              <TiHomeOutline /> Home
-            </li> */}
             <li onClick={() => navigate("/explore")} className="navbar__li">
               <AiOutlineQuestion /> Explore
             </li>
             <li onClick={() => navigate("/character")} className="navbar__li">
               <GiCharacter /> Character
             </li>
-            {/* <li onClick={() => navigate("#")} className="navbar__li">
-              <AiOutlineQuestion /> Quests
-            </li> */}
             <li onClick={() => navigate("/guild")} className="navbar__li">
               Guild
             </li>

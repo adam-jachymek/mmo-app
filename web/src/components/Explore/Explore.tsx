@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "react-query";
 import { getMapById } from "api/endpoints";
-import { Loader, Progress, RingProgress } from "@mantine/core";
-import { User } from "/types";
+import { Loader, Progress } from "@mantine/core";
+import { PlayerOnTheMap, User } from "/types";
 import { assets_url } from "config";
 import {
   calculateFirstVisibleTile,
@@ -11,37 +11,27 @@ import {
 } from "./utils";
 import { socket } from "api/socket";
 import ExploreButtons from "./ExploreButtons";
-import Players from "./Players";
+import PlayersOnTheMap from "./PlayersOnTheMap";
+import TextDisplay from "./TextDisplay";
 
 import "./styles.sass";
-import TextDisplay from "./TextDisplay";
 
 type Props = {
   user: User;
 };
 
 const Explore = ({ user }: Props) => {
-  const [players, setPlayers] = useState<
-    [
-      {
-        id: number;
-        username: string;
-        avatar: string;
-        level: number;
-        hp: number;
-        maxHp: number;
-        battleId: number | null;
-        x: number;
-        y: number;
-      }
-    ]
-  >();
+  const [players, setPlayers] = useState<PlayerOnTheMap[]>();
   const [showText, setShowText] = useState(false);
 
   const mapId = user.mapId;
 
-  const { data: mapData, isFetching } = useQuery(["getMapById", mapId], () =>
-    getMapById(mapId.toString())
+  const { data: mapData, isFetching } = useQuery(
+    ["getMapById", mapId],
+    () => getMapById(mapId.toString()),
+    {
+      enabled: Boolean(mapId),
+    }
   );
 
   useEffect(() => {
@@ -54,8 +44,8 @@ const Explore = ({ user }: Props) => {
 
   useEffect(() => {
     mapId &&
-      socket.on(`map-${mapId}`, (response: any) => {
-        setPlayers(response);
+      socket.on(`map-${mapId}`, (playersOnTheMap: PlayerOnTheMap[]) => {
+        setPlayers(playersOnTheMap);
       });
   }, [mapId, socket]);
 
@@ -104,7 +94,7 @@ const Explore = ({ user }: Props) => {
                 />
               </div>
             )}
-            <Players
+            <PlayersOnTheMap
               tileX={tile.x}
               tileY={tile.y}
               players={players}
@@ -172,23 +162,21 @@ const Explore = ({ user }: Props) => {
   }
 
   return (
-    <>
-      <div className="explore">
-        <div className="explore__screen">
-          <ul className="explore__tiles">
-            {/* <div className="explore__protection"></div> */}
-            {renderMap}
-          </ul>
-        </div>
-        {showText ? (
-          <TextDisplay text={npc.text} delay={30} setShowText={setShowText} />
-        ) : (
-          <div className="explore__body">
-            <ExploreButtons user={user} showJonhText={showJonhText} />
-          </div>
-        )}
+    <div className="explore">
+      <div className="explore__screen">
+        <ul className="explore__tiles">
+          <div className="explore__protection"></div>
+          {renderMap}
+        </ul>
       </div>
-    </>
+      {showText ? (
+        <TextDisplay text={npc.text} delay={30} setShowText={setShowText} />
+      ) : (
+        <div className="explore__body">
+          <ExploreButtons user={user} showJonhText={showJonhText} />
+        </div>
+      )}
+    </div>
   );
 };
 

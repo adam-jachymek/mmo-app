@@ -15,7 +15,6 @@ import Explore from "./components/Explore";
 import Character from "./components/Character";
 import Players from "./components/Players";
 import GuildHome from "./components/Guild";
-import PartyNavBar from "./components/Party";
 import { getToken, removeToken } from "./api/token";
 import GuildInfo from "./components/Guild/GuildInfo";
 import { Loader } from "@mantine/core";
@@ -102,7 +101,6 @@ const AppRouter = () => {
           refetchUser={refetchUser}
         />
         <SideNavBar />
-        {/* <PartyNavBar /> */}
         <Routes>
           <Route path="/" element={<Explore user={user} />} />
           <Route

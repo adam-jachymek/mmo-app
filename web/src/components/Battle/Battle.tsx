@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { getMobs, createBattle } from "api/endpoints";
 import { User } from "/types";
@@ -5,7 +6,6 @@ import { Button, Input } from "@mantine/core";
 import { socket } from "api/socket";
 
 import "./styles.sass";
-import { useState } from "react";
 
 type Props = {
   currentUser: User;

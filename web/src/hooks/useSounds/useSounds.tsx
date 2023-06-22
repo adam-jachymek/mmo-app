@@ -4,7 +4,7 @@ import sword from "./audio/sword.mp3";
 import fireball from "./audio/fireball.mp3";
 import bite from "./audio/bite.mp3";
 
-const useSounds = (activeSound: string) => {
+const useSounds = (activeSound?: string) => {
   const sounds: { [key: string]: any } = {
     sword: useSound(sword),
     fireball: useSound(fireball),

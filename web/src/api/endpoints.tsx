@@ -1,5 +1,5 @@
 import api from "./axios";
-import { Item } from "/types";
+import { Item } from "types";
 
 export const createUser = async (values: {
   email: string;
@@ -124,7 +124,7 @@ export const deleteMob = async (mobId: number) => {
 };
 
 export const deleteMap = async (mapId: number) => {
-  const response = await api.delete(`/map/${mapId}`);
+  const response = await api.delete(`map/${mapId}`);
 
   return response.data;
 };
@@ -137,37 +137,37 @@ export const createMob = async (values: {
   giveExp?: number;
   mapId: number;
 }) => {
-  const response = await api.post("/mobs/", values);
+  const response = await api.post("mobs", values);
 
   return response.data;
 };
 
 export const spawnMob = async (values: { mobId: number }) => {
-  const response = await api.post("/mob_spawn/", values);
+  const response = await api.post("mob_spawn", values);
 
   return response.data;
 };
 
 export const getSpawnMobById = async (spawnMobId?: string) => {
-  const response = await api.get(`/mob_spawn/${spawnMobId}`);
+  const response = await api.get(`mob_spawn/${spawnMobId}`);
 
   return response.data;
 };
 
 export const attackMob = async (spawnMobId?: string) => {
-  const response = await api.patch(`/mob_spawn/${spawnMobId}`);
+  const response = await api.patch(`mob_spawn/${spawnMobId}`);
 
   return response.data;
 };
 
 export const getMap = async () => {
-  const response = await api.get("/map");
+  const response = await api.get("map");
 
   return response.data;
 };
 
 export const getMapById = async (mapId?: string) => {
-  const response = await api.get(`/map/${mapId}`);
+  const response = await api.get(`map/${mapId}`);
 
   return response.data;
 };
@@ -177,7 +177,7 @@ export const createMap = async (values: {
   minLevel?: number;
   maxLevel?: number;
 }) => {
-  const response = await api.post("/map/", values);
+  const response = await api.post("map", values);
 
   return response.data;
 };
@@ -187,31 +187,31 @@ export const createBattle = async (values: {
   mobMinLevel: number;
   mobMaxLevel: number;
 }) => {
-  const response = await api.post("/battle", values);
+  const response = await api.post("battle", values);
 
   return response.data;
 };
 
 export const getBattle = async (battleId?: string) => {
-  const response = await api.get(`/battle/${battleId}`);
+  const response = await api.get(`battle/${battleId}`);
 
   return response.data.mobSpawn;
 };
 
 export const battleTurn = async (battleId: number) => {
-  const response = await api.post(`/battle/${battleId}`);
+  const response = await api.post(`battle/${battleId}`);
 
   return response.data;
 };
 
 export const healUser = async () => {
-  const response = await api.post("/users/heal");
+  const response = await api.post("users/heal");
 
   return response.data;
 };
 
 export const getExplore = async (mapId?: string) => {
-  const response = await api.get(`/explore/${mapId}`);
+  const response = await api.get(`explore/${mapId}`);
 
   return response.data;
 };
@@ -223,13 +223,13 @@ export const addLevelPoint = async (values: {
   dexterity?: number;
   intelligence?: number;
 }) => {
-  const response = await api.patch("/users/points", values);
+  const response = await api.patch("users/points", values);
 
   return response.data;
 };
 
 export const equipItem = async (itemId?: number) => {
-  const response = await api.post(`/item/equip/${itemId}`);
+  const response = await api.post(`item/equip/${itemId}`);
 
   return response.data;
 };
@@ -241,7 +241,7 @@ export const deleteManyItemsByIds = async (itemsIds?: number[]) => {
 };
 
 export const getUsers = async () => {
-  const response = await api.get("/users");
+  const response = await api.get("users");
 
   return response.data;
 };

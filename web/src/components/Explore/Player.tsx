@@ -1,17 +1,8 @@
-import { Progress, RingProgress } from "@mantine/core";
+import { Progress } from "@mantine/core";
+import { PlayerOnTheMap } from "/types";
 
 type Props = {
-  player: {
-    id: number;
-    username: string;
-    avatar: string;
-    level: number;
-    hp: number;
-    maxHp: number;
-    battleId: number | null;
-    x: number;
-    y: number;
-  };
+  player: PlayerOnTheMap;
   userId: number;
   tileX: number;
   tileY: number;

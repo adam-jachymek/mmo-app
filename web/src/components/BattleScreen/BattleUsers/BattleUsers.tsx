@@ -11,7 +11,7 @@ type Props = {
   battle: any;
   user: any;
   activeAnimation: string;
-  mobDamage: number;
+  mobDamage: number | null;
 };
 
 const BattleUsers = ({ battle, user, activeAnimation, mobDamage }: Props) => {
