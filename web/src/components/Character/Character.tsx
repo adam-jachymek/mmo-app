@@ -40,8 +40,7 @@ const Character = ({ user, currentUser, refetchUser }: Props) => {
             <div className="character__desktop-character-wrapper">
               <CharacterProfile
                 user={user}
-                itemsData={itemsData} //userItems
-                // handleItemModalOpen
+                itemsData={itemsData}
                 openItemModal={setActiveItem}
               />
               <CharacterInventory

@@ -12,31 +12,27 @@ type Props = {
 const ExploreDpad = ({ user, showJonhText }: Props) => {
   const [isMoving, setIsMoving] = useState(false);
 
-  const [movingData, setMovingData] = useState({
-    axis: "",
-    direction: 0,
-  });
+  const [movingData, setMovingData] = useState<{
+    axis?: string;
+    direction?: number;
+  }>();
 
   useEffect(() => {
-    let intervalId: string | number | NodeJS.Timeout | undefined;
-
-    if (isMoving) {
+    if (isMoving && movingData) {
       socket.emit("moveUser", {
         userId: user.id,
         axis: movingData.axis,
         direction: movingData.direction,
       });
     }
-
-    return () => clearInterval(intervalId);
-  }, [isMoving, movingData]);
+  }, [movingData, isMoving]);
 
   const handleKeyDown = (event: any, axis: string, direction: number) => {
     if (event.repeat) {
       return;
     }
-    setMovingData({ axis: axis, direction: direction });
     setIsMoving(true);
+    setMovingData({ axis: axis, direction: direction });
   };
 
   const handleKeyUp = () => {
@@ -44,42 +40,32 @@ const ExploreDpad = ({ user, showJonhText }: Props) => {
   };
 
   useEffect(() => {
-    window.addEventListener(
-      "keydown",
-      (e) => {
-        if (e.code === "KeyD") {
-          handleKeyDown(e, "x", 1);
-        }
-        if (e.code === "KeyA") {
-          handleKeyDown(e, "x", -1);
-        }
-        if (e.code === "KeyW") {
-          handleKeyDown(e, "y", -1);
-        }
-        if (e.code === "KeyS") {
-          handleKeyDown(e, "y", 1);
-        }
-      },
-      false
-    );
-    window.addEventListener(
-      "keyup",
-      (e) => {
-        if (e.code === "KeyD") {
-          handleKeyUp();
-        }
-        if (e.code === "KeyA") {
-          handleKeyUp();
-        }
-        if (e.code === "KeyW") {
-          handleKeyUp();
-        }
-        if (e.code === "KeyS") {
-          handleKeyUp();
-        }
-      },
-      false
-    );
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "KeyD") {
+        handleKeyDown(e, "x", 1);
+      }
+      if (e.code === "KeyA") {
+        handleKeyDown(e, "x", -1);
+      }
+      if (e.code === "KeyW") {
+        handleKeyDown(e, "y", -1);
+      }
+      if (e.code === "KeyS") {
+        handleKeyDown(e, "y", 1);
+      }
+    };
+
+    const onKeyUp = () => {
+      handleKeyUp();
+    };
+
+    window.addEventListener("keydown", onKeyDown, false);
+    window.addEventListener("keyup", onKeyUp, false);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
   }, [window]);
 
   return (

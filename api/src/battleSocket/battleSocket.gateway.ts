@@ -128,7 +128,7 @@ export class BattleSocketGateway {
         0,
         userAfterAttack.damage,
       );
-      this.exploreSocket.updatePlayer(
+      this.exploreSocket.updatePlayers(
         userAfterAttack.user.mapId,
       );
     } else {

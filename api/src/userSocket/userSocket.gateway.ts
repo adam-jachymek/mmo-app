@@ -76,8 +76,13 @@ export class UserSocketGateway {
         direction,
       );
 
-    this.returnUser(userIdNumber);
-    this.exploreSocket.updatePlayer(user.mapId);
+    if (user.mapId) {
+      this.returnUser(userIdNumber);
+      this.exploreSocket.updatePlayers(
+        user.mapId,
+        user.id,
+      );
+    }
   }
 
   async returnUser(userId: number) {

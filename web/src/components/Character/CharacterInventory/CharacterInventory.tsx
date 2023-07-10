@@ -1,17 +1,14 @@
-import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Item } from "/types";
-import { assets_url } from "config";
 import { Button, Switch } from "@mantine/core";
 import { useMutation } from "react-query";
 import { deleteManyItemsByIds } from "api/endpoints";
 import ConfirmModal from "components/ConfirmModal";
 import { isEmpty } from "lodash";
+import BagsSlots from "./BagsSlots";
+import ItemsSlots from "./ItemsSlots";
 
 import "./styles.sass";
-
-const NUMBER_OF_BAG_SLOTS = 5;
-const DEFAULT_NUMBER_OF_SLOTS = 10;
 
 type Props = {
   itemsData: Item[];
@@ -30,11 +27,7 @@ const CharacterInventory = ({
 
   const inventory = itemsData?.filter((item: Item) => !item.equip);
 
-  console.log("inventory", inventory);
-
   const allItemsInInventory = inventory?.map((item: Item) => item.id);
-
-  console.log("allItemsInInventory", allItemsInInventory);
 
   useEffect(() => {
     setMultiItemsIds([]);
@@ -46,93 +39,10 @@ const CharacterInventory = ({
     },
   });
 
-  const bags = itemsData?.filter(
-    (item: Item) => item.itemType === "BAG" && item.equip
-  );
-
-  const numberOfExtraSlots = bags.reduce(
-    (n: number, item: Item) => n + item.item.actionAmount,
-    0
-  );
-
-  // migrate to component
-  const renderBags = useMemo(() => {
-    let items = [];
-    for (let i = 0; i < NUMBER_OF_BAG_SLOTS; i++) {
-      const bag = bags[i];
-      items.push(
-        <li
-          key={bag?.id}
-          onClick={() => {
-            bag && openItemModal(bag);
-          }}
-          className={classNames("inventory__bag", bag?.quality?.toLowerCase())}
-        >
-          {bag && (
-            <img
-              alt="bag-sprite"
-              src={`${assets_url}/${bag.sprite}`}
-              className="inventory__bag-icon"
-            />
-          )}
-        </li>
-      );
-    }
-    return items;
-  }, [bags, openItemModal]);
-
-  const numberOfSlots = DEFAULT_NUMBER_OF_SLOTS + numberOfExtraSlots;
-
-  // migrate to component
-  const renderSlots = useMemo(() => {
-    let items = [];
-    for (let i = 0; i < numberOfSlots; i++) {
-      const inventoryItem = inventory[i];
-      items.push(
-        <li
-          key={inventoryItem?.id}
-          onClick={() => {
-            if (multiSelect && inventoryItem) {
-              if (!multiItemsIds.includes(inventoryItem?.id)) {
-                setMultiItemsIds([...multiItemsIds, inventoryItem?.id]);
-                return;
-              } else {
-                setMultiItemsIds(
-                  multiItemsIds.filter((item) => item !== inventoryItem?.id)
-                );
-                return;
-              }
-            }
-            inventoryItem && openItemModal(inventoryItem);
-          }}
-          className={classNames(
-            "inventory__item",
-            inventoryItem?.quality?.toLowerCase(),
-            {
-              "inventory__item-selected": multiItemsIds.includes(
-                inventoryItem?.id
-              ),
-            }
-          )}
-        >
-          {inventoryItem && (
-            <img
-              alt="item-icon"
-              src={`${assets_url}/${inventoryItem.sprite}`}
-              className="inventory__item-icon"
-            />
-          )}
-        </li>
-      );
-    }
-
-    return items;
-  }, [inventory, multiItemsIds, multiSelect, numberOfSlots, openItemModal]);
-
   return (
     <>
       <div className="inventory__wrapper-list">
-        <ul className="inventory__bag-list">{renderBags}</ul>
+        <BagsSlots openItemModal={openItemModal} itemsData={itemsData} />
         <div className="inventory__panel">
           <Switch
             label="Multi Select"
@@ -163,7 +73,14 @@ const CharacterInventory = ({
             </Button>
           )}
         </div>
-        <ul className="inventory__items-list">{renderSlots}</ul>
+        <ItemsSlots
+          itemsData={itemsData}
+          inventory={inventory}
+          multiSelect={multiSelect}
+          multiItemsIds={multiItemsIds}
+          setMultiItemsIds={setMultiItemsIds}
+          openItemModal={openItemModal}
+        />
       </div>
       <ConfirmModal
         isVisible={deleteModalIsVisible}

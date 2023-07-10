@@ -1,8 +1,4 @@
 import {
-  User,
-  PrismaClient,
-} from '@prisma/client';
-import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
@@ -31,17 +27,21 @@ export class ExploreSocketGateway {
       this.usersIds.push(data.userId);
     }
 
-    this.updatePlayer(data.mapId);
+    this.updatePlayers(data.mapId);
   }
 
   @SubscribeMessage('exploreMove')
-  async updatePlayer(
+  async updatePlayers(
     @MessageBody('mapId') mapId: number,
+    @MessageBody('userId') userId?: number,
   ) {
     const users = await this.prisma.user.findMany(
       {
         where: {
-          id: { in: this.usersIds },
+          id: {
+            in: this.usersIds,
+            not: { equals: userId },
+          },
         },
       },
     );

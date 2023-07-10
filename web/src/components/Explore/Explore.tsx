@@ -40,7 +40,7 @@ const Explore = ({ user }: Props) => {
         mapId: mapId.toString(),
         userId: user.id,
       });
-  }, [mapId, user.id]);
+  }, [mapId]);
 
   useEffect(() => {
     mapId &&
@@ -57,15 +57,17 @@ const Explore = ({ user }: Props) => {
       "I'm first test NPC in the game.",
       "Nice to meet you!",
     ],
+    x: 7,
+    y: 5,
   };
 
   const showJonhText = () => {
-    if ((user.x === 7 && user.y === 3) || (user.x === 6 && user.y === 2)) {
+    if (user.x === npc.x && user.y === npc.y + 1) {
       setShowText(true);
     }
   };
 
-  const renderMap = useMemo(() => {
+  const tiles = useMemo(() => {
     let tiles = [];
     if (user.x === undefined || user.y === undefined || !mapData) {
       return null;
@@ -76,86 +78,11 @@ const Explore = ({ user }: Props) => {
           mapData?.tiles[
             calculateFirstVisibleTile(user) + y + i * NUMBER_OF_TILES_IN_AXIS
           ];
-        tiles.push(
-          <li
-            key={tile.id}
-            style={{
-              backgroundImage: `url(${assets_url}/${tile.sprite})`,
-              backgroundSize: "cover",
-            }}
-            className="explore__tile"
-          >
-            {tile.object && (
-              <div className="explore__icon">
-                <img
-                  alt="icon"
-                  style={{ width: 80, height: 80 }}
-                  src={`${assets_url}/${tile.object}`}
-                />
-              </div>
-            )}
-            <PlayersOnTheMap
-              tileX={tile.x}
-              tileY={tile.y}
-              players={players}
-              user={user}
-            />
-            {tile.x === user.x && tile.y === user.y && (
-              <div className="explore__player">
-                <div className="explore__username">{user.username}</div>
-                <div className="explore__avatar-wrapper">
-                  <Progress
-                    classNames={{ root: "explore__player-hp" }}
-                    color="red"
-                    radius="xs"
-                    size="sm"
-                    value={(user.hp / user.maxHp) * 100}
-                  />
-                  <img
-                    alt="avatar"
-                    className="explore__avatar"
-                    src={`/media/avatars/${user?.avatar}.png`}
-                  />
-                  <div className="explore__level">{user?.level}</div>
-                </div>
-              </div>
-            )}
-            {tile.x === 7 && tile.y === 2 && (
-              <div className="explore__player">
-                <div className="explore__username">{npc.name}</div>
-                <div className="explore__avatar-wrapper">
-                  <img
-                    className="explore__avatar"
-                    src={npc.avatar}
-                    alt="avatar"
-                  />
-                </div>
-              </div>
-            )}
-            {tile.layer2 && (
-              <div className="explore__icon">
-                <img
-                  alt="icon"
-                  style={{ width: 80, height: 80 }}
-                  src={`${assets_url}/${tile.layer2}`}
-                />
-              </div>
-            )}
-            {tile.layer3 && (
-              <div className="explore__icon">
-                <img
-                  alt="icon"
-                  style={{ width: 80, height: 80 }}
-                  src={`${assets_url}/${tile.layer3}`}
-                />
-              </div>
-            )}
-          </li>
-        );
+        tiles.push(tile);
       }
     }
     return tiles;
-  }, [user, mapData, players, npc.name, npc.avatar]);
+  }, [user, mapData, players]);
 
   if (isFetching) {
     return <Loader />;
@@ -166,7 +93,82 @@ const Explore = ({ user }: Props) => {
       <div className="explore__screen">
         <ul className="explore__tiles">
           <div className="explore__protection"></div>
-          {renderMap}
+          {tiles?.map((tile) => (
+            <li
+              key={tile.id}
+              style={{
+                backgroundImage: `url(${assets_url}/${tile.sprite})`,
+                backgroundSize: "cover",
+              }}
+              className="explore__tile"
+            >
+              {tile.object && (
+                <div className="explore__icon">
+                  <img
+                    alt="icon"
+                    style={{ width: 80, height: 80 }}
+                    src={`${assets_url}/${tile.object}`}
+                  />
+                </div>
+              )}
+              <PlayersOnTheMap
+                tileX={tile.x}
+                tileY={tile.y}
+                players={players}
+                user={user}
+              />
+              {tile.x === npc.x && tile.y === npc.y && (
+                <div className="explore__player">
+                  <div className="explore__username">{npc.name}</div>
+                  <div className="explore__avatar-wrapper">
+                    <img
+                      className="explore__avatar"
+                      src={npc.avatar}
+                      alt="avatar"
+                    />
+                  </div>
+                </div>
+              )}
+              {tile.x === user.x && tile.y === user.y && (
+                <div className="explore__player">
+                  <div className="explore__username">{user.username}</div>
+                  <div className="explore__avatar-wrapper">
+                    <Progress
+                      classNames={{ root: "explore__player-hp" }}
+                      color="red"
+                      radius="xs"
+                      size="sm"
+                      value={(user.hp / user.maxHp) * 100}
+                    />
+                    <img
+                      alt="avatar"
+                      className="explore__avatar"
+                      src={`/media/avatars/${user?.avatar}.png`}
+                    />
+                    <div className="explore__level">{user?.level}</div>
+                  </div>
+                </div>
+              )}
+              {tile.layer2 && (
+                <div className="explore__icon">
+                  <img
+                    alt="icon"
+                    style={{ width: 80, height: 80 }}
+                    src={`${assets_url}/${tile.layer2}`}
+                  />
+                </div>
+              )}
+              {tile.layer3 && (
+                <div className="explore__icon">
+                  <img
+                    alt="icon"
+                    style={{ width: 80, height: 80 }}
+                    src={`${assets_url}/${tile.layer3}`}
+                  />
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
       </div>
       {showText ? (

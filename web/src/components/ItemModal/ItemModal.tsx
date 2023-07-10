@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
@@ -28,6 +28,7 @@ const ItemModal = ({
   hideAction,
 }: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
   const { mutate: equipThisItem } = useMutation(equipItem, {
     onSuccess: (response) => {
       refetchItems();
@@ -35,7 +36,7 @@ const ItemModal = ({
     },
   });
 
-  const { mutate: deleteThis } = useMutation(deleteItem, {
+  const { mutate: deleteThisItem } = useMutation(deleteItem, {
     onSuccess: (response) => {
       refetchItems();
     },
@@ -46,9 +47,27 @@ const ItemModal = ({
   };
 
   const handleDeleteItem = () => {
-    deleteThis(item?.id);
+    deleteThisItem(item?.id);
     handleCloseModal();
   };
+
+  const itemStats = useMemo(() => {
+    if (item) {
+      return [
+        { name: "Stamina", value: item.stamina },
+        { name: "Defence", value: item.defence },
+        { name: "Strenght", value: item.strength },
+        { name: "Dexterity", value: item.dexterity },
+        { name: "Intelligence", value: item.intelligence },
+      ];
+    }
+
+    return null;
+  }, [item]);
+
+  if (!item) {
+    return null;
+  }
 
   return (
     <Modal
@@ -73,34 +92,26 @@ const ItemModal = ({
           </Button>
         )}
       </div>
-      <img src={`${assets_url}/${item?.sprite}`} className="modal__icon" />
+      <img src={`${assets_url}/${item.sprite}`} className="modal__icon" />
       <div className="modal__info">
-        <h3>{item?.name}</h3>
-        {item?.mainType === "ARMOR" ||
-          (item?.mainType === "WEAPON" && <h4>{item?.level} lvl</h4>)}
-        {item?.itemType === "BAG" && <h4>SLOTS: {item?.actionAmount}</h4>}
-        <h4 className={item?.quality?.toLowerCase()}>{item?.quality}</h4>
-        {item?.mainType === "WEAPON" && (
-          <p>
-            Attack: {item?.minAttack} - {item?.maxAttack}
-          </p>
-        )}
-        {item?.mainType === "ARMOR" && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: "10px",
-            }}
-          >
-            {item.stamina && <p>Stamina: {item?.stamina}</p>}
-            {item.defence && <p>Defence: {item?.defence}</p>}
-            {item.strength && <p>Strength: {item?.strength}</p>}
-            {item.dexterity && <p>Dexterity: {item?.dexterity}</p>}
-            {item.intelligence && <p>Intelligence: {item?.intelligence}</p>}
-          </div>
-        )}
+        <h3>{item.name}</h3>
+        {item.actionAmount && <h4>SLOTS: {item.actionAmount}</h4>}
+        <h4 className={item.quality.toLowerCase()}>{item.quality}</h4>
+        <div className="modal__stats">
+          {item.minAttack && (
+            <p>
+              Attack: {item.minAttack} - {item.maxAttack}
+            </p>
+          )}
+          {itemStats?.map(
+            (stat: { name: string; value: number }) =>
+              stat.value && (
+                <p key={stat.name}>
+                  {stat.name}: {stat.value}
+                </p>
+              )
+          )}
+        </div>
       </div>
       <div className="modal__buttons">
         {!hideAction && (
@@ -108,14 +119,14 @@ const ItemModal = ({
             variant="outline"
             color="lime"
             onClick={() => {
-              equipThisItem(item?.id);
+              equipThisItem(item.id);
               handleCloseModal();
             }}
           >
-            {item?.equip ? "UNEQUIP" : "EQUIP"}
+            {item.equip ? "UNEQUIP" : "EQUIP"}
           </Button>
         )}
-        {item?.type === "POTION" && (
+        {item.type === "POTION" && (
           <Button variant="outline" color="lime" onClick={handleCloseModal}>
             USE
           </Button>
