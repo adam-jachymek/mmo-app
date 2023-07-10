@@ -3,7 +3,7 @@ import { Button, Modal } from "@mantine/core";
 import { BiTrash } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { deleteItem, equipItem } from "api/endpoints";
-import { EquipItem, Item, User } from "/types";
+import { Item, User } from "/types";
 import ConfirmModal from "../ConfirmModal";
 import { socket } from "api/socket";
 import { assets_url } from "config";
@@ -96,7 +96,9 @@ const ItemModal = ({
       <div className="modal__info">
         <h3>{item.name}</h3>
         {item.actionAmount && <h4>SLOTS: {item.actionAmount}</h4>}
-        <h4 className={item.quality.toLowerCase()}>{item.quality}</h4>
+        {item.quality && (
+          <h4 className={item.quality.toLowerCase()}>{item.quality}</h4>
+        )}
         <div className="modal__stats">
           {item.minAttack && (
             <p>
